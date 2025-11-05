@@ -5,6 +5,9 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import path from "path";
 
+import routes from "./routes";
+import { errorHandler } from "./middleware/errorHandler";
+
 dotenv.config({
   path: path.resolve(__dirname, "../../.env"),
 });
@@ -17,6 +20,12 @@ app.use(cors({ origin: process.env.CORS_ORIGIN }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
+
+// Routes
+app.use(routes);
+
+// Error handler (must be last)
+app.use(errorHandler);
 
 app.get("/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
