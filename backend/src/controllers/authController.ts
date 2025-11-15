@@ -54,3 +54,23 @@ export const getMe = async (
     next(error);
   }
 };
+
+export const editProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = req.user!.userId;
+    const updateData = req?.body;
+    const updatedUser = await authService.editUserProfile(userId, updateData);
+
+    res.json({
+      success: true,
+      message: "Profile updated successfully",
+      data: updatedUser,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};

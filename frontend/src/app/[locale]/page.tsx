@@ -1,7 +1,3 @@
-// ============================================
-// HOME/LANDING PAGE
-// src/app/page.tsx
-// ============================================
 "use client";
 
 import { Button, Card, Row, Col, Statistic, Rate } from "antd";
@@ -10,80 +6,24 @@ import {
   SafetyCertificateOutlined,
   ClockCircleOutlined,
   TeamOutlined,
-  StarOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
 import { useDoctors } from "@/hooks";
+import Header from "@/components/layout/Header";
+import { useTranslations } from "next-intl";
 
 export default function HomePage() {
-  // Fetch featured doctors
+  const t = useTranslations("home");
   const { data: doctorsData } = useDoctors({});
-
-  console.log("doctorsData", doctorsData);
-
   const featuredDoctors = doctorsData?.data.slice(0, 4) || [];
 
   return (
     <div className="min-h-screen">
-      {/* ==================== HEADER/NAVBAR ==================== */}
-      <header className="sticky top-0 z-50 bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
-                M
-              </div>
-              <span className="text-2xl font-bold text-gray-800">MediBook</span>
-            </Link>
+      <Header />
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-8">
-              <Link
-                href="#features"
-                className="text-gray-600 hover:text-blue-600 transition"
-              >
-                Tính năng
-              </Link>
-              <Link
-                href="#doctors"
-                className="text-gray-600 hover:text-blue-600 transition"
-              >
-                Bác sĩ
-              </Link>
-              <Link
-                href="#how-it-works"
-                className="text-gray-600 hover:text-blue-600 transition"
-              >
-                Cách hoạt động
-              </Link>
-              <Link
-                href="#contact"
-                className="text-gray-600 hover:text-blue-600 transition"
-              >
-                Liên hệ
-              </Link>
-            </nav>
-
-            {/* Auth Buttons */}
-            <div className="flex items-center gap-3">
-              <Link href="/login">
-                <Button size="large">Đăng nhập</Button>
-              </Link>
-              <Link href="/register">
-                <Button type="primary" size="large">
-                  Đăng ký
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* ==================== HERO SECTION ==================== */}
-      <section className="relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 overflow-hidden">
-        {/* Background decoration */}
+      {/* HERO SECTION */}
+      <section className="relative bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 py-20 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full opacity-20 blur-3xl"></div>
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-200 rounded-full opacity-20 blur-3xl"></div>
@@ -94,14 +34,13 @@ export default function HomePage() {
             <Col xs={24} lg={12}>
               <div className="text-center lg:text-left">
                 <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                  Đặt lịch khám bệnh
+                  {t("hero.title")}
                   <span className="block text-blue-600">
-                    Dễ dàng & Nhanh chóng
+                    {t("hero.titleHighlight")}
                   </span>
                 </h1>
                 <p className="text-xl text-gray-600 mb-8 max-w-2xl">
-                  Kết nối bạn với hơn 500+ bác sĩ chuyên nghiệp. Đặt lịch khám
-                  chỉ trong vài phút, mọi lúc mọi nơi.
+                  {t("hero.description")}
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -111,31 +50,36 @@ export default function HomePage() {
                       size="large"
                       className="h-14 px-8 text-lg font-medium"
                     >
-                      Bắt đầu ngay <RightOutlined />
+                      {t("hero.startNow")} <RightOutlined />
                     </Button>
                   </Link>
                   <Link href="/doctors">
                     <Button size="large" className="h-14 px-8 text-lg">
-                      Tìm bác sĩ
+                      {t("hero.findDoctor")}
                     </Button>
                   </Link>
                 </div>
 
-                {/* Stats */}
                 <div className="flex flex-wrap gap-8 mt-12 justify-center lg:justify-start">
                   <div>
                     <div className="text-3xl font-bold text-blue-600">500+</div>
-                    <div className="text-gray-600">Bác sĩ</div>
+                    <div className="text-gray-600">
+                      {t("hero.stats.doctors")}
+                    </div>
                   </div>
                   <div>
                     <div className="text-3xl font-bold text-blue-600">10k+</div>
-                    <div className="text-gray-600">Bệnh nhân</div>
+                    <div className="text-gray-600">
+                      {t("hero.stats.patients")}
+                    </div>
                   </div>
                   <div>
                     <div className="text-3xl font-bold text-blue-600">
                       4.9⭐
                     </div>
-                    <div className="text-gray-600">Đánh giá</div>
+                    <div className="text-gray-600">
+                      {t("hero.stats.rating")}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -143,27 +87,27 @@ export default function HomePage() {
 
             <Col xs={24} lg={12}>
               <div className="relative">
-                {/* Illustration/Image placeholder */}
                 <div className="relative w-full h-96 bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl shadow-2xl overflow-hidden">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
                       <div className="text-8xl mb-4">🏥</div>
                       <p className="text-2xl font-semibold text-gray-700">
-                        Healthcare Made Easy
+                        {t("hero.tagline")}
                       </p>
                     </div>
                   </div>
 
-                  {/* Floating cards animation */}
                   <div className="absolute top-10 right-10 bg-white p-4 rounded-xl shadow-lg animate-float">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
                         ✅
                       </div>
                       <div>
-                        <div className="font-bold">Đặt lịch thành công</div>
+                        <div className="font-bold">
+                          {t("hero.floatingCard1.title")}
+                        </div>
                         <div className="text-sm text-gray-500">
-                          BS. Nguyễn A
+                          {t("hero.floatingCard1.subtitle")}
                         </div>
                       </div>
                     </div>
@@ -175,9 +119,11 @@ export default function HomePage() {
                         📅
                       </div>
                       <div>
-                        <div className="font-bold">Lịch hẹn sắp tới</div>
+                        <div className="font-bold">
+                          {t("hero.floatingCard2.title")}
+                        </div>
                         <div className="text-sm text-gray-500">
-                          Hôm nay, 10:00
+                          {t("hero.floatingCard2.subtitle")}
                         </div>
                       </div>
                     </div>
@@ -189,15 +135,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ==================== FEATURES SECTION ==================== */}
+      {/* FEATURES SECTION */}
       <section id="features" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Tại sao chọn MediBook?
+              {t("features.title")}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Nền tảng đặt lịch khám bệnh hiện đại, tiện lợi và an toàn
+              {t("features.subtitle")}
             </p>
           </div>
 
@@ -207,10 +153,11 @@ export default function HomePage() {
                 <div className="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <TeamOutlined className="text-4xl text-blue-600" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">500+ Bác sĩ</h3>
+                <h3 className="text-2xl font-bold mb-4">
+                  {t("features.feature1.title")}
+                </h3>
                 <p className="text-gray-600">
-                  Đội ngũ bác sĩ chuyên nghiệp, giàu kinh nghiệm từ các bệnh
-                  viện hàng đầu
+                  {t("features.feature1.description")}
                 </p>
               </Card>
             </Col>
@@ -220,10 +167,11 @@ export default function HomePage() {
                 <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <ClockCircleOutlined className="text-4xl text-green-600" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Đặt lịch 24/7</h3>
+                <h3 className="text-2xl font-bold mb-4">
+                  {t("features.feature2.title")}
+                </h3>
                 <p className="text-gray-600">
-                  Đặt lịch khám bất cứ lúc nào, mọi nơi chỉ với vài thao tác đơn
-                  giản
+                  {t("features.feature2.description")}
                 </p>
               </Card>
             </Col>
@@ -233,23 +181,25 @@ export default function HomePage() {
                 <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <SafetyCertificateOutlined className="text-4xl text-purple-600" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">An toàn & Bảo mật</h3>
+                <h3 className="text-2xl font-bold mb-4">
+                  {t("features.feature3.title")}
+                </h3>
                 <p className="text-gray-600">
-                  Thông tin cá nhân và y tế được bảo vệ tuyệt đối với công nghệ
-                  mã hóa hiện đại
+                  {t("features.feature3.description")}
                 </p>
               </Card>
             </Col>
           </Row>
 
-          {/* Additional Features */}
           <Row gutter={[32, 32]} className="mt-8">
             <Col xs={24} md={8}>
               <Card className="text-center h-full hover:shadow-xl transition-shadow">
                 <div className="text-4xl mb-4">💳</div>
-                <h3 className="text-xl font-bold mb-3">Thanh toán linh hoạt</h3>
+                <h3 className="text-xl font-bold mb-3">
+                  {t("features.feature4.title")}
+                </h3>
                 <p className="text-gray-600">
-                  Hỗ trợ nhiều hình thức thanh toán
+                  {t("features.feature4.description")}
                 </p>
               </Card>
             </Col>
@@ -257,9 +207,11 @@ export default function HomePage() {
             <Col xs={24} md={8}>
               <Card className="text-center h-full hover:shadow-xl transition-shadow">
                 <div className="text-4xl mb-4">📱</div>
-                <h3 className="text-xl font-bold mb-3">Nhắc nhở thông minh</h3>
+                <h3 className="text-xl font-bold mb-3">
+                  {t("features.feature5.title")}
+                </h3>
                 <p className="text-gray-600">
-                  Thông báo tự động trước lịch khám
+                  {t("features.feature5.description")}
                 </p>
               </Card>
             </Col>
@@ -267,24 +219,26 @@ export default function HomePage() {
             <Col xs={24} md={8}>
               <Card className="text-center h-full hover:shadow-xl transition-shadow">
                 <div className="text-4xl mb-4">⭐</div>
-                <h3 className="text-xl font-bold mb-3">Đánh giá chất lượng</h3>
-                <p className="text-gray-600">Phản hồi từ bệnh nhân thực tế</p>
+                <h3 className="text-xl font-bold mb-3">
+                  {t("features.feature6.title")}
+                </h3>
+                <p className="text-gray-600">
+                  {t("features.feature6.description")}
+                </p>
               </Card>
             </Col>
           </Row>
         </div>
       </section>
 
-      {/* ==================== FEATURED DOCTORS ==================== */}
+      {/* FEATURED DOCTORS */}
       <section id="doctors" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              🔥 Bác sĩ nổi bật
+              {t("doctors.title")}
             </h2>
-            <p className="text-xl text-gray-600">
-              Các bác sĩ được đánh giá cao nhất trên MediBook
-            </p>
+            <p className="text-xl text-gray-600">{t("doctors.subtitle")}</p>
           </div>
 
           <Row gutter={[24, 24]}>
@@ -328,14 +282,13 @@ export default function HomePage() {
                       </p>
                       <Link href={`/doctors/${doctor.id}`}>
                         <Button type="primary" block>
-                          Đặt lịch ngay
+                          {t("doctors.bookNow")}
                         </Button>
                       </Link>
                     </Card>
                   </Col>
                 ))
-              : // Skeleton/Placeholder
-                Array.from({ length: 4 }).map((_, index) => (
+              : Array.from({ length: 4 }).map((_, index) => (
                   <Col xs={24} sm={12} lg={6} key={index}>
                     <Card className="text-center">
                       <div className="h-48 bg-gray-200 rounded mb-4"></div>
@@ -349,23 +302,21 @@ export default function HomePage() {
           <div className="text-center mt-12">
             <Link href="/doctors">
               <Button size="large" className="h-12 px-8">
-                Xem tất cả bác sĩ <RightOutlined />
+                {t("doctors.viewAll")} <RightOutlined />
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ==================== HOW IT WORKS ==================== */}
+      {/* HOW IT WORKS */}
       <section id="how-it-works" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Cách hoạt động
+              {t("howItWorks.title")}
             </h2>
-            <p className="text-xl text-gray-600">
-              Đặt lịch khám chỉ với 3 bước đơn giản
-            </p>
+            <p className="text-xl text-gray-600">{t("howItWorks.subtitle")}</p>
           </div>
 
           <Row gutter={[48, 48]} align="middle">
@@ -374,9 +325,11 @@ export default function HomePage() {
                 <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <span className="text-3xl font-bold text-blue-600">1</span>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Tìm bác sĩ</h3>
+                <h3 className="text-2xl font-bold mb-4">
+                  {t("howItWorks.step1.title")}
+                </h3>
                 <p className="text-gray-600">
-                  Tìm kiếm bác sĩ theo chuyên khoa, địa điểm hoặc đánh giá
+                  {t("howItWorks.step1.description")}
                 </p>
               </div>
             </Col>
@@ -386,9 +339,11 @@ export default function HomePage() {
                 <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <span className="text-3xl font-bold text-green-600">2</span>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Đặt lịch</h3>
+                <h3 className="text-2xl font-bold mb-4">
+                  {t("howItWorks.step2.title")}
+                </h3>
                 <p className="text-gray-600">
-                  Chọn ngày, giờ phù hợp và điền thông tin lý do khám
+                  {t("howItWorks.step2.description")}
                 </p>
               </div>
             </Col>
@@ -398,9 +353,11 @@ export default function HomePage() {
                 <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <span className="text-3xl font-bold text-purple-600">3</span>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Nhận xác nhận</h3>
+                <h3 className="text-2xl font-bold mb-4">
+                  {t("howItWorks.step3.title")}
+                </h3>
                 <p className="text-gray-600">
-                  Bác sĩ xác nhận và bạn nhận thông báo qua email/SMS
+                  {t("howItWorks.step3.description")}
                 </p>
               </div>
             </Col>
@@ -408,14 +365,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ==================== STATS SECTION ==================== */}
+      {/* STATS SECTION */}
       <section className="py-20 bg-gradient-to-br from-blue-600 to-purple-600 text-white">
         <div className="max-w-7xl mx-auto px-4">
           <Row gutter={[32, 32]}>
             <Col xs={12} md={6}>
               <Statistic
                 title={
-                  <span className="text-white text-opacity-90">Bác sĩ</span>
+                  <span className="text-white text-opacity-90">
+                    {t("stats.doctors")}
+                  </span>
                 }
                 value={500}
                 suffix="+"
@@ -429,7 +388,9 @@ export default function HomePage() {
             <Col xs={12} md={6}>
               <Statistic
                 title={
-                  <span className="text-white text-opacity-90">Bệnh nhân</span>
+                  <span className="text-white text-opacity-90">
+                    {t("stats.patients")}
+                  </span>
                 }
                 value={10000}
                 suffix="+"
@@ -443,7 +404,9 @@ export default function HomePage() {
             <Col xs={12} md={6}>
               <Statistic
                 title={
-                  <span className="text-white text-opacity-90">Lịch hẹn</span>
+                  <span className="text-white text-opacity-90">
+                    {t("stats.appointments")}
+                  </span>
                 }
                 value={50000}
                 suffix="+"
@@ -457,7 +420,9 @@ export default function HomePage() {
             <Col xs={12} md={6}>
               <Statistic
                 title={
-                  <span className="text-white text-opacity-90">Đánh giá</span>
+                  <span className="text-white text-opacity-90">
+                    {t("stats.rating")}
+                  </span>
                 }
                 value={4.9}
                 suffix="/5 ⭐"
@@ -472,15 +437,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ==================== CTA SECTION ==================== */}
+      {/* CTA SECTION */}
       <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Sẵn sàng bắt đầu?
+            {t("cta.title")}
           </h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Tham gia cùng hàng ngàn bệnh nhân đã tin tưởng sử dụng MediBook
-          </p>
+          <p className="text-xl text-gray-600 mb-8">{t("cta.subtitle")}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register">
               <Button
@@ -488,19 +451,19 @@ export default function HomePage() {
                 size="large"
                 className="h-14 px-10 text-lg font-medium"
               >
-                Đăng ký miễn phí
+                {t("cta.registerFree")}
               </Button>
             </Link>
             <Link href="/doctors">
               <Button size="large" className="h-14 px-10 text-lg">
-                Tìm bác sĩ ngay
+                {t("cta.findDoctorNow")}
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ==================== FOOTER ==================== */}
+      {/* FOOTER */}
       <footer id="contact" className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4">
           <Row gutter={[48, 48]}>
@@ -511,9 +474,7 @@ export default function HomePage() {
                 </div>
                 <span className="text-2xl font-bold">MediBook</span>
               </div>
-              <p className="text-gray-400 mb-4">
-                Nền tảng đặt lịch khám bệnh trực tuyến hàng đầu Việt Nam
-              </p>
+              <p className="text-gray-400 mb-4">{t("footer.description")}</p>
               <div className="flex gap-4">
                 <a
                   href="#"
@@ -537,14 +498,14 @@ export default function HomePage() {
             </Col>
 
             <Col xs={24} sm={12} md={5}>
-              <h3 className="text-lg font-bold mb-4">Sản phẩm</h3>
+              <h3 className="text-lg font-bold mb-4">{t("footer.products")}</h3>
               <ul className="space-y-2">
                 <li>
                   <Link
                     href="/doctors"
                     className="text-gray-400 hover:text-white transition"
                   >
-                    Tìm bác sĩ
+                    {t("footer.findDoctor")}
                   </Link>
                 </li>
                 <li>
@@ -552,7 +513,7 @@ export default function HomePage() {
                     href="/register"
                     className="text-gray-400 hover:text-white transition"
                   >
-                    Đăng ký
+                    {t("footer.register")}
                   </Link>
                 </li>
                 <li>
@@ -560,21 +521,21 @@ export default function HomePage() {
                     href="#"
                     className="text-gray-400 hover:text-white transition"
                   >
-                    Ứng dụng Mobile
+                    {t("footer.mobileApp")}
                   </a>
                 </li>
               </ul>
             </Col>
 
             <Col xs={24} sm={12} md={5}>
-              <h3 className="text-lg font-bold mb-4">Hỗ trợ</h3>
+              <h3 className="text-lg font-bold mb-4">{t("footer.support")}</h3>
               <ul className="space-y-2">
                 <li>
                   <a
                     href="#"
                     className="text-gray-400 hover:text-white transition"
                   >
-                    Trung tâm trợ giúp
+                    {t("footer.helpCenter")}
                   </a>
                 </li>
                 <li>
@@ -582,7 +543,7 @@ export default function HomePage() {
                     href="#"
                     className="text-gray-400 hover:text-white transition"
                   >
-                    Câu hỏi thường gặp
+                    {t("footer.faq")}
                   </a>
                 </li>
                 <li>
@@ -590,21 +551,21 @@ export default function HomePage() {
                     href="#"
                     className="text-gray-400 hover:text-white transition"
                   >
-                    Liên hệ
+                    {t("footer.contact")}
                   </a>
                 </li>
               </ul>
             </Col>
 
             <Col xs={24} sm={12} md={6}>
-              <h3 className="text-lg font-bold mb-4">Pháp lý</h3>
+              <h3 className="text-lg font-bold mb-4">{t("footer.legal")}</h3>
               <ul className="space-y-2">
                 <li>
                   <a
                     href="#"
                     className="text-gray-400 hover:text-white transition"
                   >
-                    Điều khoản sử dụng
+                    {t("footer.terms")}
                   </a>
                 </li>
                 <li>
@@ -612,7 +573,7 @@ export default function HomePage() {
                     href="#"
                     className="text-gray-400 hover:text-white transition"
                   >
-                    Chính sách bảo mật
+                    {t("footer.privacy")}
                   </a>
                 </li>
                 <li>
@@ -620,7 +581,7 @@ export default function HomePage() {
                     href="#"
                     className="text-gray-400 hover:text-white transition"
                   >
-                    Chính sách cookie
+                    {t("footer.cookies")}
                   </a>
                 </li>
               </ul>
@@ -628,7 +589,7 @@ export default function HomePage() {
           </Row>
 
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 MediBook. All rights reserved.</p>
+            <p>{t("footer.copyright")}</p>
           </div>
         </div>
       </footer>
@@ -643,11 +604,9 @@ export default function HomePage() {
             transform: translateY(-20px);
           }
         }
-
         .animate-float {
           animation: float 3s ease-in-out infinite;
         }
-
         .animate-float-delayed {
           animation: float 3s ease-in-out infinite;
           animation-delay: 1.5s;

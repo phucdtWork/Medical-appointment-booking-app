@@ -1,0 +1,166 @@
+{
+  "common": {
+    "welcome": "Chào mừng",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "logout": "Đăng xuất",
+    "search": "Tìm kiếm",
+    "bookNow": "Đặt lịch ngay",
+    "viewProfile": "Xem hồ sơ"
+  },
+  "home": {
+    "hero": {
+      "title": "Đặt lịch khám bệnh",
+      "titleHighlight": "Dễ dàng & Nhanh chóng",
+      "description": "Kết nối bạn với hơn 500+ bác sĩ chuyên nghiệp. Đặt lịch khám chỉ trong vài phút, mọi lúc mọi nơi.",
+      "startNow": "Bắt đầu ngay",
+      "findDoctor": "Tìm bác sĩ",
+      "stats": {
+        "doctors": "Bác sĩ",
+        "patients": "Bệnh nhân",
+        "rating": "Đánh giá"
+      },
+      "floatingCard1": {
+        "title": "Đặt lịch thành công",
+        "subtitle": "BS. Nguyễn A"
+      },
+      "floatingCard2": {
+        "title": "Lịch hẹn sắp tới",
+        "subtitle": "Hôm nay, 10:00"
+      },
+      "tagline": "Healthcare Made Easy"
+    },
+    "features": {
+      "title": "Tại sao chọn MediBook?",
+      "subtitle": "Nền tảng đặt lịch khám bệnh hiện đại, tiện lợi và an toàn",
+      "feature1": {
+        "title": "500+ Bác sĩ",
+        "description": "Đội ngũ bác sĩ chuyên nghiệp, giàu kinh nghiệm từ các bệnh viện hàng đầu"
+      },
+      "feature2": {
+        "title": "Đặt lịch 24/7",
+        "description": "Đặt lịch khám bất cứ lúc nào, mọi nơi chỉ với vài thao tác đơn giản"
+      },
+      "feature3": {
+        "title": "An toàn & Bảo mật",
+        "description": "Thông tin cá nhân và y tế được bảo vệ tuyệt đối với công nghệ mã hóa hiện đại"
+      },
+      "feature4": {
+        "title": "Thanh toán linh hoạt",
+        "description": "Hỗ trợ nhiều hình thức thanh toán"
+      },
+      "feature5": {
+        "title": "Nhắc nhở thông minh",
+        "description": "Thông báo tự động trước lịch khám"
+      },
+      "feature6": {
+        "title": "Đánh giá chất lượng",
+        "description": "Phản hồi từ bệnh nhân thực tế"
+      }
+    },
+    "doctors": {
+      "title": "🔥 Bác sĩ nổi bật",
+      "subtitle": "Các bác sĩ được đánh giá cao nhất trên MediBook",
+      "bookNow": "Đặt lịch ngay",
+      "viewAll": "Xem tất cả bác sĩ"
+    },
+    "howItWorks": {
+      "title": "Cách hoạt động",
+      "subtitle": "Đặt lịch khám chỉ với 3 bước đơn giản",
+      "step1": {
+        "title": "Tìm bác sĩ",
+        "description": "Tìm kiếm bác sĩ theo chuyên khoa, địa điểm hoặc đánh giá"
+      },
+      "step2": {
+        "title": "Đặt lịch",
+        "description": "Chọn ngày, giờ phù hợp và điền thông tin lý do khám"
+      },
+      "step3": {
+        "title": "Nhận xác nhận",
+        "description": "Bác sĩ xác nhận và bạn nhận thông báo qua email/SMS"
+      }
+    },
+    "stats": {
+      "doctors": "Bác sĩ",
+      "patients": "Bệnh nhân",
+      "appointments": "Lịch hẹn",
+      "rating": "Đánh giá"
+    },
+    "cta": {
+      "title": "Sẵn sàng bắt đầu?",
+      "subtitle": "Tham gia cùng hàng ngàn bệnh nhân đã tin tưởng sử dụng MediBook",
+      "registerFree": "Đăng ký miễn phí",
+      "findDoctorNow": "Tìm bác sĩ ngay"
+    },
+    "footer": {
+      "description": "Nền tảng đặt lịch khám bệnh trực tuyến hàng đầu Việt Nam",
+      "products": "Sản phẩm",
+      "findDoctor": "Tìm bác sĩ",
+      "register": "Đăng ký",
+      "mobileApp": "Ứng dụng Mobile",
+      "support": "Hỗ trợ",
+      "helpCenter": "Trung tâm trợ giúp",
+      "faq": "Câu hỏi thường gặp",
+      "contact": "Liên hệ",
+      "legal": "Pháp lý",
+      "terms": "Điều khoản sử dụng",
+      "privacy": "Chính sách bảo mật",
+      "cookies": "Chính sách cookie",
+      "copyright": "© 2024 MediBook. All rights reserved."
+    }
+  },
+  "auth": {
+    "loginTitle": "Đăng nhập",
+    "welcomeBack": "Chào mừng trở lại",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "emailRequired": "Vui lòng nhập email",
+    "emailInvalid": "Email không hợp lệ",
+    "passwordRequired": "Vui lòng nhập mật khẩu",
+    "passwordMin": "Mật khẩu tối thiểu 6 ký tự",
+    "rememberMe": "Ghi nhớ đăng nhập",
+    "forgotPassword": "Quên mật khẩu?",
+    "loginButton": "Đăng nhập",
+    "or": "Hoặc",
+    "loginWithGoogle": "Đăng nhập với Google",
+    "noAccount": "Chưa có tài khoản?",
+    "registerNow": "Đăng ký ngay",
+    "doctorLogin": "Đăng nhập cho bác sĩ"
+  },
+  "doctor": {
+    "specialization": "Chuyên khoa",
+    "experience": "Kinh nghiệm",
+    "consultationFee": "Phí tư vấn",
+    "rating": "Đánh giá",
+    "reviews": "Nhận xét"
+  },
+  "components": {
+    "layout": {
+      "Header": {
+        "nav": {
+          "features": "Tính năng",
+          "doctors": "Bác sĩ",
+          "howItWorks": "Cách hoạt động",
+          "contact": "Liên hệ"
+        },
+        "theme": {
+          "light": "Chế độ sáng",
+          "dark": "Chế độ tối"
+        },
+        "language": {
+          "vietnamese": "Tiếng Việt",
+          "english": "English"
+        },
+        "auth": {
+          "login": "Đăng nhập",
+          "register": "Đăng ký"
+        },
+        "userMenu": {
+          "profile": "Hồ sơ",
+          "appointments": "Lịch hẹn",
+          "logout": "Đăng xuất"
+        }
+      }
+    }
+  }
+}

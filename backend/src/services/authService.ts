@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs";
 import jwt, { type Secret, type SignOptions } from "jsonwebtoken";
 import { db } from "../config/firebase";
 import { User } from "../models/User";
+import { uploadAvatar } from "../config/multer";
+import uploadService, { UploadService } from "./uploadService";
 
 export class AuthService {
   // Register Patient
@@ -122,5 +124,39 @@ export class AuthService {
     delete (user as any).password;
 
     return user;
+  }
+
+  // Edit user profile
+  async editUserProfile(
+    userId: string,
+    updateData: Partial<User>
+  ): Promise<User> {
+    const docRef = db.collection("users").doc(userId);
+
+    // Check if user exists
+    const userDoc = await docRef.get();
+    if (!userDoc.exists) {
+      throw new Error("User not found");
+    }
+
+    const updates: Partial<User> & { updatedAt: Date } = {
+      ...updateData,
+      updatedAt: new Date(),
+    };
+
+    // Remove fields that shouldn't be updated
+    delete (updates as any).id;
+    delete (updates as any).password;
+    delete (updates as any).email;
+    delete (updates as any).role;
+    delete (updates as any).createdAt;
+
+    await docRef.update(updates);
+
+    const updatedDoc = await docRef.get();
+    const updatedUser = { id: updatedDoc.id, ...updatedDoc.data() } as User;
+    delete (updatedUser as any).password;
+
+    return updatedUser;
   }
 }

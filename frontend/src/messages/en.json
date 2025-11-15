@@ -1,0 +1,166 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "search": "Search",
+    "bookNow": "Book Now",
+    "viewProfile": "View Profile"
+  },
+  "home": {
+    "hero": {
+      "title": "Book Medical Appointments",
+      "titleHighlight": "Easy & Fast",
+      "description": "Connect with over 500+ professional doctors. Book appointments in just minutes, anytime, anywhere.",
+      "startNow": "Get Started",
+      "findDoctor": "Find Doctor",
+      "stats": {
+        "doctors": "Doctors",
+        "patients": "Patients",
+        "rating": "Rating"
+      },
+      "floatingCard1": {
+        "title": "Booking Successful",
+        "subtitle": "Dr. Nguyen A"
+      },
+      "floatingCard2": {
+        "title": "Upcoming Appointment",
+        "subtitle": "Today, 10:00"
+      },
+      "tagline": "Healthcare Made Easy"
+    },
+    "features": {
+      "title": "Why Choose MediBook?",
+      "subtitle": "Modern, convenient and secure medical appointment booking platform",
+      "feature1": {
+        "title": "500+ Doctors",
+        "description": "Professional and experienced doctors from leading hospitals"
+      },
+      "feature2": {
+        "title": "Book 24/7",
+        "description": "Book appointments anytime, anywhere with just a few simple steps"
+      },
+      "feature3": {
+        "title": "Safe & Secure",
+        "description": "Personal and medical information is absolutely protected with modern encryption technology"
+      },
+      "feature4": {
+        "title": "Flexible Payment",
+        "description": "Support multiple payment methods"
+      },
+      "feature5": {
+        "title": "Smart Reminders",
+        "description": "Automatic notifications before appointments"
+      },
+      "feature6": {
+        "title": "Quality Reviews",
+        "description": "Feedback from real patients"
+      }
+    },
+    "doctors": {
+      "title": "🔥 Featured Doctors",
+      "subtitle": "Top rated doctors on MediBook",
+      "bookNow": "Book Now",
+      "viewAll": "View All Doctors"
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "subtitle": "Book appointments in just 3 simple steps",
+      "step1": {
+        "title": "Find Doctor",
+        "description": "Search doctors by specialty, location or ratings"
+      },
+      "step2": {
+        "title": "Book Appointment",
+        "description": "Choose suitable date, time and fill in reason for visit"
+      },
+      "step3": {
+        "title": "Get Confirmation",
+        "description": "Doctor confirms and you receive notification via email/SMS"
+      }
+    },
+    "stats": {
+      "doctors": "Doctors",
+      "patients": "Patients",
+      "appointments": "Appointments",
+      "rating": "Rating"
+    },
+    "cta": {
+      "title": "Ready to Get Started?",
+      "subtitle": "Join thousands of patients who trust MediBook",
+      "registerFree": "Register Free",
+      "findDoctorNow": "Find Doctor Now"
+    },
+    "footer": {
+      "description": "Vietnam's leading online medical appointment booking platform",
+      "products": "Products",
+      "findDoctor": "Find Doctor",
+      "register": "Register",
+      "mobileApp": "Mobile App",
+      "support": "Support",
+      "helpCenter": "Help Center",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "legal": "Legal",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "cookies": "Cookie Policy",
+      "copyright": "© 2024 MediBook. All rights reserved."
+    }
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "welcomeBack": "Welcome back",
+    "email": "Email",
+    "password": "Password",
+    "emailRequired": "Please enter email",
+    "emailInvalid": "Invalid email",
+    "passwordRequired": "Please enter password",
+    "passwordMin": "Password minimum 6 characters",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "loginButton": "Login",
+    "or": "Or",
+    "loginWithGoogle": "Login with Google",
+    "noAccount": "Don't have an account?",
+    "registerNow": "Register now",
+    "doctorLogin": "Doctor Login"
+  },
+  "doctor": {
+    "specialization": "Specialization",
+    "experience": "Experience",
+    "consultationFee": "Consultation Fee",
+    "rating": "Rating",
+    "reviews": "Reviews"
+  },
+  "components": {
+    "layout": {
+      "Header": {
+        "nav": {
+          "features": "Features",
+          "doctors": "Doctors",
+          "howItWorks": "How it works",
+          "contact": "Contact"
+        },
+        "theme": {
+          "light": "Light mode",
+          "dark": "Dark mode"
+        },
+        "language": {
+          "vietnamese": "Tiếng Việt",
+          "english": "English"
+        },
+        "auth": {
+          "login": "Login",
+          "register": "Register"
+        },
+        "userMenu": {
+          "profile": "Profile",
+          "appointments": "Appointments",
+          "logout": "Logout"
+        }
+      }
+    }
+  }
+}

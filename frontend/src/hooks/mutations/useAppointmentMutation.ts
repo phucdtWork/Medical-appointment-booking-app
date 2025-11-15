@@ -17,7 +17,6 @@ export const useCreateAppointment = () => {
     mutationFn: (data: CreateAppointmentData) =>
       appointmentService.createAppointment(data),
     onSuccess: () => {
-      // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: appointmentKeys.myList() });
       message.success("Đặt lịch thành công! Chờ bác sĩ xác nhận.");
     },
@@ -41,7 +40,6 @@ export const useUpdateAppointmentStatus = () => {
       data: UpdateAppointmentStatusData;
     }) => appointmentService.updateAppointmentStatus(id, data),
     onSuccess: (_, variables) => {
-      // Invalidate doctor's appointments
       queryClient.invalidateQueries({
         queryKey: appointmentKeys.doctorList(),
       });

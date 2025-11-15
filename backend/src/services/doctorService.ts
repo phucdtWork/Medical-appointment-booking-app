@@ -2,7 +2,6 @@ import { db } from "../config/firebase";
 import { User } from "../models/User";
 
 export class DoctorService {
-  // Get all doctors with filters
   async getDoctors(filters?: {
     specialization?: string;
     minRating?: number;
@@ -24,14 +23,12 @@ export class DoctorService {
       ...doc.data(),
     })) as User[];
 
-    // Filter by rating (client-side because Firestore limitations)
     if (filters?.minRating) {
       doctors = doctors.filter(
         (doc) => doc.doctorInfo && doc.doctorInfo.rating >= filters.minRating!
       );
     }
 
-    // Remove passwords
     doctors.forEach((doc) => delete (doc as any).password);
 
     return doctors;
