@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { Button, Dropdown, Space } from "antd";
+import { Button, Dropdown, Segmented, Space, Drawer } from "antd";
 import {
   MoonOutlined,
   SunOutlined,
@@ -10,20 +11,31 @@ import {
   DownOutlined,
 } from "@ant-design/icons";
 import { useTheme } from "@/providers/ThemeProvider";
-import { useAuth, useClassName } from "@/hooks";
+import { useAuth } from "@/hooks";
 import type { MenuProps } from "antd";
 import { useTranslations } from "next-intl";
+import { Logo } from "../ui";
 
 export default function Header() {
   const { isDark, toggleTheme, language, changeLanguage } = useTheme();
-  const { user, logout } = useAuth();
-
-  // Load translations
+  const { user, logout, isAuthenticated } = useAuth();
   const t = useTranslations("components.layout.Header");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const bgClass = isDark ? "bg-gray-900 shadow-md" : "bg-white shadow-sm";
+  const textSecondaryClass = isDark ? "text-gray-300" : "text-gray-600";
 
   const toggleLanguage = () => {
     const newLang = language === "vi" ? "en" : "vi";
     changeLanguage(newLang);
+  };
+
+  // Handle theme change from Segmented
+  const handleThemeChange = (value: string | number) => {
+    const shouldBeDark = value === "dark";
+    if (isDark !== shouldBeDark) {
+      toggleTheme();
+    }
   };
 
   // Language dropdown menu
@@ -72,103 +84,216 @@ export default function Header() {
   ];
 
   return (
-    <header
-      className={`sticky top-0 z-50 transition-colors ${useClassName(
-        "bg-white shadow-sm",
-        "bg-gray-900 shadow-md"
-      )}`}
-    >
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
-              M
-            </div>
-            <span className="text-2xl font-bold text-gray-800 dark:text-white">
-              MediBook
-            </span>
-          </Link>
+    <>
+      <header className={`sticky top-0 z-50 transition-colors ${bgClass}`}>
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <Logo size="medium" showText={true} />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-8">
+              <Link
+                href="#features"
+                className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+              >
+                {t("nav.features")}
+              </Link>
+              <Link
+                href="#doctors"
+                className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+              >
+                {t("nav.doctors")}
+              </Link>
+              <Link
+                href="#how-it-works"
+                className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+              >
+                {t("nav.howItWorks")}
+              </Link>
+              <Link
+                href="#contact"
+                className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+              >
+                {t("nav.contact")}
+              </Link>
+            </nav>
+
+            {/* Desktop Actions */}
+            <div className="hidden lg:flex items-center gap-3">
+              <Segmented
+                value={isDark ? "dark" : "light"}
+                onChange={handleThemeChange}
+                size="middle"
+                options={[
+                  { value: "light", icon: <SunOutlined /> },
+                  { value: "dark", icon: <MoonOutlined /> },
+                ]}
+              />
+
+              {/* Language Dropdown */}
+              <Dropdown menu={{ items: languageMenu }} placement="bottomRight">
+                <Button type="text">
+                  <Space>
+                    <GlobalOutlined />
+                    <span className="hidden md:inline">
+                      {language === "vi" ? "VI" : "EN"}
+                    </span>
+                    <DownOutlined className="text-xs" />
+                  </Space>
+                </Button>
+              </Dropdown>
+
+              {/* Auth Buttons or User Menu */}
+              {isAuthenticated ? (
+                <Dropdown menu={{ items: userMenu }} placement="bottomRight">
+                  <Button type="primary">
+                    <Space>
+                      <span>{user.fullName}</span>
+                      <DownOutlined className="text-xs" />
+                    </Space>
+                  </Button>
+                </Dropdown>
+              ) : (
+                <>
+                  <Link href="/login">
+                    <Button color="primary" variant="outlined">
+                      {t("auth.login")}
+                    </Button>
+                  </Link>
+                  <Link href="/register">
+                    <Button type="primary" variant="outlined">
+                      {t("auth.register")}
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="block lg:hidden">
+              <Button
+                type="text"
+                icon={<MenuOutlined />}
+                onClick={() => setDrawerOpen(true)}
+              />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        title={t("drawer.title") || "Menu"}
+        placement="right"
+        onClose={() => setDrawerOpen(false)}
+        open={drawerOpen}
+        width={300}
+      >
+        <div className="flex flex-col gap-6">
+          <nav className="flex flex-col gap-4">
             <Link
               href="#features"
-              className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition"
+              className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+              onClick={() => setDrawerOpen(false)}
             >
               {t("nav.features")}
             </Link>
             <Link
               href="#doctors"
-              className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition"
+              className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+              onClick={() => setDrawerOpen(false)}
             >
               {t("nav.doctors")}
             </Link>
             <Link
               href="#how-it-works"
-              className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition"
+              className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+              onClick={() => setDrawerOpen(false)}
             >
               {t("nav.howItWorks")}
             </Link>
             <Link
               href="#contact"
-              className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition"
+              className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+              onClick={() => setDrawerOpen(false)}
             >
               {t("nav.contact")}
             </Link>
           </nav>
 
-          {/* Right Side: Theme + Language + Auth */}
-          <div className="flex items-center gap-3">
-            {/* Theme Toggle */}
-            <Button
-              type="text"
-              icon={isDark ? <SunOutlined /> : <MoonOutlined />}
-              onClick={toggleTheme}
-              className="hidden sm:flex"
-              title={t(`theme.${isDark ? "light" : "dark"}`)}
+          {/* Theme Segmented */}
+          <div>
+            <label
+              className={`block mb-2 text-sm font-medium ${textSecondaryClass}`}
+            >
+              {t("drawer.theme") || "Theme"}
+            </label>
+            <Segmented
+              value={isDark ? "dark" : "light"}
+              onChange={handleThemeChange}
+              size="middle"
+              block
+              options={[
+                { value: "light", icon: <SunOutlined />, label: "Light" },
+                { value: "dark", icon: <MoonOutlined />, label: "Dark" },
+              ]}
             />
+          </div>
 
-            {/* Language Dropdown */}
-            <Dropdown menu={{ items: languageMenu }} placement="bottomRight">
-              <Button type="text" className="hidden sm:flex">
+          {/* Language Selection */}
+          <div>
+            <label
+              className={`block mb-2 text-sm font-medium ${textSecondaryClass}`}
+            >
+              {t("drawer.language") || "Language"}
+            </label>
+            <Dropdown menu={{ items: languageMenu }} placement="bottomLeft">
+              <Button type="text" block className="text-left">
                 <Space>
                   <GlobalOutlined />
-                  <span className="hidden md:inline">
-                    {language === "vi" ? "VI" : "EN"}
+                  <span>
+                    {language === "vi" ? "🇻🇳 Vietnamese" : "🇬🇧 English"}
                   </span>
                   <DownOutlined className="text-xs" />
                 </Space>
               </Button>
             </Dropdown>
+          </div>
 
-            {/* Auth Buttons or User Menu */}
-            {user ? (
-              <Dropdown menu={{ items: userMenu }} placement="bottomRight">
-                <Button type="primary">
+          {/* Auth Section */}
+          {user ? (
+            <div>
+              <label
+                className={`block mb-2 text-sm font-medium ${textSecondaryClass}`}
+              >
+                {t("drawer.account") || "Account"}
+              </label>
+              <Dropdown menu={{ items: userMenu }} placement="bottomLeft">
+                <Button type="primary" block>
                   <Space>
                     <span>{user.fullName}</span>
                     <DownOutlined className="text-xs" />
                   </Space>
                 </Button>
               </Dropdown>
-            ) : (
-              <>
-                <Link href="/login" className="hidden sm:block">
-                  <Button size="large">{t("auth.login")}</Button>
-                </Link>
-                <Link href="/register">
-                  <Button type="primary" size="large">
-                    {t("auth.register")}
-                  </Button>
-                </Link>
-              </>
-            )}
-
-            <Button type="text" icon={<MenuOutlined />} className="lg:hidden" />
-          </div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <Link href="/login" onClick={() => setDrawerOpen(false)}>
+                <Button size="large" block>
+                  {t("auth.login")}
+                </Button>
+              </Link>
+              <Link href="/register" onClick={() => setDrawerOpen(false)}>
+                <Button type="primary" size="large" block>
+                  {t("auth.register")}
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
-      </div>
-    </header>
+      </Drawer>
+    </>
   );
 }

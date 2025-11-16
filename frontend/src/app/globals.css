@@ -1,26 +1,119 @@
 @import "tailwindcss";
 
 :root {
+  --primary-color: #1890ff;
+
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #001529;
+  --background-dark: #1a2c3f;
+
+  /* light text */
+  --text-primary: #001529;
+  --text-secondary: #4d5a6a;
+
+  /* dark text */
+  --text-primary-dark: #ffffff;
+  --text-secondary-dark: #cccccc;
 }
 
 @theme inline {
+  /* primary color */
+  --primary-color: var(--primary-color);
+
+  /* background */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-background-dark: var(--background-dark);
+
+  /* font */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* text colors */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-primary-dark: var(--text-primary-dark);
+  --color-text-secondary-dark: var(--text-secondary-dark);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Smooth Scroll Behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #1890ff, #096dd9);
+  border-radius: 10px;
+  border: 2px solid #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #096dd9, #0050b3);
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #1a2c3f;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #1890ff, #096dd9);
+  border: 2px solid #1a2c3f;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #40a9ff, #1890ff);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1890ff #f1f1f1;
+}
+
+.dark * {
+  scrollbar-color: #1890ff #1a2c3f;
+}
+
+/* Scroll offset for fixed header */
+section[id] {
+  scroll-margin-top: 80px; /* Điều chỉnh theo chiều cao header */
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes float-delayed {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 3s ease-in-out infinite 0.5s;
 }

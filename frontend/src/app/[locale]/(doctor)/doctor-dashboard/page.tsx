@@ -261,7 +261,9 @@ export default function DoctorDashboard() {
               key="pending"
             >
               {appointments.length > 0 ? (
-                appointments.map(renderAppointmentCard)
+                appointments.map((apt, index) =>
+                  renderAppointmentCard(apt, index)
+                )
               ) : (
                 <Empty description="Không có lịch hẹn chờ duyệt" />
               )}
@@ -276,7 +278,9 @@ export default function DoctorDashboard() {
               key="confirmed"
             >
               {appointments.length > 0 ? (
-                appointments.map(renderAppointmentCard)
+                appointments.map((apt, index) =>
+                  renderAppointmentCard(apt, index)
+                )
               ) : (
                 <Empty description="Không có lịch hẹn đã xác nhận" />
               )}
@@ -284,7 +288,9 @@ export default function DoctorDashboard() {
 
             <TabPane tab={<span>📋 Tất cả</span>} key="all">
               {appointments.length > 0 ? (
-                appointments.map(renderAppointmentCard)
+                appointments.map((apt, index) =>
+                  renderAppointmentCard(apt, index)
+                )
               ) : (
                 <Empty description="Chưa có lịch hẹn" />
               )}

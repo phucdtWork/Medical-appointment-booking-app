@@ -8,6 +8,34 @@
     "bookNow": "Đặt lịch ngay",
     "viewProfile": "Xem hồ sơ"
   },
+  "metadata": {
+    "title": "MediBook - Đặt lịch khám bệnh",
+    "description": "Hệ thống đặt lịch khám bệnh trực tuyến"
+  },
+  "breadcrumb": {
+    "home": "Trang chủ",
+    "doctors": "Bác sĩ",
+    "doctorDetail": "Dr. {name}",
+    "dashboard": "Bảng điều khiển",
+    "patientDashboard": "Bảng điều khiển bệnh nhân",
+    "doctorDashboard": "Bảng điều khiển bác sĩ",
+    "appointments": "Lịch hẹn",
+    "profile": "Hồ sơ",
+    "settings": "Cài đặt",
+    "search": "Tìm kiếm: \"{term}\"",
+    "rating": "⭐ {rating}+ sao",
+    "medicalRecords": "Hồ sơ bệnh án",
+    "prescriptions": "Đơn thuốc",
+    "payments": "Thanh toán",
+    "reviews": "Đánh giá",
+    "notifications": "Thông báo",
+    "help": "Trợ giúp",
+    "about": "Giới thiệu",
+    "contact": "Liên hệ",
+    "schedule": "Lịch trình",
+    "patients": "Bệnh nhân",
+    "statistics": "Thống kê"
+  },
   "home": {
     "hero": {
       "title": "Đặt lịch khám bệnh",
@@ -20,6 +48,9 @@
         "patients": "Bệnh nhân",
         "rating": "Đánh giá"
       },
+      "service": "Dịch vụ",
+      "professionals": "Chuyên gia của chúng tôi",
+      "more": "30+",
       "floatingCard1": {
         "title": "Đặt lịch thành công",
         "subtitle": "BS. Nguyễn A"
@@ -59,7 +90,7 @@
       }
     },
     "doctors": {
-      "title": "🔥 Bác sĩ nổi bật",
+      "title": " Bác sĩ nổi bật",
       "subtitle": "Các bác sĩ được đánh giá cao nhất trên MediBook",
       "bookNow": "Đặt lịch ngay",
       "viewAll": "Xem tất cả bác sĩ"
@@ -143,6 +174,12 @@
           "howItWorks": "Cách hoạt động",
           "contact": "Liên hệ"
         },
+        "drawer": {
+          "title": "Menu",
+          "theme": "Chủ đề",
+          "language": "Ngôn ngữ",
+          "account": "Tài khoản"
+        },
         "theme": {
           "light": "Chế độ sáng",
           "dark": "Chế độ tối"
@@ -161,6 +198,42 @@
           "logout": "Đăng xuất"
         }
       }
+    }
+  },
+  "doctors": {
+    "page": {
+      "title": "Danh sách bác sĩ",
+      "subtitle": "Tìm bác sĩ phù hợp với nhu cầu của bạn",
+      "results": "Tìm thấy",
+      "doctors": "bác sĩ",
+      "grid": "Lưới",
+      "list": "Danh sách",
+      "searchPlaceholder": "Tìm kiếm bác sĩ theo tên...",
+      "specializationPlaceholder": "Chọn chuyên khoa",
+      "ratingPlaceholder": "Đánh giá tối thiểu",
+      "clearFilters": "Xóa bộ lọc",
+      "loadingError": "Không thể tải danh sách bác sĩ",
+      "loadingErrorDesc": "Vui lòng thử lại sau hoặc liên hệ hỗ trợ",
+      "noResults": "Không tìm thấy bác sĩ phù hợp",
+      "noResultsDesc": "Thử điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác",
+      "pagination": "{range0}-{range1} của {total} bác sĩ"
+    },
+    "specializations": {
+      "cardiology": "Tim mạch",
+      "dermatology": "Da liễu",
+      "internal": "Nội khoa",
+      "pediatrics": "Nhi khoa",
+      "obstetrics": "Sản phụ khoa",
+      "surgery": "Ngoại khoa",
+      "neurology": "Thần kinh",
+      "ophthalmology": "Mắt",
+      "ent": "Tai Mũi Họng"
+    },
+    "ratings": {
+      "rating_4_5": "4.5 trở lên",
+      "rating_4_0": "4.0 trở lên",
+      "rating_3_5": "3.5 trở lên",
+      "rating_3_0": "3.0 trở lên"
     }
   }
 }

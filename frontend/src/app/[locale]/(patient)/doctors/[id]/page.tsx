@@ -64,7 +64,7 @@ export default function DoctorDetailPage() {
         timeSlot: { start, end },
         reason: values.reason,
         notes: values.notes,
-        fee: doctor!.doctorInfo.consultationFee.min,
+        fee: doctor?.doctorInfo?.consultationFee?.min,
       },
       {
         onSuccess: () => {
@@ -102,9 +102,10 @@ export default function DoctorDetailPage() {
               <div className="relative w-40 h-40 mx-auto mb-4">
                 <Image
                   src={
-                    doctor.avatar || `https://i.pravatar.cc/200?u=${doctor.id}`
+                    doctor?.avatar ||
+                    `https://i.pravatar.cc/200?u=${doctor?.id}`
                   }
-                  alt={doctor.fullName}
+                  alt={doctor?.fullName}
                   fill
                   className="rounded-full object-cover"
                 />
@@ -113,39 +114,41 @@ export default function DoctorDetailPage() {
 
             <Col xs={24} md={16}>
               <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                {doctor.fullName}
+                {doctor?.fullName}
               </h1>
 
               <Tag color="blue" className="mb-3">
-                {doctor.doctorInfo.specialization}
+                {doctor?.doctorInfo?.specialization}
               </Tag>
 
               <div className="flex items-center gap-2 mb-3">
                 <Rate
                   disabled
-                  defaultValue={doctor.doctorInfo.rating}
+                  defaultValue={doctor?.doctorInfo?.rating}
                   allowHalf
                 />
                 <span className="text-gray-600">
-                  {doctor.doctorInfo.rating} ({doctor.doctorInfo.totalReviews}{" "}
-                  đánh giá)
+                  {doctor?.doctorInfo?.rating} (
+                  {doctor?.doctorInfo?.totalReviews} đánh giá)
                 </span>
               </div>
 
               <div className="space-y-2 text-gray-600">
                 <p>
                   <EnvironmentOutlined className="mr-2" />
-                  {doctor.doctorInfo.hospital}
+                  {doctor?.doctorInfo?.hospital}
                 </p>
                 <p>
                   <ClockCircleOutlined className="mr-2" />
-                  {doctor.doctorInfo.yearsOfExperience} năm kinh nghiệm
+                  {doctor?.doctorInfo?.yearsOfExperience} năm kinh nghiệm
                 </p>
                 <p>
                   <DollarOutlined className="mr-2" />
                   <span className="text-blue-600 font-bold">
-                    {doctor.doctorInfo.consultationFee.min.toLocaleString()}đ -{" "}
-                    {doctor.doctorInfo.consultationFee.max.toLocaleString()}đ
+                    {doctor?.doctorInfo?.consultationFee?.min?.toLocaleString()}
+                    đ -{" "}
+                    {doctor?.doctorInfo?.consultationFee?.max?.toLocaleString()}
+                    đ
                   </span>
                 </p>
               </div>
@@ -163,7 +166,7 @@ export default function DoctorDetailPage() {
                     <div>
                       <h3 className="text-lg font-bold mb-3">🎓 Học vấn</h3>
                       <ul className="list-disc list-inside space-y-2 text-gray-600">
-                        {doctor.doctorInfo.education.map((edu, index) => (
+                        {doctor?.doctorInfo?.education?.map((edu, index) => (
                           <li key={index}>{edu}</li>
                         ))}
                       </ul>
@@ -171,7 +174,7 @@ export default function DoctorDetailPage() {
 
                     <div>
                       <h3 className="text-lg font-bold mb-3">💼 Kinh nghiệm</h3>
-                      <p className="text-gray-600">{doctor.doctorInfo.bio}</p>
+                      <p className="text-gray-600">{doctor?.doctorInfo?.bio}</p>
                     </div>
 
                     <div>
@@ -179,7 +182,7 @@ export default function DoctorDetailPage() {
                         🏥 Nơi công tác
                       </h3>
                       <p className="text-gray-600">
-                        {doctor.doctorInfo.hospital}
+                        {doctor?.doctorInfo?.hospital}
                       </p>
                     </div>
                   </div>
@@ -255,7 +258,8 @@ export default function DoctorDetailPage() {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Chi phí khám:</span>
                     <span className="text-xl font-bold text-blue-600">
-                      {doctor.doctorInfo.consultationFee.min.toLocaleString()}đ
+                      {doctor?.doctorInfo?.consultationFee?.min?.toLocaleString()}
+                      đ
                     </span>
                   </div>
                 </div>

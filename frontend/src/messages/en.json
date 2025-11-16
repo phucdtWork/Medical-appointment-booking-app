@@ -8,6 +8,34 @@
     "bookNow": "Book Now",
     "viewProfile": "View Profile"
   },
+  "breadcrumb": {
+    "home": "Home",
+    "doctors": "Doctors",
+    "doctorDetail": "Dr. {name}",
+    "dashboard": "Dashboard",
+    "patientDashboard": "Patient Dashboard",
+    "doctorDashboard": "Doctor Dashboard",
+    "appointments": "Appointments",
+    "profile": "Profile",
+    "settings": "Settings",
+    "search": "Search: \"{term}\"",
+    "rating": "{rating}+ stars",
+    "medicalRecords": "Medical Records",
+    "prescriptions": "Prescriptions",
+    "payments": "Payments",
+    "reviews": "Reviews",
+    "notifications": "Notifications",
+    "help": "Help",
+    "about": "About",
+    "contact": "Contact",
+    "schedule": "Schedule",
+    "patients": "Patients",
+    "statistics": "Statistics"
+  },
+  "metadata": {
+    "title": "MediBook - Book Medical Appointments",
+    "description": "Online medical appointment booking system"
+  },
   "home": {
     "hero": {
       "title": "Book Medical Appointments",
@@ -20,6 +48,9 @@
         "patients": "Patients",
         "rating": "Rating"
       },
+      "service": "Service",
+      "professionals": "Our Professionals",
+      "more": "30+",
       "floatingCard1": {
         "title": "Booking Successful",
         "subtitle": "Dr. Nguyen A"
@@ -59,7 +90,7 @@
       }
     },
     "doctors": {
-      "title": "🔥 Featured Doctors",
+      "title": "Featured Doctors",
       "subtitle": "Top rated doctors on MediBook",
       "bookNow": "Book Now",
       "viewAll": "View All Doctors"
@@ -143,6 +174,12 @@
           "howItWorks": "How it works",
           "contact": "Contact"
         },
+        "drawer": {
+          "title": "Menu",
+          "theme": "Theme",
+          "language": "Language",
+          "account": "Account"
+        },
         "theme": {
           "light": "Light mode",
           "dark": "Dark mode"
@@ -161,6 +198,43 @@
           "logout": "Logout"
         }
       }
+    }
+  },
+
+  "doctors": {
+    "page": {
+      "title": "Doctor List",
+      "subtitle": "Find doctors that suit your needs",
+      "results": "Found",
+      "doctors": "doctor(s)",
+      "grid": "Grid",
+      "list": "List",
+      "searchPlaceholder": "Search doctors by name...",
+      "specializationPlaceholder": "Select specialty",
+      "ratingPlaceholder": "Minimum rating",
+      "clearFilters": "Clear filters",
+      "loadingError": "Unable to load doctor list",
+      "loadingErrorDesc": "Please try again later or contact support",
+      "noResults": "No suitable doctors found",
+      "noResultsDesc": "Try adjusting filters or searching with different keywords",
+      "pagination": "{range0}-{range1} of {total} doctors"
+    },
+    "specializations": {
+      "cardiology": "Cardiology",
+      "dermatology": "Dermatology",
+      "internal": "Internal Medicine",
+      "pediatrics": "Pediatrics",
+      "obstetrics": "Obstetrics",
+      "surgery": "Surgery",
+      "neurology": "Neurology",
+      "ophthalmology": "Ophthalmology",
+      "ent": "ENT"
+    },
+    "ratings": {
+      "rating_4_5": "4.5 and above",
+      "rating_4_0": "4.0 and above",
+      "rating_3_5": "3.5 and above",
+      "rating_3_0": "3.0 and above"
     }
   }
 }

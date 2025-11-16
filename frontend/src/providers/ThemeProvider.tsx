@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfigProvider, theme } from "antd";
+import { Button, Card, ConfigProvider, Pagination, Select, theme } from "antd";
 import viVN from "antd/locale/vi_VN";
 import enUS from "antd/locale/en_US";
 import { createContext, useContext, useState, useEffect } from "react";
@@ -79,9 +79,45 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           token: {
             colorPrimary: "#1890ff",
             borderRadius: 8,
-            colorBgContainer: isDark ? "#1f1f1f" : "#ffffff",
+            colorBgContainer: isDark ? "#001529" : "#ffffff",
             colorText: isDark ? "#ffffff" : "#000000",
             colorBorder: isDark ? "#424242" : "#d9d9d9",
+            colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
+          },
+          components: {
+            Drawer: {
+              colorBgElevated: isDark ? "#001529" : "#ffffff",
+              colorIcon: isDark ? "#ffffff" : "#000000",
+            },
+            Dropdown: {
+              colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
+            },
+
+            Segmented: {
+              colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
+              trackBg: isDark ? "var(--foreground)" : "#f5f5f5",
+            },
+            Button: {
+              // ===== SIZE CONTROLS =====
+              controlHeight: 40,
+              controlHeightLG: 56,
+              controlHeightSM: 28,
+
+              // ===== HORIZONTAL PADDING =====
+              paddingContentHorizontal: 24,
+              paddingContentHorizontalLG: 36,
+              paddingContentHorizontalSM: 16,
+
+              // ===== FONT SIZE =====
+              fontSize: 15,
+              fontSizeLG: 18,
+              fontSizeSM: 13,
+
+              // ===== HOVER EFFECTS =====
+              // Primary button hover shadow với blue glow
+              primaryShadow: "0 0 30px rgba(59, 130, 246, 0.4)",
+            },
+            Selection: {},
           },
         }}
       >
