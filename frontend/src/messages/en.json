@@ -198,6 +198,29 @@
           "logout": "Logout"
         }
       }
+    },
+    "ui": {
+      "doctorCard": {
+        "viewDetails": "View Details",
+        "bookAppointment": "Book Appointment",
+        "title": "Featured Doctors",
+        "subtitle": "Top rated doctors on MediBook",
+        "bookNow": "Book Now",
+        "viewAll": "View All Doctors",
+        "job": "Dr.",
+
+        "specializations": {
+          "cardiology": "Cardiology",
+          "dermatology": "Dermatology",
+          "internal": "Internal Medicine",
+          "pediatrics": "Pediatrics",
+          "obstetrics": "Obstetrics",
+          "surgery": "Surgery",
+          "neurology": "Neurology",
+          "ophthalmology": "Ophthalmology",
+          "ent": "ENT"
+        }
+      }
     }
   },
 

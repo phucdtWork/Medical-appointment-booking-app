@@ -1,6 +1,7 @@
 import { Input, Select, Card, Row, Col, Button } from "antd";
 import { SearchOutlined, FilterOutlined, StarFilled } from "@ant-design/icons";
 import { useTranslations } from "next-intl";
+import { specializations } from "@/utils/specializations";
 
 const { Option } = Select;
 
@@ -52,17 +53,11 @@ export default function DoctorFilters({
             onChange={(value) => onFilterChange("specialization", value)}
             allowClear
           >
-            <Option value="Tim mạch">{t("specializations.cardiology")}</Option>
-            <Option value="Da liễu">{t("specializations.dermatology")}</Option>
-            <Option value="Nội khoa">{t("specializations.internal")}</Option>
-            <Option value="Nhi khoa">{t("specializations.pediatrics")}</Option>
-            <Option value="Sản phụ khoa">
-              {t("specializations.obstetrics")}
-            </Option>
-            <Option value="Ngoại khoa">{t("specializations.surgery")}</Option>
-            <Option value="Thần kinh">{t("specializations.neurology")}</Option>
-            <Option value="Mắt">{t("specializations.ophthalmology")}</Option>
-            <Option value="Tai Mũi Họng">{t("specializations.ent")}</Option>
+            {specializations?.map((spec) => (
+              <Option key={spec.value} value={spec.value}>
+                {t(spec.labelKey)}
+              </Option>
+            ))}
           </Select>
         </Col>
 
@@ -76,21 +71,17 @@ export default function DoctorFilters({
             onChange={(value) => onFilterChange("minRating", value)}
             allowClear
           >
-            <Option Option value={4.5}>
-              <StarFilled className="text-yellow-400" />{" "}
-              {t("ratings.rating_4_5")}
+            <Option value={4.5}>
+              <StarFilled style={{ color: "gold" }} /> {t("ratings.rating_4_5")}
             </Option>
             <Option value={4.0}>
-              <StarFilled className="text-yellow-400" />{" "}
-              {t("ratings.rating_4_0")}
+              <StarFilled style={{ color: "gold" }} /> {t("ratings.rating_4_0")}
             </Option>
             <Option value={3.5}>
-              <StarFilled className="text-yellow-400" />{" "}
-              {t("ratings.rating_3_5")}
+              <StarFilled style={{ color: "gold" }} /> {t("ratings.rating_3_5")}
             </Option>
             <Option value={3.0}>
-              <StarFilled className="text-yellow-400" />{" "}
-              {t("ratings.rating_3_0")}
+              <StarFilled style={{ color: "gold" }} /> {t("ratings.rating_3_0")}
             </Option>
           </Select>
         </Col>

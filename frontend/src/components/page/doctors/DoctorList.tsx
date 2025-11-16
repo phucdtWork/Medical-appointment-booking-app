@@ -150,7 +150,7 @@ export default function DoctorList({
             total={totalItems}
             onChange={onPaginationChange}
             showSizeChanger
-            pageSizeOptions={[8, 16, 24, 32]}
+            pageSizeOptions={[12, 16, 24, 32]}
             showTotal={(total, range) =>
               t("page.pagination", {
                 range0: range[0],

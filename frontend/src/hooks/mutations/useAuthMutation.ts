@@ -23,15 +23,10 @@ export const useLogin = () => {
 
       message.success("Đăng nhập thành công!");
 
-      // Redirect based on role
-      if (response.data.user.role === "doctor") {
-        router.push("/doctor-dashboard");
-      } else {
-        router.push("/dashboard");
-      }
+      router.push("/dashboard");
     },
-    onError: (error: any) => {
-      const errorMessage = error.response?.data?.error || "Đăng nhập thất bại";
+    onError: (error) => {
+      const errorMessage = error || "Đăng nhập thất bại";
       message.error(errorMessage);
     },
   });

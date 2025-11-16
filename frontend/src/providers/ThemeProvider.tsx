@@ -1,10 +1,12 @@
 "use client";
 
-import { Button, Card, ConfigProvider, Pagination, Select, theme } from "antd";
+import { ConfigProvider, theme, App } from "antd";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 import viVN from "antd/locale/vi_VN";
 import enUS from "antd/locale/en_US";
 import { createContext, useContext, useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useLocale } from "next-intl";
 
 interface ThemeContextType {
   isDark: boolean;
@@ -18,9 +20,9 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [isDark, setIsDark] = useState(false);
-  const [language, setLanguage] = useState<"vi" | "en">("vi"); // Default
-  const router = useRouter();
+  const [language, setLanguage] = useState<"vi" | "en">("vi");
   const pathname = usePathname();
+  const currentLocale = useLocale();
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -29,12 +31,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       document.documentElement.classList.add("dark");
     }
 
-    // Load language từ localStorage
     const savedLang = localStorage.getItem("language") as "vi" | "en";
     if (savedLang) {
       setLanguage(savedLang);
     }
   }, []);
+
+  useEffect(() => {
+    if (currentLocale && currentLocale !== language) {
+      setLanguage(currentLocale as "vi" | "en");
+      localStorage.setItem("language", currentLocale);
+    }
+  }, [currentLocale, language]);
 
   const toggleTheme = () => {
     const newTheme = !isDark;
@@ -56,8 +64,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const newPath = `/${newLang}${pathWithoutLocale}`;
     console.log("Changing to path:", newPath);
 
-    // Force reload để middleware sync locale
-    window.location.href = newPath; // Hoặc router.push(newPath); router.refresh();
+    window.location.href = newPath;
   };
 
   const localeAntd = language === "vi" ? viVN : enUS;
@@ -72,57 +79,51 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         changeLanguage,
       }}
     >
-      <ConfigProvider
-        locale={localeAntd}
-        theme={{
-          algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-          token: {
-            colorPrimary: "#1890ff",
-            borderRadius: 8,
-            colorBgContainer: isDark ? "#001529" : "#ffffff",
-            colorText: isDark ? "#ffffff" : "#000000",
-            colorBorder: isDark ? "#424242" : "#d9d9d9",
-            colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
-          },
-          components: {
-            Drawer: {
-              colorBgElevated: isDark ? "#001529" : "#ffffff",
-              colorIcon: isDark ? "#ffffff" : "#000000",
-            },
-            Dropdown: {
+      {/* ✅ Wrap bằng AntdRegistry thay vì StyleProvider */}
+      <AntdRegistry>
+        <ConfigProvider
+          locale={localeAntd}
+          theme={{
+            algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+            token: {
+              colorPrimary: "#1890ff",
+              borderRadius: 8,
+              colorBgContainer: isDark ? "#001529" : "#ffffff",
+              colorText: isDark ? "#ffffff" : "#000000",
+              colorBorder: isDark ? "#424242" : "#d9d9d9",
               colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
             },
-
-            Segmented: {
-              colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
-              trackBg: isDark ? "var(--foreground)" : "#f5f5f5",
+            components: {
+              Drawer: {
+                colorBgElevated: isDark ? "#001529" : "#ffffff",
+                colorIcon: isDark ? "#ffffff" : "#000000",
+              },
+              Dropdown: {
+                colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
+              },
+              Segmented: {
+                colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
+                trackBg: isDark ? "var(--foreground)" : "#f5f5f5",
+              },
+              Button: {
+                controlHeight: 40,
+                controlHeightLG: 56,
+                controlHeightSM: 28,
+                paddingContentHorizontal: 24,
+                paddingContentHorizontalLG: 36,
+                paddingContentHorizontalSM: 16,
+                fontSize: 15,
+                fontSizeLG: 18,
+                fontSizeSM: 13,
+                primaryShadow: "0 0 30px rgba(59, 130, 246, 0.4)",
+              },
             },
-            Button: {
-              // ===== SIZE CONTROLS =====
-              controlHeight: 40,
-              controlHeightLG: 56,
-              controlHeightSM: 28,
-
-              // ===== HORIZONTAL PADDING =====
-              paddingContentHorizontal: 24,
-              paddingContentHorizontalLG: 36,
-              paddingContentHorizontalSM: 16,
-
-              // ===== FONT SIZE =====
-              fontSize: 15,
-              fontSizeLG: 18,
-              fontSizeSM: 13,
-
-              // ===== HOVER EFFECTS =====
-              // Primary button hover shadow với blue glow
-              primaryShadow: "0 0 30px rgba(59, 130, 246, 0.4)",
-            },
-            Selection: {},
-          },
-        }}
-      >
-        {children}
-      </ConfigProvider>
+          }}
+        >
+          {/* ✅ App component phải ở trong ConfigProvider */}
+          <App>{children}</App>
+        </ConfigProvider>
+      </AntdRegistry>
     </ThemeContext.Provider>
   );
 }

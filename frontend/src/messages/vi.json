@@ -6,11 +6,19 @@
     "logout": "Đăng xuất",
     "search": "Tìm kiếm",
     "bookNow": "Đặt lịch ngay",
-    "viewProfile": "Xem hồ sơ"
-  },
-  "metadata": {
-    "title": "MediBook - Đặt lịch khám bệnh",
-    "description": "Hệ thống đặt lịch khám bệnh trực tuyến"
+    "viewProfile": "Xem hồ sơ",
+    "currency": "đ",
+    "specializations": {
+      "cardiology": "Tim mạch",
+      "dermatology": "Da liễu",
+      "internal": "Nội khoa",
+      "pediatrics": "Nhi khoa",
+      "obstetrics": "Sản phụ khoa",
+      "surgery": "Ngoại khoa",
+      "neurology": "Thần kinh",
+      "ophthalmology": "Mắt",
+      "ent": "Tai Mũi Họng"
+    }
   },
   "breadcrumb": {
     "home": "Trang chủ",
@@ -35,6 +43,10 @@
     "schedule": "Lịch trình",
     "patients": "Bệnh nhân",
     "statistics": "Thống kê"
+  },
+  "metadata": {
+    "title": "MediBook - Đặt lịch khám bệnh",
+    "description": "Hệ thống đặt lịch khám bệnh trực tuyến"
   },
   "home": {
     "hero": {
@@ -90,7 +102,7 @@
       }
     },
     "doctors": {
-      "title": " Bác sĩ nổi bật",
+      "title": "Bác sĩ nổi bật",
       "subtitle": "Các bác sĩ được đánh giá cao nhất trên MediBook",
       "bookNow": "Đặt lịch ngay",
       "viewAll": "Xem tất cả bác sĩ"
@@ -196,6 +208,28 @@
           "profile": "Hồ sơ",
           "appointments": "Lịch hẹn",
           "logout": "Đăng xuất"
+        }
+      }
+    },
+    "ui": {
+      "doctorCard": {
+        "viewDetails": "Xem chi tiết",
+        "bookAppointment": "Đặt lịch hẹn",
+        "title": "Bác sĩ nổi bật",
+        "subtitle": "Các bác sĩ được đánh giá cao nhất trên MediBook",
+        "bookNow": "Đặt lịch ngay",
+        "viewAll": "Xem tất cả bác sĩ",
+        "job": "Bs.",
+        "specializations": {
+          "cardiology": "Tim mạch",
+          "dermatology": "Da liễu",
+          "internal": "Nội khoa",
+          "pediatrics": "Nhi khoa",
+          "obstetrics": "Sản phụ khoa",
+          "surgery": "Ngoại khoa",
+          "neurology": "Thần kinh",
+          "ophthalmology": "Mắt",
+          "ent": "Tai Mũi Họng"
         }
       }
     }

@@ -1,15 +1,12 @@
-// src/components/breadcrumb/useBreadcrumb.ts
 "use client";
 
 import { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
 import { HomeOutlined } from "@ant-design/icons";
 import { BreadcrumbContext } from "@/providers/BreadcrumbProvider";
 import { BreadcrumbItem } from "@/types/breadcrumb.types";
 import { breadcrumbConfig, excludedRoutes } from "@/config/breadcrumb.config";
-import { useTheme } from "@/providers/ThemeProvider";
 
 export function useBreadcrumb() {
   const context = useContext(BreadcrumbContext);
@@ -23,7 +20,6 @@ export function useAutoBreadcrumb(): BreadcrumbItem[] {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations("breadcrumb");
-  const { isDark } = useTheme();
 
   const [items, setItems] = useState<BreadcrumbItem[]>([]);
 
@@ -40,17 +36,10 @@ export function useAutoBreadcrumb(): BreadcrumbItem[] {
     const breadcrumbs: BreadcrumbItem[] = [
       {
         title: (
-          <Link href={`/${locale}`} className="flex items-center gap-1">
+          <span className="flex items-center gap-1">
             <HomeOutlined />
-            <span
-              className={`${
-                isDark ? "text-text-primary-dark" : "text-text-primary"
-              }`}
-            >
-              {" "}
-              {t("home")}
-            </span>
-          </Link>
+            <span>{t("home")}</span>
+          </span>
         ),
         href: `/${locale}`,
       },
@@ -89,7 +78,7 @@ export function useAutoBreadcrumb(): BreadcrumbItem[] {
         breadcrumbs.push({ title: label });
       } else {
         breadcrumbs.push({
-          title: <Link href={currentPath}>{label}</Link>,
+          title: label,
           href: currentPath,
         });
       }
@@ -101,26 +90,23 @@ export function useAutoBreadcrumb(): BreadcrumbItem[] {
   return items;
 }
 
+// Hook for setting custom breadcrumb
 export function useSetBreadcrumb(getItems: () => BreadcrumbItem[]) {
   const { setCustomItems } = useBreadcrumb();
   const t = useTranslations("breadcrumb");
   const locale = useLocale();
 
-  const { isDark } = useTheme();
-
   useEffect(() => {
     const items = getItems();
 
+    // Ensure home link is always first if not present
     if (items.length > 0 && !items[0].href?.includes("home")) {
       items.unshift({
         title: (
-          <Link href={`/${locale}`} className="flex items-center gap-1">
-            <HomeOutlined color={isDark ? "#ffffff" : "#000000"} />
-            <span className={`${isDark ? "text-white" : "text-black"}`}>
-              {" "}
-              {t("home")}
-            </span>
-          </Link>
+          <span className="flex items-center gap-1">
+            <HomeOutlined />
+            <span>{t("home")}</span>
+          </span>
         ),
         href: `/${locale}`,
       });

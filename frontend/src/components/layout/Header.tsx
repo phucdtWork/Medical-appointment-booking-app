@@ -23,7 +23,6 @@ export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const bgClass = isDark ? "bg-gray-900 shadow-md" : "bg-white shadow-sm";
-  const textSecondaryClass = isDark ? "text-gray-300" : "text-gray-600";
 
   const toggleLanguage = () => {
     const newLang = language === "vi" ? "en" : "vi";
@@ -95,27 +94,27 @@ export default function Header() {
             <nav className="hidden lg:flex items-center gap-8">
               <Link
                 href="#features"
-                className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+                className={`hover:text-blue-600 transition`}
               >
-                {t("nav.features")}
+                <p className={`text-lg`}>{t("nav.features")}</p>
               </Link>
               <Link
                 href="#doctors"
-                className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+                className={`hover:text-blue-600 transition`}
               >
-                {t("nav.doctors")}
+                <p className={`text-lg`}>{t("nav.doctors")}</p>
               </Link>
               <Link
                 href="#how-it-works"
-                className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+                className={`hover:text-blue-600 transition`}
               >
-                {t("nav.howItWorks")}
+                <p className={`text-lg`}>{t("nav.howItWorks")}</p>
               </Link>
               <Link
                 href="#contact"
-                className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+                className={`hover:text-blue-600 transition`}
               >
-                {t("nav.contact")}
+                <p className={`text-lg`}>{t("nav.contact")}</p>
               </Link>
             </nav>
 
@@ -194,39 +193,37 @@ export default function Header() {
           <nav className="flex flex-col gap-4">
             <Link
               href="#features"
-              className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+              className={`hover:text-blue-600 transition`}
               onClick={() => setDrawerOpen(false)}
             >
-              {t("nav.features")}
+              <p className={`text-lg`}>{t("nav.features")}</p>
             </Link>
             <Link
               href="#doctors"
-              className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+              className={`hover:text-blue-600 transition`}
               onClick={() => setDrawerOpen(false)}
             >
-              {t("nav.doctors")}
+              <p className={`text-lg`}>{t("nav.doctors")}</p>
             </Link>
             <Link
               href="#how-it-works"
-              className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+              className={`hover:text-blue-600 transition`}
               onClick={() => setDrawerOpen(false)}
             >
-              {t("nav.howItWorks")}
+              <p className={`text-lg`}>{t("nav.howItWorks")}</p>
             </Link>
             <Link
               href="#contact"
-              className={`hover:text-blue-600 transition ${textSecondaryClass}`}
+              className={`hover:text-blue-600 transition`}
               onClick={() => setDrawerOpen(false)}
             >
-              {t("nav.contact")}
+              <p className={`text-lg`}>{t("nav.contact")}</p>
             </Link>
           </nav>
 
           {/* Theme Segmented */}
           <div>
-            <label
-              className={`block mb-2 text-sm font-medium ${textSecondaryClass}`}
-            >
+            <label className={`block mb-2 text-sm font-medium `}>
               {t("drawer.theme") || "Theme"}
             </label>
             <Segmented
@@ -243,9 +240,7 @@ export default function Header() {
 
           {/* Language Selection */}
           <div>
-            <label
-              className={`block mb-2 text-sm font-medium ${textSecondaryClass}`}
-            >
+            <label className={`block mb-2 text-sm font-medium `}>
               {t("drawer.language") || "Language"}
             </label>
             <Dropdown menu={{ items: languageMenu }} placement="bottomLeft">
@@ -264,9 +259,7 @@ export default function Header() {
           {/* Auth Section */}
           {user ? (
             <div>
-              <label
-                className={`block mb-2 text-sm font-medium ${textSecondaryClass}`}
-              >
+              <label className={`block mb-2 text-sm font-medium `}>
                 {t("drawer.account") || "Account"}
               </label>
               <Dropdown menu={{ items: userMenu }} placement="bottomLeft">

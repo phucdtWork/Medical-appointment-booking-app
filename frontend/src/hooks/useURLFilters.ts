@@ -32,14 +32,13 @@ export function useURLFilters() {
   );
 
   const [pageSize, setPageSize] = useState(
-    parseInt(searchParams.get("pageSize") || "10")
+    parseInt(searchParams.get("pageSize") || "12")
   );
 
   // Sync state to URL whenever any state changes
   useEffect(() => {
     const params = new URLSearchParams();
 
-    // Add params only if they have values
     if (searchTerm) params.set("search", searchTerm);
     if (filters.specialization)
       params.set("specialization", filters.specialization);
@@ -47,7 +46,7 @@ export function useURLFilters() {
       params.set("minRating", filters.minRating.toString());
     if (viewMode !== "grid") params.set("view", viewMode);
     if (currentPage !== 1) params.set("page", currentPage.toString());
-    if (pageSize !== 10) params.set("pageSize", pageSize.toString());
+    if (pageSize !== 12) params.set("pageSize", pageSize.toString());
 
     const queryString = params.toString();
     const newURL = queryString ? `/doctors?${queryString}` : "/doctors";
