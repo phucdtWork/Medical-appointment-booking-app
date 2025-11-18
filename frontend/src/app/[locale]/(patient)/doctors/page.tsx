@@ -1,7 +1,6 @@
 "use client";
 
 import { useClassName, useDoctors } from "@/hooks";
-import DoctorBreadcrumb from "@/components/page/doctors/DoctorBreadcrumb";
 import DoctorFilters from "@/components/page/doctors/DoctorFilters";
 import DoctorViewControls from "@/components/page/doctors/DoctorViewControls";
 import DoctorList from "@/components/page/doctors/DoctorList";

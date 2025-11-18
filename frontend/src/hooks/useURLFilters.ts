@@ -58,12 +58,12 @@ export function useURLFilters() {
   // Handler functions
   const updateFilter = (key: string, value: any) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
-    setCurrentPage(1); // Reset to first page when filter changes
+    setCurrentPage(1);
   };
 
   const updateSearch = (value: string) => {
     setSearchTerm(value);
-    setCurrentPage(1); // Reset to first page when search changes
+    setCurrentPage(1);
   };
 
   const updateViewMode = (mode: "grid" | "list") => {

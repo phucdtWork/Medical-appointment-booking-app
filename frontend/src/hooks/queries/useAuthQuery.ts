@@ -3,7 +3,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { authService } from "../../lib/services";
 import { useRouter } from "next/navigation";
-import { message } from "antd";
+import { useNotification } from "@/providers/NotificationProvider";
 
 // Query keys
 export const authKeys = {
@@ -15,6 +15,7 @@ export const authKeys = {
 export const useAuth = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const notification = useNotification();
 
   const {
     data: user,
@@ -30,21 +31,23 @@ export const useAuth = () => {
       try {
         const response = await authService.getMe();
         return response.data;
-      } catch (error) {
+      } catch (err) {
         // Clear invalid token
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        console.log(err);
+
         return null;
       }
     },
-    staleTime: Infinity, // User data rarely changes
+    staleTime: Infinity,
   });
 
   // Logout
   const logout = () => {
     authService.logout();
-    queryClient.clear(); // Clear all queries
-    message.success("Đã đăng xuất");
+    queryClient.clear();
+    notification.success({ message: "Đã đăng xuất" });
     router.push("/login");
   };
 

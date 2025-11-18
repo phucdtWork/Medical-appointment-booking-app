@@ -20,30 +20,30 @@ export class AuthService {
       throw new Error("Email already exists");
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password!, 10);
 
     // Create user
-    const newUser: Omit<User, "id"> = {
-      email: email!,
+    const newUserData = {
+      email,
       password: hashedPassword,
-      fullName: fullName!,
-      phone: phone!,
-      role: "patient",
+      fullName,
+      phone,
+      role: "patient" as const,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
-    const docRef = await usersRef.add(newUser);
+    const docRef = await usersRef.add(newUserData);
     const userId = docRef.id;
 
     // Generate JWT
     const token = this.generateToken(userId, email!, "patient");
 
-    const userWithId = { ...newUser, id: userId };
+    // Build user object to return (remove password)
+    const userWithId = { id: userId, ...newUserData } as User;
     delete (userWithId as any).password;
 
-    return { token, user: userWithId as User };
+    return { token, user: userWithId };
   }
 
   // Login

@@ -168,7 +168,67 @@
     "loginWithGoogle": "Đăng nhập với Google",
     "noAccount": "Chưa có tài khoản?",
     "registerNow": "Đăng ký ngay",
-    "doctorLogin": "Đăng nhập cho bác sĩ"
+    "doctorLogin": "Đăng nhập cho bác sĩ",
+    "register": {
+      "title": "Tạo Tài Khoản",
+      "description": "Đăng ký để bắt đầu",
+      "labels": {
+        "fullName": "Họ và Tên",
+        "email": "Địa Chỉ Email",
+        "phone": "Số Điện Thoại",
+        "password": "Mật Khẩu",
+        "confirmPassword": "Xác Nhận Mật Khẩu"
+      },
+      "placeholders": {
+        "fullName": "Nhập họ và tên của bạn",
+        "email": "Nhập địa chỉ email của bạn",
+        "phone": "Nhập số điện thoại của bạn",
+        "password": "Nhập mật khẩu của bạn",
+        "confirmPassword": "Nhập lại mật khẩu của bạn"
+      },
+      "errors": {
+        "fullName": "Vui lòng nhập họ và tên",
+        "emailRequired": "Vui lòng nhập địa chỉ email",
+        "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+        "phoneRequired": "Vui lòng nhập số điện thoại",
+        "phoneInvalid": "Số điện thoại phải có 10 chữ số",
+        "passwordRequired": "Vui lòng nhập mật khẩu",
+        "passwordMin": "Mật khẩu phải có ít nhất 6 ký tự",
+        "confirmPassword": "Vui lòng xác nhận mật khẩu",
+        "passwordMismatch": "Hai mật khẩu không khớp",
+        "mustAgree": "Bạn phải đồng ý với điều khoản và chính sách bảo mật"
+      },
+      "agree": {
+        "prefix": "Tôi đồng ý với",
+        "terms": "Điều Khoản Dịch Vụ",
+        "and": "và",
+        "privacy": "Chính Sách Bảo Mật"
+      },
+      "actions": {
+        "sendOtp": "Gửi Mã OTP"
+      },
+      "alreadyAccount": {
+        "prefix": "Đã có tài khoản?",
+        "loginLink": "Đăng nhập"
+      }
+    },
+    "verifyOtp": {
+      "title": "Xác thực OTP",
+      "description": "Mã OTP đã được gửi đến email",
+      "labels": {
+        "enterOtp": "Nhập mã OTP"
+      },
+      "actions": {
+        "confirm": "Xác nhận",
+        "resend": "Gửi lại",
+        "sending": "Đang gửi...",
+        "goBack": "Quay lại đăng ký"
+      },
+      "messages": {
+        "notReceived": "Không nhận được mã?",
+        "resendAfter": "Gửi lại sau {countdown}s"
+      }
+    }
   },
   "doctor": {
     "specialization": "Chuyên khoa",

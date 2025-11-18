@@ -1,21 +1,76 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthService } from "../services/authService";
+import { OTPService } from "../services/otpService";
+import { EmailService } from "../services/emailService";
 
 const authService = new AuthService();
+const otpService = new OTPService();
+const emailService = new EmailService();
 
-export const register = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+// Request OTP
+export const requestOtp = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: "Email is required" });
+
   try {
-    const result = await authService.registerPatient(req.body);
-    res.status(201).json({
-      success: true,
-      data: result,
+    const otp = await otpService.createOTP(email);
+    await emailService.sendOTPEmail(email, otp);
+    return res.json({ message: "OTP sent to email" });
+  } catch (err: any) {
+    return res.status(400).json({ error: err.message || "Failed to send OTP" });
+  }
+};
+
+// Resend OTP
+export const resendOtp = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: "Email is required" });
+
+  try {
+    const otp = await otpService.createOTP(email);
+    await emailService.sendOTPEmail(email, otp);
+    return res.json({ message: "OTP resent to email" });
+  } catch (err: any) {
+    return res
+      .status(400)
+      .json({ error: err.message || "Failed to resend OTP" });
+  }
+};
+
+// Verify OTP and Register
+export const verifyAndRegister = async (req: Request, res: Response) => {
+  const { email, otp, password, fullName, phone } = req.body;
+
+  if (!email || !otp || !password || !fullName) {
+    return res
+      .status(400)
+      .json({ error: "email, otp, password and fullName are required" });
+  }
+
+  try {
+    await otpService.verifyOTP(email, otp);
+
+    // create user
+    const { token, user } = await authService.registerPatient({
+      email,
+      password,
+      fullName,
+      phone,
     });
-  } catch (error: any) {
-    next(error);
+
+    // send welcome email (best-effort)
+    try {
+      await emailService.sendWelcomeEmail(email, fullName);
+    } catch (e) {
+      // ignore welcome email failures
+      console.warn("Welcome email failed:", e);
+    }
+
+    return res.status(200).json({ data: { token, user } });
+  } catch (err: any) {
+    return res
+      .status(400)
+      .json({ error: err.message || "Verification or registration failed" });
   }
 };
 

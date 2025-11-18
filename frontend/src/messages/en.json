@@ -156,7 +156,67 @@
     "loginWithGoogle": "Login with Google",
     "noAccount": "Don't have an account?",
     "registerNow": "Register now",
-    "doctorLogin": "Doctor Login"
+    "doctorLogin": "Doctor Login",
+    "register": {
+      "title": "Create Account",
+      "description": "Sign up to get started",
+      "labels": {
+        "fullName": "Full Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "password": "Password",
+        "confirmPassword": "Confirm Password"
+      },
+      "placeholders": {
+        "fullName": "Enter your full name",
+        "email": "Enter your email address",
+        "phone": "Enter your phone number",
+        "password": "Enter your password",
+        "confirmPassword": "Re-enter your password"
+      },
+      "errors": {
+        "fullName": "Please enter your full name",
+        "emailRequired": "Please enter your email address",
+        "emailInvalid": "Please enter a valid email address",
+        "phoneRequired": "Please enter your phone number",
+        "phoneInvalid": "Phone number must be 10 digits",
+        "passwordRequired": "Please enter your password",
+        "passwordMin": "Password must be at least 6 characters",
+        "confirmPassword": "Please confirm your password",
+        "passwordMismatch": "The two passwords do not match",
+        "mustAgree": "You must agree to the terms and privacy policy"
+      },
+      "agree": {
+        "prefix": "I agree to the",
+        "terms": "Terms of Service",
+        "and": "and",
+        "privacy": "Privacy Policy"
+      },
+      "actions": {
+        "sendOtp": "Send OTP"
+      },
+      "alreadyAccount": {
+        "prefix": "Already have an account?",
+        "loginLink": "Sign in"
+      }
+    },
+    "verifyOtp": {
+      "title": "Verify OTP",
+      "description": "OTP code has been sent to email",
+      "labels": {
+        "enterOtp": "Enter OTP code"
+      },
+      "actions": {
+        "confirm": "Confirm",
+        "resend": "Resend",
+        "sending": "Sending...",
+        "goBack": "Back to registration"
+      },
+      "messages": {
+        "notReceived": "Didn't receive the code?",
+        "resendAfter": "Resend after {countdown}s"
+      }
+    }
   },
   "doctor": {
     "specialization": "Specialization",

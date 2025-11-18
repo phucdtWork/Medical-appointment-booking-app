@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Button, Dropdown, Segmented, Space, Drawer } from "antd";
+import { Button, Dropdown, Segmented, Space, Drawer, message } from "antd";
 import {
   MoonOutlined,
   SunOutlined,
@@ -15,14 +15,16 @@ import { useAuth } from "@/hooks";
 import type { MenuProps } from "antd";
 import { useTranslations } from "next-intl";
 import { Logo } from "../ui";
+import { useNotification } from "@/providers/NotificationProvider";
 
 export default function Header() {
   const { isDark, toggleTheme, language, changeLanguage } = useTheme();
   const { user, logout, isAuthenticated } = useAuth();
   const t = useTranslations("components.layout.Header");
   const [drawerOpen, setDrawerOpen] = useState(false);
-
   const bgClass = isDark ? "bg-gray-900 shadow-md" : "bg-white shadow-sm";
+
+  const notification = useNotification();
 
   const toggleLanguage = () => {
     const newLang = language === "vi" ? "en" : "vi";

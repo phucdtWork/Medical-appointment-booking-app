@@ -1,4 +1,4 @@
-import { Button, Card, Rate, Tag } from "antd";
+import { Button, Card, Rate } from "antd";
 import Link from "next/link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
@@ -78,7 +78,7 @@ export default function DoctorCard({
         </div>
         <p className="text-blue-600 font-bold mb-4">{renderFee()}</p>
         <Link href={`/doctors/${doctor?.id}`}>
-          <Button type="primary" size="small" block>
+          <Button type="primary" size="medium" block>
             {t("components.ui.doctorCard.bookNow")}
           </Button>
         </Link>
@@ -115,7 +115,7 @@ export default function DoctorCard({
             <p className="text-blue-600 font-bold mt-2">{renderFee()}</p>
             <div className="mt-auto pt-3">
               <Link href={`/doctors/${doctor?.id}`}>
-                <Button type="primary" size="small">
+                <Button type="primary" size="medium">
                   {t("components.ui.doctorCard.bookNow")}
                 </Button>
               </Link>

@@ -28,7 +28,7 @@ export const useDoctorAppointments = (status?: string) => {
   return useQuery({
     queryKey: appointmentKeys.doctorList(status),
     queryFn: () => appointmentService.getDoctorAppointments(status),
-    staleTime: 1000 * 60 * 1, // 1 minute (more frequent for doctors)
+    staleTime: 1000 * 60 * 1,
   });
 };
 

@@ -8,6 +8,7 @@ import { QueryProvider } from "@/lib/react-query/QueryProvider";
 import "../globals.css";
 import { notFound } from "next/navigation";
 import { BreadcrumbProvider } from "@/providers/BreadcrumbProvider";
+import { NotificationProvider } from "@/providers/NotificationProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -51,7 +52,9 @@ export default async function LocaleLayout({
           <QueryProvider>
             <AntdRegistry>
               <BreadcrumbProvider>
-                <ThemeProvider>{children}</ThemeProvider>
+                <ThemeProvider>
+                  <NotificationProvider>{children}</NotificationProvider>
+                </ThemeProvider>
               </BreadcrumbProvider>
             </AntdRegistry>
           </QueryProvider>

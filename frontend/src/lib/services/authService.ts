@@ -23,15 +23,29 @@ export interface AuthResponse {
       phone: string;
       role: "patient" | "doctor";
       avatar?: string;
-      doctorInfo?: any;
     };
   };
 }
 
 export const authService = {
-  // Register
-  register: async (data: RegisterData): Promise<AuthResponse> => {
-    const response = await api.post("/auth/register", data);
+  requestOtp: async (email: string): Promise<{ success: boolean }> => {
+    const response = await api.post("/auth/register/request-otp", { email });
+    return response.data;
+  },
+
+  verifyAndRegister: async (data: {
+    email: string;
+    otp: string;
+    password: string;
+    fullName: string;
+    phone: string;
+  }): Promise<AuthResponse> => {
+    const response = await api.post("/auth/register/verify-otp", data);
+    return response.data;
+  },
+
+  resendOtp: async (email: string): Promise<{ success: boolean }> => {
+    const response = await api.post("/auth/register/resend-otp", { email });
     return response.data;
   },
 

@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
 import { useAuth } from "@/hooks";
-import { is } from "date-fns/locale";
 
 export default function HeroSection() {
   const t = useTranslations("home");
@@ -20,7 +19,7 @@ export default function HeroSection() {
 
   const textPrimary = isDark ? "text-white" : "text-gray-900";
   const textSecondary = isDark ? "text-gray-300" : "text-gray-600";
-  const textBlue = isDark ? "text-blue-400" : "text-blue-600";
+  const textBlue = isDark ? "text-blue-400" : "text-blue-500";
   const bgBlueBlur = isDark ? "bg-blue-800" : "bg-blue-200";
   const bgPurpleBlur = isDark ? "bg-purple-800" : "bg-purple-200";
 
