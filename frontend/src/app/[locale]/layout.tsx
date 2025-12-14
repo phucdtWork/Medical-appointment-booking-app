@@ -42,7 +42,6 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  // Load messages for the current locale
   const messages = await getMessages();
 
   return (

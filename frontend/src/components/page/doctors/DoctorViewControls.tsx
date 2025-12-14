@@ -1,4 +1,3 @@
-// components/doctors/DoctorViewControls.tsx
 import { useClassName } from "@/hooks";
 import { Segmented } from "antd";
 import { AppstoreOutlined, UnorderedListOutlined } from "@ant-design/icons";

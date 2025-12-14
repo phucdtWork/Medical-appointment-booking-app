@@ -237,6 +237,69 @@
     "rating": "Đánh giá",
     "reviews": "Nhận xét"
   },
+  "doctorDetail": {
+    "greeting": "Chào buổi sáng",
+    "loading": "Đang tải thông tin bác sĩ...",
+    "notFound": "Không tìm thấy thông tin bác sĩ",
+    "reviews": "đánh giá",
+    "doctorHeader": {
+      "detailsTitle": "Thông tin chi tiết",
+      "specializations": {
+        "cardiology": "Tim mạch",
+        "dermatology": "Da liễu",
+        "internal": "Nội khoa",
+        "pediatrics": "Nhi khoa",
+        "obstetrics": "Sản phụ khoa",
+        "surgery": "Ngoại khoa",
+        "neurology": "Thần kinh",
+        "ophthalmology": "Mắt",
+        "ent": "Tai Mũi Họng"
+      },
+      "stats": {
+        "totalPatients": "Tổng bệnh nhân",
+        "rating": "Đánh giá",
+        "experience": "Kinh nghiệm",
+        "years": "năm",
+        "reviews": "Lượt đánh giá",
+        "hospital": "Nơi công tác",
+        "fee": "Chi phí khám"
+      }
+    },
+    "stats": {
+      "totalPatients": "Tổng bệnh nhân",
+      "experience": "Kinh nghiệm",
+      "years": "năm",
+      "hospital": "Nơi công tác",
+      "rating": "Đánh giá",
+      "reviews": "Lượt đánh giá",
+      "fee": "Chi phí khám"
+    },
+    "tabs": {
+      "info": "Thông tin",
+      "education": "Học vấn",
+      "experience": "Kinh nghiệm",
+      "hospital": "Nơi công tác",
+      "license": "Chứng chỉ hành nghề",
+      "reviews": "Đánh giá"
+    },
+    "booking": {
+      "title": "Đặt lịch khám",
+      "selectDate": "Chọn ngày khám",
+      "selectDatePlaceholder": "Chọn ngày",
+      "selectTime": "Chọn giờ khám",
+      "selectTimePlaceholder": "Chọn khung giờ",
+      "reason": "Lý do khám",
+      "reasonPlaceholder": "Mô tả triệu chứng hoặc lý do khám bệnh...",
+      "notes": "Ghi chú (tùy chọn)",
+      "notesPlaceholder": "Ghi chú thêm...",
+      "fee": "Chi phí khám",
+      "submit": "Đặt lịch khám",
+      "submitNote": "Lịch hẹn sẽ được gửi đến bác sĩ để xác nhận",
+      "dateRequired": "Vui lòng chọn ngày!",
+      "timeRequired": "Vui lòng chọn giờ!",
+      "reasonRequired": "Vui lòng nhập lý do khám!"
+    }
+  },
   "components": {
     "layout": {
       "Header": {
@@ -328,6 +391,60 @@
       "rating_4_0": "4.0 trở lên",
       "rating_3_5": "3.5 trở lên",
       "rating_3_0": "3.0 trở lên"
+    }
+  },
+  "patientDashboard": {
+    "title": "Bảng điều khiển bệnh nhân",
+    "stats": {
+      "upcoming": "Lịch hẹn sắp tới",
+      "upcomingSubtitle": "7 ngày tới",
+      "today": "Hôm nay",
+      "noSchedule": "Không có lịch",
+      "pending": "Chờ xác nhận",
+      "pendingSubtitle": "Cần theo dõi"
+    },
+    "weekNavigation": {
+      "week": "Tuần",
+      "today": "Hôm nay",
+      "newAppointment": "Đặt lịch mới",
+      "clearFilters": "Xóa bộ lọc"
+    },
+    "sort": {
+      "label": "Sắp xếp theo",
+      "options": {
+        "none": "Không sắp xếp",
+        "date": "Ngày khám",
+        "fee": "Phí khám",
+        "status": "Trạng thái",
+        "doctorName": "Tên bác sĩ"
+      },
+      "ascending": "Tăng dần",
+      "descending": "Giảm dần",
+      "reset": "Đặt lại",
+      "active": "Đang sắp xếp theo"
+    },
+    "noData": "Không tìm thấy lịch hẹn",
+    "appointmentDrawer": {
+      "title": "Chi tiết lịch hẹn",
+      "date": "Ngày khám",
+      "time": "Giờ khám",
+      "doctor": "Bác sĩ",
+      "hospital": "Bệnh viện",
+      "reason": "Lý do khám",
+      "notes": "Ghi chú",
+      "fee": "Phí khám",
+      "viewDoctor": "Xem thông tin bác sĩ",
+      "reschedule": "Đổi lịch",
+      "cancel": "Hủy lịch",
+      "reminder": "Vui lòng đến trước giờ hẹn 15 phút. Nếu cần thay đổi lịch hẹn, vui lòng thông báo trước ít nhất 24 giờ."
+    },
+    "status": {
+      "pending": "Chờ xác nhận",
+      "confirmed": "Đã xác nhận",
+      "completed": "Đã hoàn thành",
+      "cancelled": "Đã hủy",
+      "rejected": "Từ chối",
+      "label": "Trạng thái"
     }
   }
 }

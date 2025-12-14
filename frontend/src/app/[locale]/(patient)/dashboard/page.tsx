@@ -1,252 +1,264 @@
 "use client";
 
-import { Card, Row, Col, Spin, Empty, Button, Tag, Tabs } from "antd";
+import React, { useState, useMemo } from "react";
+import { Card, Select, Space, Button, Empty } from "antd";
 import {
-  CalendarOutlined,
-  ClockCircleOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
+  SortAscendingOutlined,
+  SortDescendingOutlined,
+  ClearOutlined,
 } from "@ant-design/icons";
-import { useMyAppointments, useCancelAppointment } from "@/hooks";
-import Link from "next/link";
+import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import "dayjs/locale/vi";
+import StatsCards from "@/components/page/patient-dashboard/StatsCards";
+import FilterBar from "@/components/page/patient-dashboard/FilterBar";
+import WeekCalendar from "@/components/page/patient-dashboard/WeekCalendar";
+import WeekTimeline from "@/components/page/patient-dashboard/WeekTimeline";
+import AppointmentDrawer from "@/components/page/patient-dashboard/AppointmentDrawer";
+import { useTheme } from "@/providers/ThemeProvider";
+import { useTranslations } from "next-intl";
+import { useMyAppointments } from "@/hooks/queries/useAppointmentsQuery";
 
-const { TabPane } = Tabs;
+dayjs.extend(weekOfYear);
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
+dayjs.locale("vi");
 
-export default function PatientDashboard() {
-  const { data, isLoading } = useMyAppointments();
-  const cancelMutation = useCancelAppointment();
+interface Appointment {
+  id: string;
+  date: Date | string;
+  status: "pending" | "confirmed" | "completed" | "cancelled" | "rejected";
+  timeSlot: {
+    start: string;
+    end: string;
+  };
+  doctorId: string;
+  reason: string;
+  notes?: string;
+  fee: number;
+  doctorInfo?: {
+    fullName: string;
+    specialization: string;
+    hospital?: string;
+    avatar?: string;
+  };
+}
 
-  const appointments = data?.data || [];
+interface PatientDashboardProps {
+  appointments?: Appointment[];
+  onNewAppointment?: () => void;
+  onReschedule?: (appointmentId: string) => void;
+  onCancel?: (appointmentId: string) => void;
+  onViewDoctor?: (doctorId: string) => void;
+  isDark?: boolean;
+}
 
-  // Filter appointments by status
-  const upcomingAppointments = appointments.filter(
-    (apt) => apt.status === "confirmed" && dayjs(apt.date).isAfter(dayjs())
+type SortBy = "date" | "fee" | "status" | "doctorName" | "none";
+type SortOrder = "asc" | "desc";
+
+export default function PatientDashboard({
+  onNewAppointment,
+  onReschedule,
+  onCancel,
+  onViewDoctor,
+}: Omit<PatientDashboardProps, "appointments">) {
+  const { isDark } = useTheme();
+  const t = useTranslations("patientDashboard");
+
+  // Fetch appointments from API
+  const { data: apiData } = useMyAppointments();
+
+  const appointments = useMemo(
+    () => (Array.isArray(apiData?.data) ? apiData.data : []),
+    [apiData]
   );
-  const pendingAppointments = appointments.filter(
-    (apt) => apt.status === "pending"
-  );
-  const pastAppointments = appointments.filter(
-    (apt) => apt.status === "completed" || dayjs(apt.date).isBefore(dayjs())
-  );
 
-  const handleCancel = (id: string) => {
-    if (confirm("Bạn có chắc muốn hủy lịch hẹn này?")) {
-      cancelMutation.mutate(id);
+  const [selectedWeek, setSelectedWeek] = useState<Dayjs>(dayjs());
+  const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const [sortBy, setSortBy] = useState<SortBy>("none");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
+
+  const filteredAndSortedAppointments = useMemo(() => {
+    const appts = Array.isArray(appointments) ? appointments : [];
+
+    let filtered = [...appts];
+
+    if (statusFilter.length > 0) {
+      filtered = filtered.filter((apt) => statusFilter.includes(apt.status));
+    }
+
+    const startOfWeek = selectedWeek.startOf("week");
+    const endOfWeek = selectedWeek.endOf("week");
+
+    filtered = filtered.filter((apt) => {
+      const aptDate = dayjs(apt.date);
+      return (
+        aptDate.isSameOrAfter(startOfWeek, "day") &&
+        aptDate.isSameOrBefore(endOfWeek, "day")
+      );
+    });
+
+    if (sortBy !== "none") {
+      const sorted = filtered.sort((a, b) => {
+        let compareValue = 0;
+
+        switch (sortBy) {
+          case "date":
+            compareValue =
+              new Date(a.date).getTime() - new Date(b.date).getTime();
+            break;
+
+          case "fee":
+            compareValue = a.fee - b.fee;
+            break;
+
+          case "status": {
+            const statusOrder = {
+              pending: 0,
+              confirmed: 1,
+              completed: 2,
+              cancelled: 3,
+            };
+            compareValue =
+              statusOrder[a.status as keyof typeof statusOrder] -
+              statusOrder[b.status as keyof typeof statusOrder];
+            break;
+          }
+
+          case "doctorName":
+            compareValue = (a.doctorInfo?.fullName || "").localeCompare(
+              b.doctorInfo?.fullName || ""
+            );
+            break;
+
+          default:
+            compareValue = 0;
+        }
+
+        return sortOrder === "asc" ? compareValue : -compareValue;
+      });
+
+      return sorted;
+    }
+
+    return filtered;
+  }, [appointments, statusFilter, selectedWeek, sortBy, sortOrder]);
+
+  const handleStatusFilterChange = (status: string) => {
+    if (status === "") {
+      setStatusFilter([]);
+      return;
+    }
+
+    setStatusFilter((prev) =>
+      prev.includes(status) ? prev.filter((s) => s !== status) : [status]
+    );
+  };
+
+  const handleAppointmentClick = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    setDrawerOpen(true);
+  };
+
+  const handleStatsCardClick = (type: "upcoming" | "today" | "pending") => {
+    if (type === "today") {
+      setSelectedWeek(dayjs());
+      setStatusFilter([]);
+    } else if (type === "pending") {
+      setStatusFilter(["pending"]);
+    } else if (type === "upcoming") {
+      setSelectedWeek(dayjs());
+      setStatusFilter([]);
     }
   };
 
-  const getStatusTag = (status: string) => {
-    const statusMap: Record<
-      string,
-      { color: string; text: string; icon: any }
-    > = {
-      pending: {
-        color: "orange",
-        text: "Chờ duyệt",
-        icon: <ClockCircleOutlined />,
-      },
-      confirmed: {
-        color: "green",
-        text: "Đã xác nhận",
-        icon: <CheckCircleOutlined />,
-      },
-      rejected: {
-        color: "red",
-        text: "Đã từ chối",
-        icon: <CloseCircleOutlined />,
-      },
-      cancelled: {
-        color: "default",
-        text: "Đã hủy",
-        icon: <CloseCircleOutlined />,
-      },
-      completed: {
-        color: "blue",
-        text: "Đã hoàn thành",
-        icon: <CheckCircleOutlined />,
-      },
-    };
-
-    const config = statusMap[status] || statusMap.pending;
-    return (
-      <Tag color={config.color} icon={config.icon}>
-        {config.text}
-      </Tag>
-    );
-  };
-
-  const renderAppointmentCard = (apt: any) => (
-    <Card
-      key={apt.id}
-      className="mb-4 shadow-sm hover:shadow-md transition-shadow"
-    >
-      <Row gutter={16}>
-        <Col xs={24} md={16}>
-          <div className="flex items-start gap-4">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-2xl">👨‍⚕️</span>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-bold text-gray-800 mb-2">
-                {apt.doctorInfo?.fullName || "Bác sĩ"}
-              </h3>
-              <p className="text-gray-600 mb-2">
-                {apt.doctorInfo?.specialization || "Chuyên khoa"}
-              </p>
-              <div className="space-y-1 text-sm text-gray-600">
-                <p>
-                  <CalendarOutlined className="mr-2" />
-                  {dayjs(apt.date).format("DD/MM/YYYY")}
-                </p>
-                <p>
-                  <ClockCircleOutlined className="mr-2" />
-                  {apt.timeSlot.start} - {apt.timeSlot.end}
-                </p>
-              </div>
-              <div className="mt-3">
-                <p className="text-sm text-gray-600 mb-1">
-                  <strong>Lý do:</strong> {apt.reason}
-                </p>
-                {apt.doctorNotes && (
-                  <p className="text-sm text-gray-600">
-                    <strong>Ghi chú của bác sĩ:</strong> {apt.doctorNotes}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        </Col>
-
-        <Col xs={24} md={8} className="text-right">
-          <div className="mb-3">{getStatusTag(apt.status)}</div>
-          <p className="text-lg font-bold text-blue-600 mb-4">
-            {apt.fee.toLocaleString()}đ
-          </p>
-          {apt.status === "pending" && (
-            <Button
-              danger
-              onClick={() => handleCancel(apt.id)}
-              loading={cancelMutation.isPending}
-              block
-            >
-              Hủy lịch hẹn
-            </Button>
-          )}
-        </Col>
-      </Row>
-    </Card>
-  );
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Spin size="large" tip="Đang tải lịch hẹn..." />
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
-          <p className="text-gray-600">Quản lý lịch khám của bạn</p>
-        </div>
+    <div
+      className={`min-h-screen py-8 transition-colors
+         ${isDark ? "bg-background-dark " : "bg-[#f5f5f5] "}
+        `}
+    >
+      <div className="max-w-7xl mx-auto  ">
+        <StatsCards
+          appointments={appointments}
+          onCardClick={handleStatsCardClick}
+          isDark={isDark}
+        />
 
-        {/* Stats Cards */}
-        <Row gutter={[16, 16]} className="mb-8">
-          <Col xs={12} sm={6}>
-            <Card className="text-center shadow-sm">
-              <div className="text-3xl mb-2">⏳</div>
-              <div className="text-2xl font-bold text-orange-500">
-                {pendingAppointments.length}
-              </div>
-              <div className="text-gray-600 text-sm">Chờ duyệt</div>
-            </Card>
-          </Col>
+        <WeekCalendar
+          selectedWeek={selectedWeek}
+          onWeekChange={setSelectedWeek}
+          appointments={appointments}
+          isDark={isDark}
+        />
 
-          <Col xs={12} sm={6}>
-            <Card className="text-center shadow-sm">
-              <div className="text-3xl mb-2">✅</div>
-              <div className="text-2xl font-bold text-green-500">
-                {upcomingAppointments.length}
-              </div>
-              <div className="text-gray-600 text-sm">Sắp tới</div>
-            </Card>
-          </Col>
-
-          <Col xs={12} sm={6}>
-            <Card className="text-center shadow-sm">
-              <div className="text-3xl mb-2">📋</div>
-              <div className="text-2xl font-bold text-blue-500">
-                {pastAppointments.length}
-              </div>
-              <div className="text-gray-600 text-sm">Đã khám</div>
-            </Card>
-          </Col>
-
-          <Col xs={12} sm={6}>
-            <Card className="text-center shadow-sm">
-              <div className="text-3xl mb-2">📊</div>
-              <div className="text-2xl font-bold text-purple-500">
-                {appointments.length}
-              </div>
-              <div className="text-gray-600 text-sm">Tổng cộng</div>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* Quick Action */}
-        <Card className="mb-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-bold mb-1">Tìm bác sĩ</h3>
-              <p className="text-gray-600">Đặt lịch khám với bác sĩ phù hợp</p>
-            </div>
-            <Link href="/doctors">
-              <Button type="primary" size="large">
-                Tìm bác sĩ →
-              </Button>
-            </Link>
+        <Card
+          className={`shadow-md border-2 ${
+            isDark
+              ? "bg-slate-800 border-slate-700"
+              : "bg-white border-gray-200"
+          }`}
+          style={{
+            borderColor: isDark ? undefined : "var(--primary-color)",
+          }}
+        >
+          <div className="flex flex-col gap-4">
+            <FilterBar
+              selectedWeek={selectedWeek}
+              onWeekChange={setSelectedWeek}
+              statusFilter={statusFilter}
+              onStatusFilterChange={handleStatusFilterChange}
+              appointments={filteredAndSortedAppointments}
+              onNewAppointment={onNewAppointment}
+              isDark={isDark}
+            />
           </div>
         </Card>
 
-        {/* Appointments Tabs */}
-        <Card className="shadow-sm">
-          <Tabs defaultActiveKey="upcoming">
-            <TabPane
-              tab={`Sắp tới (${upcomingAppointments.length})`}
-              key="upcoming"
-            >
-              {upcomingAppointments.length > 0 ? (
-                upcomingAppointments.map(renderAppointmentCard)
-              ) : (
-                <Empty description="Không có lịch hẹn sắp tới" />
-              )}
-            </TabPane>
+        {filteredAndSortedAppointments.length > 0 ? (
+          <WeekTimeline
+            selectedWeek={selectedWeek}
+            appointments={filteredAndSortedAppointments}
+            onAppointmentClick={handleAppointmentClick}
+            onNewAppointment={onNewAppointment}
+            isDark={isDark}
+          />
+        ) : (
+          <Card
+            className={`shadow-md border-2 ${
+              isDark
+                ? "bg-slate-800 border-slate-700"
+                : "bg-white border-gray-200"
+            }`}
+            style={{
+              borderColor: isDark ? undefined : "var(--primary-color)",
+            }}
+          >
+            <Empty
+              description={t("noData")}
+              style={{
+                color: isDark ? "#94a3b8" : "#6b7280",
+              }}
+            />
+          </Card>
+        )}
 
-            <TabPane
-              tab={`Chờ duyệt (${pendingAppointments.length})`}
-              key="pending"
-            >
-              {pendingAppointments.length > 0 ? (
-                pendingAppointments.map(renderAppointmentCard)
-              ) : (
-                <Empty description="Không có lịch hẹn chờ duyệt" />
-              )}
-            </TabPane>
-
-            <TabPane tab={`Đã khám (${pastAppointments.length})`} key="past">
-              {pastAppointments.length > 0 ? (
-                pastAppointments.map(renderAppointmentCard)
-              ) : (
-                <Empty description="Chưa có lịch sử khám bệnh" />
-              )}
-            </TabPane>
-          </Tabs>
-        </Card>
+        <AppointmentDrawer
+          open={drawerOpen}
+          appointment={selectedAppointment}
+          onClose={() => setDrawerOpen(false)}
+          onReschedule={onReschedule}
+          onCancel={onCancel}
+          onViewDoctor={onViewDoctor}
+          isDark={isDark}
+        />
       </div>
     </div>
   );

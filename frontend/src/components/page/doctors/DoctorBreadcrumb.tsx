@@ -1,4 +1,3 @@
-// components/doctors/DoctorBreadcrumb.tsx
 import { Breadcrumb } from "antd";
 import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import Link from "next/link";

@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfigProvider, theme, App } from "antd";
+import "@ant-design/v5-patch-for-react-19";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import viVN from "antd/locale/vi_VN";
 import enUS from "antd/locale/en_US";

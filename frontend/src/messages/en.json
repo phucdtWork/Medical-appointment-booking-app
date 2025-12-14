@@ -225,6 +225,60 @@
     "rating": "Rating",
     "reviews": "Reviews"
   },
+  "doctorDetail": {
+    "doctorHeader": {
+      "detailsTitle": "Details information",
+      "specializations": {
+        "cardiology": "Cardiology",
+        "dermatology": "Dermatology",
+        "internal": "Internal Medicine",
+        "pediatrics": "Pediatrics",
+        "obstetrics": "Obstetrics",
+        "surgery": "Surgery",
+        "neurology": "Neurology",
+        "ophthalmology": "Ophthalmology",
+        "ent": "ENT"
+      },
+      "stats": {
+        "totalPatients": "Total Patients",
+        "rating": "Rating",
+        "experience": "Experience",
+        "years": "years",
+        "reviews": "Reviews",
+        "hospital": "Hospital",
+        "fee": "Consultation Fee"
+      }
+    },
+    "greeting": "Good Morning",
+    "loading": "Loading doctor information...",
+    "notFound": "Doctor information not found",
+    "reviews": "reviews",
+    "tabs": {
+      "info": "Information",
+      "education": "Education",
+      "experience": "Experience",
+      "hospital": "Hospital",
+      "license": "Medical License",
+      "reviews": "Reviews"
+    },
+    "booking": {
+      "title": "Book Appointment",
+      "selectDate": "Select Date",
+      "selectDatePlaceholder": "Choose a date",
+      "selectTime": "Select Time",
+      "selectTimePlaceholder": "Choose time slot",
+      "reason": "Reason for Visit",
+      "reasonPlaceholder": "Describe your symptoms or reason for visit...",
+      "notes": "Notes (Optional)",
+      "notesPlaceholder": "Additional notes...",
+      "fee": "Consultation Fee",
+      "submit": "Book Appointment",
+      "submitNote": "Appointment will be sent to doctor for confirmation",
+      "dateRequired": "Please select a date!",
+      "timeRequired": "Please select a time!",
+      "reasonRequired": "Please enter reason for visit!"
+    }
+  },
   "components": {
     "layout": {
       "Header": {
@@ -318,6 +372,60 @@
       "rating_4_0": "4.0 and above",
       "rating_3_5": "3.5 and above",
       "rating_3_0": "3.0 and above"
+    }
+  },
+  "patientDashboard": {
+    "title": "Patient Dashboard",
+    "stats": {
+      "upcoming": "Upcoming Appointments",
+      "upcomingSubtitle": "Next 7 days",
+      "today": "Today",
+      "noSchedule": "No appointments",
+      "pending": "Pending Appointments",
+      "pendingSubtitle": "Need attention"
+    },
+    "weekNavigation": {
+      "week": "Week",
+      "today": "Today",
+      "newAppointment": "New Appointment",
+      "clearFilters": "Clear Filters"
+    },
+    "sort": {
+      "label": "Sort by",
+      "options": {
+        "none": "No sorting",
+        "date": "Appointment Date",
+        "fee": "Consultation Fee",
+        "status": "Status",
+        "doctorName": "Doctor Name"
+      },
+      "ascending": "Ascending",
+      "descending": "Descending",
+      "reset": "Reset",
+      "active": "Currently sorting by"
+    },
+    "noData": "No appointments found",
+    "appointmentDrawer": {
+      "title": "Appointment Details",
+      "date": "Date",
+      "time": "Time",
+      "doctor": "Doctor",
+      "hospital": "Hospital",
+      "reason": "Reason for Visit",
+      "notes": "Notes",
+      "fee": "Consultation Fee",
+      "viewDoctor": "View Doctor Information",
+      "reschedule": "Reschedule",
+      "cancel": "Cancel",
+      "reminder": "Please arrive 15 minutes early. If you need to reschedule, please notify at least 24 hours in advance."
+    },
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "rejected": "Rejected",
+      "label": "Status"
     }
   }
 }

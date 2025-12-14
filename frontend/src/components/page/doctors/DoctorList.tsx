@@ -1,4 +1,3 @@
-// components/doctors/DoctorList.tsx
 import { Row, Col, Card, Empty, Pagination, Skeleton } from "antd";
 import DoctorCard from "@/components/ui/DoctorCard";
 import { useTranslations } from "next-intl";

@@ -6,8 +6,12 @@ dotenv.config({
   path: path.resolve(__dirname, "../../../.env"),
 });
 
+let privateKey = process.env.FIREBASE_PRIVATE_KEY || "";
+
+privateKey = privateKey.replace(/\\n/g, "\n");
+
 const serviceAccount = {
-  private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+  private_key: privateKey,
   project_id: process.env.FIREBASE_PROJECT_ID,
   client_email: process.env.FIREBASE_CLIENT_EMAIL,
 };

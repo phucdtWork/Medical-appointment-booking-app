@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { DoctorService } from "../services/doctorService";
+import { message } from "antd";
 
 const doctorService = new DoctorService();
 
@@ -44,6 +45,7 @@ export const getDoctorById = async (
     res.json({
       success: true,
       data: doctor,
+      message: "Only doctor with id",
     });
   } catch (error: any) {
     next(error);
