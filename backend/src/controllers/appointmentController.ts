@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AppointmentService } from "../services/appointmentService";
+import eventBus from "../utils/eventBus";
 
 const appointmentService = new AppointmentService();
 
@@ -14,9 +15,15 @@ export const createAppointment = async (
       patientId: req.user!.userId,
     };
 
-    const appointment = await appointmentService.createAppointment(
-      appointmentData
-    );
+    const appointment =
+      await appointmentService.createAppointment(appointmentData);
+
+    // Emit realtime event for listeners (non-blocking)
+    try {
+      eventBus.emit("appointment", { action: "created", appointment });
+    } catch (err) {
+      // ignore emit errors
+    }
 
     res.status(201).json({
       success: true,
@@ -84,6 +91,12 @@ export const updateAppointmentStatus = async (
       doctorNotes,
       rejectionReason
     );
+
+    try {
+      eventBus.emit("appointment", { action: "updated", appointment });
+    } catch (err) {
+      // ignore
+    }
 
     res.json({
       success: true,

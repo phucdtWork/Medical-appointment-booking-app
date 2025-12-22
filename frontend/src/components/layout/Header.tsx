@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Button, Dropdown, Segmented, Space, Drawer, message } from "antd";
+import { Button, Dropdown, Segmented, Space, Drawer } from "antd";
+import UserDropdown from "./UserDropdown";
 import {
   MoonOutlined,
   SunOutlined,
@@ -15,7 +16,6 @@ import { useAuth } from "@/hooks";
 import type { MenuProps } from "antd";
 import { useTranslations } from "next-intl";
 import { Logo } from "../ui";
-import { useNotification } from "@/providers/NotificationProvider";
 
 export default function Header() {
   const { isDark, toggleTheme, language, changeLanguage } = useTheme();
@@ -23,8 +23,6 @@ export default function Header() {
   const t = useTranslations("components.layout.Header");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const bgClass = isDark ? "bg-gray-900 shadow-md" : "bg-white shadow-sm";
-
-  const notification = useNotification();
 
   const toggleLanguage = () => {
     const newLang = language === "vi" ? "en" : "vi";
@@ -64,24 +62,49 @@ export default function Header() {
   ];
 
   // User menu (when logged in)
-  const userMenu: MenuProps["items"] = [
-    {
-      key: "profile",
-      label: <Link href="/profile">{t("userMenu.profile")}</Link>,
-    },
+  const patientNav = [
+    { key: "doctors", label: t("nav.doctors"), href: "/doctors" },
     {
       key: "appointments",
-      label: <Link href="/appointments">{t("userMenu.appointments")}</Link>,
+      label: t("nav.appointments"),
+      href: "/appointments",
     },
+    { key: "profile", label: t("nav.profile"), href: "/patient/profile" },
+  ];
+
+  const doctorNav = [
     {
-      type: "divider",
+      key: "doctorDashboard",
+      label: t("nav.doctorDashboard"),
+      href: "/doctor-dashboard",
     },
+    { key: "schedule", label: t("nav.schedule"), href: "/schedule" },
+    { key: "patients", label: t("nav.patients"), href: "/patients" },
+    { key: "profile", label: t("nav.profile"), href: "/doctor/profile" },
+  ];
+
+  const roleNav = user?.role === "doctor" ? doctorNav : patientNav;
+
+  const userMenu: MenuProps["items"] = [
+    ...roleNav.map((r) => ({
+      key: r.key,
+      label: <Link href={r.href}>{r.label}</Link>,
+    })),
+    { type: "divider" },
     {
       key: "logout",
       label: t("userMenu.logout"),
       onClick: logout,
       danger: true,
     },
+  ];
+
+  // Navigation items per role
+  const publicNav = [
+    { key: "features", label: t("nav.features"), href: "#features" },
+    { key: "doctors", label: t("nav.doctors"), href: "/doctors" },
+    { key: "howItWorks", label: t("nav.howItWorks"), href: "#how-it-works" },
+    { key: "contact", label: t("nav.contact"), href: "#contact" },
   ];
 
   return (
@@ -92,32 +115,16 @@ export default function Header() {
             {/* Logo */}
             <Logo size="medium" showText={true} />
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-8">
-              <Link
-                href="#features"
-                className={`hover:text-blue-600 transition`}
-              >
-                <p className={`text-lg`}>{t("nav.features")}</p>
-              </Link>
-              <Link
-                href="#doctors"
-                className={`hover:text-blue-600 transition`}
-              >
-                <p className={`text-lg`}>{t("nav.doctors")}</p>
-              </Link>
-              <Link
-                href="#how-it-works"
-                className={`hover:text-blue-600 transition`}
-              >
-                <p className={`text-lg`}>{t("nav.howItWorks")}</p>
-              </Link>
-              <Link
-                href="#contact"
-                className={`hover:text-blue-600 transition`}
-              >
-                <p className={`text-lg`}>{t("nav.contact")}</p>
-              </Link>
+            <nav className="hidden lg:flex items-center gap-6">
+              {publicNav.map((item) => (
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  className={`hover:text-blue-600 transition`}
+                >
+                  <p className={`text-lg`}>{item.label}</p>
+                </Link>
+              ))}
             </nav>
 
             {/* Desktop Actions */}
@@ -193,34 +200,30 @@ export default function Header() {
       >
         <div className="flex flex-col gap-6">
           <nav className="flex flex-col gap-4">
-            <Link
-              href="#features"
-              className={`hover:text-blue-600 transition`}
-              onClick={() => setDrawerOpen(false)}
-            >
-              <p className={`text-lg`}>{t("nav.features")}</p>
-            </Link>
-            <Link
-              href="#doctors"
-              className={`hover:text-blue-600 transition`}
-              onClick={() => setDrawerOpen(false)}
-            >
-              <p className={`text-lg`}>{t("nav.doctors")}</p>
-            </Link>
-            <Link
-              href="#how-it-works"
-              className={`hover:text-blue-600 transition`}
-              onClick={() => setDrawerOpen(false)}
-            >
-              <p className={`text-lg`}>{t("nav.howItWorks")}</p>
-            </Link>
-            <Link
-              href="#contact"
-              className={`hover:text-blue-600 transition`}
-              onClick={() => setDrawerOpen(false)}
-            >
-              <p className={`text-lg`}>{t("nav.contact")}</p>
-            </Link>
+            {publicNav.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href}
+                className={`hover:text-blue-600 transition`}
+                onClick={() => setDrawerOpen(false)}
+              >
+                <p className={`text-lg`}>{item.label}</p>
+              </Link>
+            ))}
+
+            {isAuthenticated && (
+              <div className="mt-4">
+                <div className="text-sm font-semibold mb-2">
+                  {user?.role === "doctor"
+                    ? t("nav.doctorDashboard")
+                    : t("nav.patientAppointment")}
+                </div>
+                <UserDropdown
+                  variant="list"
+                  onItemClick={() => setDrawerOpen(false)}
+                />
+              </div>
+            )}
           </nav>
 
           {/* Theme Segmented */}

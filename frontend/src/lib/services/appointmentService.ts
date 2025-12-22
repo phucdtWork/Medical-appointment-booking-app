@@ -1,4 +1,5 @@
 import api from "../api/axios";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export interface Appointment {
   id: string;
@@ -98,4 +99,62 @@ export const appointmentService = {
     });
     return response.data;
   },
+};
+
+// React Query hooks
+export const appointmentKeys = {
+  myList: () => ["appointments", "me"],
+  doctorList: () => ["appointments", "doctor"],
+  detail: (id: string) => ["appointment", id],
+};
+
+export const useCreateAppointment = () => {
+  const qc = useQueryClient();
+  return useMutation(
+    (data: CreateAppointmentData) => appointmentService.createAppointment(data),
+    {
+      onSuccess: () =>
+        qc.invalidateQueries({ queryKey: appointmentKeys.myList() }),
+    }
+  );
+};
+
+export const useMyAppointments = () => {
+  return useQuery(appointmentKeys.myList(), () =>
+    appointmentService.getMyAppointments()
+  );
+};
+
+export const useDoctorAppointments = (status?: string) => {
+  return useQuery(appointmentKeys.doctorList(), () =>
+    appointmentService.getDoctorAppointments(status)
+  );
+};
+
+export const useAppointment = (id?: string) => {
+  return useQuery(
+    id ? appointmentKeys.detail(id) : ["appointment", "none"],
+    () => appointmentService.getAppointmentById(id as string),
+    { enabled: !!id }
+  );
+};
+
+export const useUpdateAppointmentStatus = () => {
+  const qc = useQueryClient();
+  return useMutation(
+    ({ id, data }: { id: string; data: UpdateAppointmentStatusData }) =>
+      appointmentService.updateAppointmentStatus(id, data),
+    {
+      onSuccess: () =>
+        qc.invalidateQueries({ queryKey: appointmentKeys.doctorList() }),
+    }
+  );
+};
+
+export const useCancelAppointment = () => {
+  const qc = useQueryClient();
+  return useMutation((id: string) => appointmentService.cancelAppointment(id), {
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: appointmentKeys.myList() }),
+  });
 };

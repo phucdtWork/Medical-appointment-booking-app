@@ -2,7 +2,6 @@
 
 import { ConfigProvider, theme, App } from "antd";
 import "@ant-design/v5-patch-for-react-19";
-import { AntdRegistry } from "@ant-design/nextjs-registry";
 import viVN from "antd/locale/vi_VN";
 import enUS from "antd/locale/en_US";
 import {
@@ -110,52 +109,50 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         changeLanguage,
       }}
     >
-      <AntdRegistry>
-        <ConfigProvider
-          locale={localeAntd}
-          theme={{
-            algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-            token: {
-              colorPrimary: "#1890ff",
-              borderRadius: 8,
-              colorBgContainer: isDark ? "#001529" : "#ffffff",
-              colorText: isDark ? "#ffffff" : "#000000",
-              colorBorder: isDark ? "#424242" : "#d9d9d9",
+      <ConfigProvider
+        locale={localeAntd}
+        theme={{
+          algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+          token: {
+            colorPrimary: "#1890ff",
+            borderRadius: 8,
+            colorBgContainer: isDark ? "#001529" : "#ffffff",
+            colorText: isDark ? "#ffffff" : "#000000",
+            colorBorder: isDark ? "#424242" : "#d9d9d9",
+            colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
+          },
+          components: {
+            Drawer: {
+              colorBgElevated: isDark ? "#001529" : "#ffffff",
+              colorIcon: isDark ? "#ffffff" : "#000000",
+            },
+            Dropdown: {
               colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
             },
-            components: {
-              Drawer: {
-                colorBgElevated: isDark ? "#001529" : "#ffffff",
-                colorIcon: isDark ? "#ffffff" : "#000000",
-              },
-              Dropdown: {
-                colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
-              },
-              Segmented: {
-                colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
-                trackBg: isDark ? "var(--foreground)" : "#f5f5f5",
-              },
-              Button: {
-                controlHeight: 40,
-                controlHeightLG: 56,
-                controlHeightSM: 28,
-                paddingContentHorizontal: 24,
-                paddingContentHorizontalLG: 36,
-                paddingContentHorizontalSM: 16,
-                fontSize: 15,
-                fontSizeLG: 18,
-                fontSizeSM: 13,
-                primaryShadow: "0 0 30px rgba(59, 130, 246, 0.4)",
-              },
-              Form: {
-                itemMarginBottom: 14,
-              },
+            Segmented: {
+              colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
+              trackBg: isDark ? "var(--foreground)" : "#f5f5f5",
             },
-          }}
-        >
-          <App>{children}</App>
-        </ConfigProvider>
-      </AntdRegistry>
+            Button: {
+              controlHeight: 40,
+              controlHeightLG: 56,
+              controlHeightSM: 28,
+              paddingContentHorizontal: 24,
+              paddingContentHorizontalLG: 36,
+              paddingContentHorizontalSM: 16,
+              fontSize: 15,
+              fontSizeLG: 18,
+              fontSizeSM: 13,
+              primaryShadow: "0 0 30px rgba(59, 130, 246, 0.4)",
+            },
+            Form: {
+              itemMarginBottom: 14,
+            },
+          },
+        }}
+      >
+        <App>{children}</App>
+      </ConfigProvider>
     </ThemeContext.Provider>
   );
 }

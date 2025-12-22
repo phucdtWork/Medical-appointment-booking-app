@@ -30,7 +30,11 @@
     "contact": "Contact",
     "schedule": "Schedule",
     "patients": "Patients",
-    "statistics": "Statistics"
+    "statistics": "Statistics",
+    "tabs": {
+      "workingHours": "Working Hours",
+      "blockedDates": "Blocked Dates"
+    }
   },
   "metadata": {
     "title": "MediBook - Book Medical Appointments",
@@ -267,9 +271,23 @@
       "selectDatePlaceholder": "Choose a date",
       "selectTime": "Select Time",
       "selectTimePlaceholder": "Choose time slot",
+      "slotDuration30": "30 minutes",
+      "slotDuration60": "60 minutes",
+      "Monday": "Monday",
+      "Tuesday": "Tuesday",
+      "Wednesday": "Wednesday",
+      "Thursday": "Thursday",
+      "Friday": "Friday",
+      "Saturday": "Saturday",
+      "Sunday": "Sunday",
+      "working": "Working",
+      "dayOff": "Day Off",
+      "addTimeRange": "Add Time Range",
+      "loadingSlots": "Loading slots...",
       "reason": "Reason for Visit",
       "reasonPlaceholder": "Describe your symptoms or reason for visit...",
       "notes": "Notes (Optional)",
+      "noSlots": "No available slots on this date",
       "notesPlaceholder": "Additional notes...",
       "fee": "Consultation Fee",
       "submit": "Book Appointment",
@@ -286,7 +304,13 @@
           "features": "Features",
           "doctors": "Doctors",
           "howItWorks": "How it works",
-          "contact": "Contact"
+          "contact": "Contact",
+          "patientAppointment": "Appointments",
+          "doctorDashboard": "Doctor Dashboard",
+          "appointments": "Appointments",
+          "profile": "Profile",
+          "schedule": "Schedule",
+          "patients": "Patients"
         },
         "drawer": {
           "title": "Menu",
@@ -427,5 +451,36 @@
       "rejected": "Rejected",
       "label": "Status"
     }
+  },
+  "scheduleManager": {
+    "title": "Schedule Management",
+    "unsavedChanges": "Unsaved Changes",
+    "saveChanges": "Save Changes",
+    "saveSuccess": "Schedule saved successfully!",
+    "saveFailed": "Failed to save schedule",
+    "loadFailed": "Failed to load schedule",
+    "noScheduleCreating": "No schedule found. Creating default schedule...",
+    "tabs": {
+      "workingHours": "Working Hours",
+      "breakTimes": "Break Times",
+      "blockedDates": "Blocked Dates"
+    },
+    "blockedDates": {
+      "description": "Block specific dates when you're not available (holidays, vacations, etc.)",
+      "placeholder": "Select date to block",
+      "blockButton": "Block Date",
+      "noBlocked": "No blocked dates",
+      "tagBlocked": "Blocked"
+    },
+    "breakTimes": {
+      "description": "Break times apply to all working days. Appointments cannot be booked during these times.",
+      "to": "to",
+      "addButton": "Add Break Time"
+    }
+  },
+  "unauthorized": {
+    "title": "Access Denied",
+    "message": "You do not have permission to view this page.",
+    "backHome": "Back to Home"
   }
 }

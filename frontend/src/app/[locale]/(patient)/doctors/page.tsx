@@ -1,12 +1,13 @@
 "use client";
 
-import { useClassName, useDoctors } from "@/hooks";
+import { useClassName, useDoctors, useDebounce } from "@/hooks";
 import DoctorFilters from "@/components/page/doctors/DoctorFilters";
 import DoctorViewControls from "@/components/page/doctors/DoctorViewControls";
 import DoctorList from "@/components/page/doctors/DoctorList";
 import { useURLFilters } from "@/hooks/useURLFilters";
 import GlobalBreadcrumb from "@/components/ui/GlobalBreadcrumb";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 export default function DoctorsPage() {
   const t = useTranslations("doctors");
@@ -25,6 +26,23 @@ export default function DoctorsPage() {
   } = useURLFilters();
 
   const { data, isLoading, error } = useDoctors(filters);
+
+  // Local input state to debounce user typing before updating URL/search
+  const [inputValue, setInputValue] = useState<string>(searchTerm || "");
+  const debouncedSearch = useDebounce(inputValue, 500);
+
+  // When debounced value changes, propagate to URL filters
+  useEffect(() => {
+    if (debouncedSearch !== (searchTerm || "")) {
+      updateSearch(debouncedSearch);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedSearch]);
+
+  // Keep local input in sync when external searchTerm changes (e.g., via URL)
+  useEffect(() => {
+    setInputValue(searchTerm || "");
+  }, [searchTerm]);
 
   const filteredDoctors =
     data?.data.filter((doctor) =>
@@ -66,9 +84,9 @@ export default function DoctorsPage() {
         </div>
 
         <DoctorFilters
-          searchTerm={searchTerm}
+          searchTerm={inputValue}
           filters={filters}
-          onSearchChange={updateSearch}
+          onSearchChange={(v: string) => setInputValue(v)}
           onFilterChange={updateFilter}
           onClearFilters={clearFilters}
         />

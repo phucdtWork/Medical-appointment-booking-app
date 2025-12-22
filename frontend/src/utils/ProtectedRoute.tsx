@@ -30,7 +30,10 @@ export default function ProtectedRoute({
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Spin size="large" tip="Đang xác thực..." />
+        <div className="flex flex-col items-center gap-3">
+          <Spin size="large" />
+          <span className="text-sm text-gray-500">Đang xác thực...</span>
+        </div>
       </div>
     );
   }

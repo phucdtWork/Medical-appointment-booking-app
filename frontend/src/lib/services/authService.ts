@@ -1,4 +1,5 @@
 import api from "../api/axios";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export interface RegisterData {
   email: string;
@@ -66,4 +67,27 @@ export const authService = {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
   },
+};
+
+// React Query hooks
+export const useMe = () => {
+  return useQuery(["me"], () => authService.getMe(), {
+    enabled: !!localStorage.getItem("token"),
+  });
+};
+
+export const useLogin = () => {
+  const qc = useQueryClient();
+  return useMutation(
+    (data: { email: string; password: string }) => authService.login(data),
+    {
+      onSuccess: (res: any) => {
+        const token = res.data.token;
+        const user = res.data.user;
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+        qc.invalidateQueries(["me"]);
+      },
+    }
+  );
 };

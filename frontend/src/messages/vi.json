@@ -42,7 +42,11 @@
     "contact": "Liên hệ",
     "schedule": "Lịch trình",
     "patients": "Bệnh nhân",
-    "statistics": "Thống kê"
+    "statistics": "Thống kê",
+    "tabs": {
+      "workingHours": "Giờ làm việc",
+      "blockedDates": "Ngày bị chặn"
+    }
   },
   "metadata": {
     "title": "MediBook - Đặt lịch khám bệnh",
@@ -288,9 +292,23 @@
       "selectDatePlaceholder": "Chọn ngày",
       "selectTime": "Chọn giờ khám",
       "selectTimePlaceholder": "Chọn khung giờ",
+      "slotDuration30": "30 phút",
+      "slotDuration60": "60 phút",
+      "Monday": "Thứ Hai",
+      "Tuesday": "Thứ Ba",
+      "Wednesday": "Thứ Tư",
+      "Thursday": "Thứ Năm",
+      "Friday": "Thứ Sáu",
+      "Saturday": "Thứ Bảy",
+      "Sunday": "Chủ Nhật",
+      "working": "Làm việc",
+      "dayOff": "Ngày nghỉ",
+      "addTimeRange": "Thêm khoảng thời gian",
+      "loadingSlots": "Đang tải khung giờ...",
       "reason": "Lý do khám",
       "reasonPlaceholder": "Mô tả triệu chứng hoặc lý do khám bệnh...",
       "notes": "Ghi chú (tùy chọn)",
+      "noSlots": "Không có khung giờ trống trong ngày này",
       "notesPlaceholder": "Ghi chú thêm...",
       "fee": "Chi phí khám",
       "submit": "Đặt lịch khám",
@@ -307,7 +325,13 @@
           "features": "Tính năng",
           "doctors": "Bác sĩ",
           "howItWorks": "Cách hoạt động",
-          "contact": "Liên hệ"
+          "contact": "Liên hệ",
+          "patientAppointment": "Lịch hẹn",
+          "doctorDashboard": "Bảng điều khiển bác sĩ",
+          "appointments": "Lịch hẹn",
+          "profile": "Hồ sơ",
+          "schedule": "Lịch",
+          "patients": "Bệnh nhân"
         },
         "drawer": {
           "title": "Menu",
@@ -446,5 +470,36 @@
       "rejected": "Từ chối",
       "label": "Trạng thái"
     }
+  },
+  "scheduleManager": {
+    "title": "Quản lý lịch trình",
+    "unsavedChanges": "Thay đổi chưa lưu",
+    "saveChanges": "Lưu thay đổi",
+    "saveSuccess": "Lưu lịch thành công!",
+    "saveFailed": "Lưu lịch thất bại",
+    "loadFailed": "Tải lịch thất bại",
+    "noScheduleCreating": "Không tìm thấy lịch. Đang tạo lịch mặc định...",
+    "tabs": {
+      "workingHours": "Giờ làm việc",
+      "breakTimes": "Thời gian nghỉ",
+      "blockedDates": "Ngày chặn"
+    },
+    "blockedDates": {
+      "description": "Chặn những ngày cụ thể khi bạn không có mặt (nghỉ lễ, đi công tác, ...)",
+      "placeholder": "Chọn ngày để chặn",
+      "blockButton": "Chặn ngày",
+      "noBlocked": "Không có ngày bị chặn",
+      "tagBlocked": "Đã chặn"
+    },
+    "breakTimes": {
+      "description": "Thời gian nghỉ áp dụng cho tất cả các ngày làm việc. Lịch hẹn không thể đặt trong thời gian này.",
+      "to": "đến",
+      "addButton": "Thêm thời gian nghỉ"
+    }
+  },
+  "unauthorized": {
+    "title": "Không đủ quyền truy cập",
+    "message": "Bạn không có quyền truy cập trang này.",
+    "backHome": "Trở về trang chủ"
   }
 }

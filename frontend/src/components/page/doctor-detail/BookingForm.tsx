@@ -1,6 +1,15 @@
 "use client";
 
-import { Card, Form, DatePicker, Select, Input, Button, Drawer } from "antd";
+import {
+  Card,
+  Form,
+  DatePicker,
+  Select,
+  Input,
+  Button,
+  Drawer,
+  Spin,
+} from "antd";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
@@ -10,10 +19,11 @@ import {
 import { useTranslations } from "next-intl";
 import { useCreateAppointment } from "@/hooks";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "@/providers/ThemeProvider";
 import type { Doctor } from "@/types/doctor";
 import { CreateAppointmentData } from "@/lib/services";
+import scheduleService, { TimeSlot } from "@/lib/services/scheduleService";
 
 const { TextArea } = Input;
 
@@ -34,21 +44,31 @@ export default function BookingForm({
   const [form] = Form.useForm();
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const timeSlots = [
-    "08:00-08:30",
-    "08:30-09:00",
-    "09:00-09:30",
-    "09:30-10:00",
-    "10:00-10:30",
-    "10:30-11:00",
-    "14:00-14:30",
-    "14:30-15:00",
-    "15:00-15:30",
-    "15:30-16:00",
-  ];
+  const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
+  const [selectedDateStr, setSelectedDateStr] = useState<string | null>(null);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchSlots = async () => {
+      if (!selectedDateStr) return;
+      setSlotsLoading(true);
+      try {
+        const slots = await scheduleService.getAvailableSlots(
+          doctorId,
+          selectedDateStr
+        );
+        setAvailableSlots(slots || []);
+      } catch (err) {
+        setAvailableSlots([]);
+      } finally {
+        setSlotsLoading(false);
+      }
+    };
+    fetchSlots();
+  }, [selectedDateStr, doctorId]);
 
   const onFinish = (values: CreateAppointmentData) => {
-    const [start, end] = values.timeSlot.split("-");
+    const [start, end] = values.timeSlot?.split("-");
 
     createAppointmentMutation.mutate(
       {
@@ -94,6 +114,16 @@ export default function BookingForm({
             borderColor: "var(--primary-color)",
           }}
           format="DD/MM/YYYY"
+          onChange={(date) => {
+            if (!date) {
+              setSelectedDateStr(null);
+              setAvailableSlots([]);
+              return;
+            }
+            setSelectedDateStr(date.format("YYYY-MM-DD"));
+            // also set form field value
+            form.setFieldsValue({ date });
+          }}
           disabledDate={(current) => {
             return current && current < dayjs().startOf("day");
           }}
@@ -121,12 +151,34 @@ export default function BookingForm({
           placeholder={t("selectTimePlaceholder")}
           className={isDark ? "dark-select" : ""}
           style={{ borderColor: "var(--primary-color)" }}
+          disabled={slotsLoading || availableSlots.length === 0}
         >
-          {timeSlots.map((slot) => (
-            <Select.Option key={slot} value={slot}>
-              {slot}
+          {slotsLoading && (
+            <Select.Option value="" disabled key="loading">
+              <div className="flex items-center gap-2">
+                <Spin size="small" />
+                <span>{t("loadingSlots")}</span>
+              </div>
             </Select.Option>
-          ))}
+          )}
+
+          {!slotsLoading && availableSlots.length === 0 && (
+            <Select.Option value="" disabled>
+              {t("noSlots")}
+            </Select.Option>
+          )}
+
+          {!slotsLoading &&
+            availableSlots
+              .filter((s) => s.isAvailable)
+              .map((slot) => {
+                const val = `${slot.start}-${slot.end}`;
+                return (
+                  <Select.Option key={val} value={val}>
+                    {val}
+                  </Select.Option>
+                );
+              })}
         </Select>
       </Form.Item>
 
@@ -211,7 +263,7 @@ export default function BookingForm({
         <Button
           type="primary"
           htmlType="submit"
-          loading={createAppointmentMutation.isPending}
+          loading={createAppointmentMutation.isLoading}
           block
           size="large"
           className="h-11 font-semibold"

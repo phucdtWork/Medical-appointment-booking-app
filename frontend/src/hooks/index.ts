@@ -8,3 +8,4 @@ export * from "./mutations";
 
 // Other hooks
 export * from "./useClassName";
+export * from "./useDebounce";

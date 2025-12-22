@@ -1,4 +1,5 @@
 import api from "../api/axios";
+import { useQuery } from "@tanstack/react-query";
 
 export interface Doctor {
   id: string;
@@ -60,4 +61,19 @@ export const doctorService = {
     const response = await api.get("/doctors/search", { params: { q: query } });
     return response.data;
   },
+};
+
+// React Query hooks
+export const useDoctors = (filters?: any) => {
+  return useQuery(["doctors", filters], () =>
+    doctorService.getDoctors(filters)
+  );
+};
+
+export const useDoctorById = (id?: string) => {
+  return useQuery(
+    ["doctor", id],
+    () => doctorService.getDoctorById(id as string),
+    { enabled: !!id }
+  );
 };
