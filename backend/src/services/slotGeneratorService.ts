@@ -171,26 +171,46 @@ export class SlotGeneratorService {
     appointments: Appointment[]
   ): AvailableTimeSlot[] {
     return slots.map((slot) => {
-      const isBooked = appointments.some(
-        (apt) =>
-          apt.status !== "cancelled" &&
-          apt.status !== "rejected" &&
-          apt.timeSlot.start === slot.start &&
-          apt.timeSlot.end === slot.end
+      const slotStart = parse(
+        `${slot.date} ${slot.start}`,
+        "yyyy-MM-dd HH:mm",
+        new Date()
+      );
+      const slotEnd = parse(
+        `${slot.date} ${slot.end}`,
+        "yyyy-MM-dd HH:mm",
+        new Date()
       );
 
-      const bookedAppointment = appointments.find(
-        (apt) =>
-          apt.status !== "cancelled" &&
-          apt.status !== "rejected" &&
-          apt.timeSlot.start === slot.start
-      );
+      // Consider an appointment overlapping the slot as booked
+      const overlappingApt = appointments.find((apt) => {
+        if (apt.status === "cancelled" || apt.status === "rejected")
+          return false;
+        const aptStart = parse(
+          `${apt.date} ${apt.timeSlot.start}`,
+          "yyyy-MM-dd HH:mm",
+          new Date()
+        );
+        const aptEnd = parse(
+          `${apt.date} ${apt.timeSlot.end}`,
+          "yyyy-MM-dd HH:mm",
+          new Date()
+        );
+
+        // Overlap if slotStart < aptEnd && aptStart < slotEnd
+        return (
+          slotStart.getTime() < aptEnd.getTime() &&
+          aptStart.getTime() < slotEnd.getTime()
+        );
+      });
+
+      const isBooked = !!overlappingApt;
 
       return {
         ...slot,
         isBooked,
         isAvailable: !isBooked,
-        appointmentId: bookedAppointment?.id,
+        appointmentId: overlappingApt?.id,
       };
     });
   }

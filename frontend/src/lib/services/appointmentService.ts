@@ -1,38 +1,22 @@
 import api from "../api/axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type {
+  Appointment as AppointmentType,
+  AppointmentList as AppointmentListType,
+} from "@/types/appointment";
 
-export interface Appointment {
-  id: string;
-  patientId: string;
-  doctorId: string;
-  date: Date;
-  timeSlot: {
-    start: string;
-    end: string;
-  };
-  status: "pending" | "confirmed" | "rejected" | "completed" | "cancelled";
-  reason: string;
-  notes?: string;
-  patientNotes?: string;
-  doctorNotes?: string;
-  rejectionReason?: string;
-  fee: number;
-  createdAt: Date;
-  updatedAt: Date;
-  patientInfo?: any;
-  doctorInfo?: any;
-}
+export type Appointment = AppointmentType;
 
 export interface CreateAppointmentData {
   doctorId: string;
-  date: Date;
+  date: string; // ISO date string
   timeSlot: {
     start: string;
     end: string;
   };
   reason: string;
   notes?: string;
-  fee: number;
+  fee?: number;
 }
 
 export interface UpdateAppointmentStatusData {
@@ -43,7 +27,7 @@ export interface UpdateAppointmentStatusData {
 
 export interface AppointmentsResponse {
   success: boolean;
-  count: number;
+  count?: number;
   data: Appointment[];
 }
 
@@ -91,11 +75,23 @@ export const appointmentService = {
     const response = await api.patch(`/appointments/${id}/status`, data);
     return response.data;
   },
-
   // Cancel appointment (Patient)
   cancelAppointment: async (id: string): Promise<AppointmentResponse> => {
-    const response = await api.patch(`/appointments/${id}/status`, {
-      status: "cancelled",
+    const response = await api.put(`/appointments/${id}`, {
+      action: "cancel",
+    });
+    return response.data;
+  },
+
+  // Reschedule appointment (Patient)
+  rescheduleAppointment: async (
+    id: string,
+    data: { date: string; timeSlot: { start: string; end: string } }
+  ): Promise<AppointmentResponse> => {
+    const response = await api.put(`/appointments/${id}`, {
+      action: "reschedule",
+      date: data.date,
+      timeSlot: data.timeSlot,
     });
     return response.data;
   },
@@ -157,4 +153,21 @@ export const useCancelAppointment = () => {
     onSuccess: () =>
       qc.invalidateQueries({ queryKey: appointmentKeys.myList() }),
   });
+};
+
+export const useRescheduleAppointment = () => {
+  const qc = useQueryClient();
+  return useMutation(
+    ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: { date: string; timeSlot: { start: string; end: string } };
+    }) => appointmentService.rescheduleAppointment(id, data),
+    {
+      onSuccess: () =>
+        qc.invalidateQueries({ queryKey: appointmentKeys.myList() }),
+    }
+  );
 };

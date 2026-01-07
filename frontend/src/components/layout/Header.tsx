@@ -79,6 +79,11 @@ export default function Header() {
       href: "/doctor-dashboard",
     },
     { key: "schedule", label: t("nav.schedule"), href: "/schedule" },
+    {
+      key: "doctorAppointments",
+      label: t("nav.appointments"),
+      href: "/doctor/appointments",
+    },
     { key: "patients", label: t("nav.patients"), href: "/patients" },
     { key: "profile", label: t("nav.profile"), href: "/doctor/profile" },
   ];

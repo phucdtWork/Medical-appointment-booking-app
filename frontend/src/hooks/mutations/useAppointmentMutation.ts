@@ -2,6 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNotification } from "@/providers/NotificationProvider";
+import { useTranslations } from "next-intl";
 import {
   appointmentService,
   CreateAppointmentData,
@@ -13,6 +14,7 @@ import { appointmentKeys } from "../queries/useAppointmentsQuery";
 export const useCreateAppointment = () => {
   const queryClient = useQueryClient();
   const notification = useNotification();
+  const t = useTranslations("patientDashboard.notifications");
 
   return useMutation({
     mutationFn: (data: CreateAppointmentData) =>
@@ -20,14 +22,16 @@ export const useCreateAppointment = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: appointmentKeys.myList() });
       notification.success({
-        message: "Thành công",
-        description: "Đặt lịch thành công, chờ bác sĩ xác nhận.",
+        message: t("created") || "Thành công",
+        description:
+          t("createdDescription") ||
+          "Đặt lịch thành công, chờ bác sĩ xác nhận.",
       });
     },
     onError: (error: any) => {
-      const errorMessage = error.response?.data?.error || "Đặt lịch thất bại";
+      const errorMessage = error.response?.data?.error || t("error") || "Lỗi";
       notification.error({
-        message: "Lỗi",
+        message: t("error") || "Lỗi",
         description: errorMessage,
       });
     },
@@ -38,6 +42,7 @@ export const useCreateAppointment = () => {
 export const useUpdateAppointmentStatus = () => {
   const queryClient = useQueryClient();
   const notification = useNotification();
+  const t = useTranslations("patientDashboard.notifications");
 
   return useMutation({
     mutationFn: ({
@@ -48,23 +53,24 @@ export const useUpdateAppointmentStatus = () => {
       data: UpdateAppointmentStatusData;
     }) => appointmentService.updateAppointmentStatus(id, data),
     onSuccess: (_, variables) => {
+      // Invalidate doctor lists for all status filters so UI refreshes regardless
       queryClient.invalidateQueries({
-        queryKey: appointmentKeys.doctorList(),
+        queryKey: appointmentKeys.lists(),
       });
 
       const successMessage =
         variables.data.status === "confirmed"
-          ? "Đã xác nhận lịch hẹn"
-          : "Đã từ chối lịch hẹn";
+          ? t("confirmed") || "Đã xác nhận lịch hẹn"
+          : t("rejected") || "Đã từ chối lịch hẹn";
 
       notification.success({
         message: successMessage,
       });
     },
     onError: (error: any) => {
-      const errorMessage = error.response?.data?.error || "Cập nhật thất bại";
+      const errorMessage = error.response?.data?.error || t("error") || "Lỗi";
       notification.error({
-        message: "Lỗi",
+        message: t("error") || "Lỗi",
         description: errorMessage,
       });
     },
@@ -75,6 +81,7 @@ export const useUpdateAppointmentStatus = () => {
 export const useCancelAppointment = () => {
   const queryClient = useQueryClient();
   const notification = useNotification();
+  const t = useTranslations("patientDashboard.notifications");
 
   return useMutation({
     mutationFn: (id: string) => appointmentService.cancelAppointment(id),
@@ -82,13 +89,43 @@ export const useCancelAppointment = () => {
       // Invalidate patient's appointments
       queryClient.invalidateQueries({ queryKey: appointmentKeys.myList() });
       notification.success({
-        message: "Đã hủy lịch hẹn",
+        message: t("cancelled") || "Đã hủy lịch hẹn",
       });
     },
     onError: (error: any) => {
-      const errorMessage = error.response?.data?.error || "Hủy lịch thất bại";
+      const errorMessage = error.response?.data?.error || t("error") || "Lỗi";
       notification.error({
-        message: "Lỗi",
+        message: t("error") || "Lỗi",
+        description: errorMessage,
+      });
+    },
+  });
+};
+
+// Reschedule appointment (Patient)
+export const useRescheduleAppointment = () => {
+  const queryClient = useQueryClient();
+  const notification = useNotification();
+  const t = useTranslations("patientDashboard.notifications");
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: { date: string; timeSlot: { start: string; end: string } };
+    }) => appointmentService.rescheduleAppointment(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: appointmentKeys.myList() });
+      notification.success({
+        message: t("rescheduled") || "Đã dời lịch hẹn",
+      });
+    },
+    onError: (error: any) => {
+      const errorMessage = error.response?.data?.error || t("error") || "Lỗi";
+      notification.error({
+        message: t("error") || "Lỗi",
         description: errorMessage,
       });
     },

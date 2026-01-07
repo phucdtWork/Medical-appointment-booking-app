@@ -160,6 +160,7 @@
     "loginTitle": "Đăng nhập",
     "welcomeBack": "Chào mừng trở lại",
     "email": "Email",
+    "loading": "Đang tải...",
     "password": "Mật khẩu",
     "emailRequired": "Vui lòng nhập email",
     "emailInvalid": "Email không hợp lệ",
@@ -269,6 +270,7 @@
         "fee": "Chi phí khám"
       }
     },
+    "loading": "Đang xác thực...",
     "stats": {
       "totalPatients": "Tổng bệnh nhân",
       "experience": "Kinh nghiệm",
@@ -330,7 +332,7 @@
           "doctorDashboard": "Bảng điều khiển bác sĩ",
           "appointments": "Lịch hẹn",
           "profile": "Hồ sơ",
-          "schedule": "Lịch",
+          "schedule": "Lịch làm việc",
           "patients": "Bệnh nhân"
         },
         "drawer": {
@@ -459,8 +461,22 @@
       "fee": "Phí khám",
       "viewDoctor": "Xem thông tin bác sĩ",
       "reschedule": "Đổi lịch",
+      "selectTime": "Chọn giờ khám",
+      "noSlots": "Không có khung giờ trống trong ngày này",
       "cancel": "Hủy lịch",
-      "reminder": "Vui lòng đến trước giờ hẹn 15 phút. Nếu cần thay đổi lịch hẹn, vui lòng thông báo trước ít nhất 24 giờ."
+      "reminder": "Vui lòng đến trước giờ hẹn 15 phút. Nếu cần thay đổi lịch hẹn, vui lòng thông báo trước ít nhất 24 giờ.",
+      "rescheduleDisabledTooltip": "Không thể đổi lịch trong vòng 24 giờ trước cuộc hẹn.",
+      "rescheduleTitle": "Dời lịch hẹn",
+      "cancelConfirmTitle": "Xác nhận hủy",
+      "cancelConfirmMessage": "Bạn có chắc chắn muốn hủy lịch này?",
+      "leaveReviewButton": "Đánh giá bác sĩ"
+    },
+    "actions": {
+      "confirm": "Xác nhận",
+      "reject": "Từ chối",
+      "accept": "Chấp nhận",
+      "complete": "Hoàn thành",
+      "cancel": "Hủy"
     },
     "status": {
       "pending": "Chờ xác nhận",
@@ -469,6 +485,27 @@
       "cancelled": "Đã hủy",
       "rejected": "Từ chối",
       "label": "Trạng thái"
+    },
+    "notAvailable": "N/A",
+    "none": "Không có",
+    "noReason": "Không có lý do",
+    "patientInfo": {
+      "location": "Cần Thơ, Việt Nam",
+      "previousVisits": "{count} lượt khám trước đó"
+    },
+    "count": "{count} lịch hẹn",
+    "selectSlotNote": "Chọn một khung giờ để xem chi tiết lịch hẹn",
+    "notifications": {
+      "confirmed": "Đã xác nhận lịch hẹn",
+      "rejected": "Đã từ chối lịch hẹn",
+      "completed": "Đã đánh dấu hoàn thành",
+      "cancelled": "Đã hủy lịch hẹn",
+      "updated": "Cập nhật thành công",
+      "created": "Đã tạo lịch hẹn",
+      "createdDescription": "Lịch hẹn của bạn đã được tạo và đang chờ bác sĩ xác nhận.",
+      "rescheduled": "Đã dời lịch hẹn",
+      "reviewSubmitted": "Cảm ơn bạn đã đánh giá",
+      "error": "Có lỗi xảy ra"
     }
   },
   "scheduleManager": {
@@ -496,6 +533,18 @@
       "to": "đến",
       "addButton": "Thêm thời gian nghỉ"
     }
+  },
+  "doctorAppointments": {
+    "title": "Lịch khám (Tuần)",
+    "subtitle": "Quản lý và theo dõi lịch hẹn của bệnh nhân",
+    "count": "{count} lượt",
+    "noAppointments": "Không có lịch hẹn",
+    "timeLabel": "Giờ",
+    "weekCurrent": "Tuần hiện tại",
+    "prevWeek": "Tuần trước",
+    "today": "Hôm nay",
+    "nextWeek": "Tuần sau",
+    "emptyWeek": "Tuần này bạn rảnh rỗi! 🎉"
   },
   "unauthorized": {
     "title": "Không đủ quyền truy cập",

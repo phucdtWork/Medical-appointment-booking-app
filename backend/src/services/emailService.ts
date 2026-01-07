@@ -197,4 +197,38 @@ export class EmailService {
       return false;
     }
   }
+
+  // Send review reminder email after appointment completion
+  async sendReviewReminder(
+    email: string,
+    patientName: string,
+    doctorName: string,
+    appointmentDate: string
+  ): Promise<void> {
+    const mailOptions = {
+      from: {
+        name: process.env.EMAIL_FROM_NAME || "Healthcare System",
+        address: process.env.EMAIL_USER!,
+      },
+      to: email,
+      subject: `How was your appointment with ${doctorName}?`,
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2 style="color:#1890ff;">Hi ${patientName},</h2>
+          <p>We hope your appointment with <strong>${doctorName}</strong> on <strong>${appointmentDate}</strong> went well.</p>
+          <p>Please take a moment to rate your experience and leave a review to help others.</p>
+          <p><a href="${process.env.FRONTEND_URL}/patient/reviews" target="_blank">Leave a review</a></p>
+          <p>Thank you for using our service!</p>
+          <p>— MediBook Team</p>
+        </div>
+      `,
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      console.log(`Review reminder sent to ${email}`);
+    } catch (err) {
+      console.error("Error sending review reminder:", err);
+    }
+  }
 }

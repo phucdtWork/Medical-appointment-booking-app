@@ -1,29 +1,21 @@
 "use client";
 
-import {
-  Card,
-  Form,
-  DatePicker,
-  Select,
-  Input,
-  Button,
-  Drawer,
-  Spin,
-} from "antd";
+import { Card, Form, DatePicker, Select, Input, Button, Drawer } from "antd";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
   DollarOutlined,
   FileTextOutlined,
 } from "@ant-design/icons";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useCreateAppointment } from "@/hooks";
 import dayjs from "dayjs";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTheme } from "@/providers/ThemeProvider";
 import type { Doctor } from "@/types/doctor";
 import { CreateAppointmentData } from "@/lib/services";
-import scheduleService, { TimeSlot } from "@/lib/services/scheduleService";
+import { DEFAULT_RANGE_SLOTS } from "@/utils/timeSlots";
 
 const { TextArea } = Input;
 
@@ -40,35 +32,16 @@ export default function BookingForm({
 }: BookingFormProps) {
   const t = useTranslations("doctorDetail.booking");
   const { isDark } = useTheme();
+  const router = useRouter();
+  const locale = useLocale();
   const createAppointmentMutation = useCreateAppointment();
   const [form] = Form.useForm();
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
-  const [selectedDateStr, setSelectedDateStr] = useState<string | null>(null);
-  const [slotsLoading, setSlotsLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchSlots = async () => {
-      if (!selectedDateStr) return;
-      setSlotsLoading(true);
-      try {
-        const slots = await scheduleService.getAvailableSlots(
-          doctorId,
-          selectedDateStr
-        );
-        setAvailableSlots(slots || []);
-      } catch (err) {
-        setAvailableSlots([]);
-      } finally {
-        setSlotsLoading(false);
-      }
-    };
-    fetchSlots();
-  }, [selectedDateStr, doctorId]);
+  const timeSlots = DEFAULT_RANGE_SLOTS;
 
   const onFinish = (values: CreateAppointmentData) => {
-    const [start, end] = values.timeSlot?.split("-");
+    const [start, end] = values.timeSlot.split("-");
 
     createAppointmentMutation.mutate(
       {
@@ -85,6 +58,7 @@ export default function BookingForm({
           if (isMobile) {
             setDrawerVisible(false);
           }
+          router.push(locale ? `/${locale}/appointments` : "/appointments");
         },
       }
     );
@@ -114,16 +88,6 @@ export default function BookingForm({
             borderColor: "var(--primary-color)",
           }}
           format="DD/MM/YYYY"
-          onChange={(date) => {
-            if (!date) {
-              setSelectedDateStr(null);
-              setAvailableSlots([]);
-              return;
-            }
-            setSelectedDateStr(date.format("YYYY-MM-DD"));
-            // also set form field value
-            form.setFieldsValue({ date });
-          }}
           disabledDate={(current) => {
             return current && current < dayjs().startOf("day");
           }}
@@ -151,34 +115,12 @@ export default function BookingForm({
           placeholder={t("selectTimePlaceholder")}
           className={isDark ? "dark-select" : ""}
           style={{ borderColor: "var(--primary-color)" }}
-          disabled={slotsLoading || availableSlots.length === 0}
         >
-          {slotsLoading && (
-            <Select.Option value="" disabled key="loading">
-              <div className="flex items-center gap-2">
-                <Spin size="small" />
-                <span>{t("loadingSlots")}</span>
-              </div>
+          {timeSlots.map((slot) => (
+            <Select.Option key={slot} value={slot}>
+              {slot}
             </Select.Option>
-          )}
-
-          {!slotsLoading && availableSlots.length === 0 && (
-            <Select.Option value="" disabled>
-              {t("noSlots")}
-            </Select.Option>
-          )}
-
-          {!slotsLoading &&
-            availableSlots
-              .filter((s) => s.isAvailable)
-              .map((slot) => {
-                const val = `${slot.start}-${slot.end}`;
-                return (
-                  <Select.Option key={val} value={val}>
-                    {val}
-                  </Select.Option>
-                );
-              })}
+          ))}
         </Select>
       </Form.Item>
 
@@ -263,7 +205,7 @@ export default function BookingForm({
         <Button
           type="primary"
           htmlType="submit"
-          loading={createAppointmentMutation.isLoading}
+          loading={createAppointmentMutation.isPending}
           block
           size="large"
           className="h-11 font-semibold"

@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Spin } from "antd";
+import { useTranslations } from "next-intl";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ export default function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { user, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
+  const t = useTranslations("auth");
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -32,7 +34,7 @@ export default function ProtectedRoute({
       <div className="flex justify-center items-center min-h-screen">
         <div className="flex flex-col items-center gap-3">
           <Spin size="large" />
-          <span className="text-sm text-gray-500">Đang xác thực...</span>
+          <span className="text-sm text-gray-500">{t("loading")}</span>
         </div>
       </div>
     );

@@ -34,6 +34,77 @@ export const createAppointment = async (
   }
 };
 
+export const updateMyAppointment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const appointmentId = req.params.id;
+    const { action, date, timeSlot } = req.body;
+
+    const existing = await appointmentService.getAppointmentById(appointmentId);
+
+    // only owner can update
+    if (existing.patientId !== req.user!.userId) {
+      return res.status(403).json({ success: false, message: "Forbidden" });
+    }
+
+    if (action === "cancel") {
+      if (existing.status === "completed") {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: "Cannot cancel a completed appointment",
+          });
+      }
+
+      const updated = await appointmentService.cancelAppointment(appointmentId);
+
+      try {
+        eventBus.emit("appointment", {
+          action: "updated",
+          appointment: updated,
+        });
+      } catch (err) {
+        // ignore
+      }
+
+      return res.json({ success: true, data: updated });
+    }
+
+    if (action === "reschedule") {
+      if (!date || !timeSlot) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Missing date or timeSlot" });
+      }
+
+      const updated = await appointmentService.rescheduleAppointment(
+        appointmentId,
+        date,
+        timeSlot
+      );
+
+      try {
+        eventBus.emit("appointment", {
+          action: "updated",
+          appointment: updated,
+        });
+      } catch (err) {
+        // ignore
+      }
+
+      return res.json({ success: true, data: updated });
+    }
+
+    return res.status(400).json({ success: false, message: "Invalid action" });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const getMyAppointments = async (
   req: Request,
   res: Response,

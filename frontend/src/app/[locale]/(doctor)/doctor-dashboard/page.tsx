@@ -39,6 +39,23 @@ export default function DoctorDashboard() {
 
   const appointments = data?.data || [];
 
+  const sortedAppointments = [...appointments].sort((a, b) => {
+    const aIsToday = dayjs(a.date).isSame(dayjs(), "day");
+    const bIsToday = dayjs(b.date).isSame(dayjs(), "day");
+
+    if (aIsToday && !bIsToday) return -1;
+    if (!aIsToday && bIsToday) return 1;
+
+    const aDate = dayjs(a.date);
+    const bDate = dayjs(b.date);
+    if (!aDate.isSame(bDate, "day")) return aDate.isBefore(bDate) ? -1 : 1;
+
+    // Same day -> compare start times
+    const aStart = a.timeSlot?.start || "00:00";
+    const bStart = b.timeSlot?.start || "00:00";
+    return aStart.localeCompare(bStart);
+  });
+
   // Stats
   const pendingCount = appointments.filter(
     (apt) => apt.status === "pending"
@@ -260,8 +277,8 @@ export default function DoctorDashboard() {
               }
               key="pending"
             >
-              {appointments.length > 0 ? (
-                appointments.map((apt, index) =>
+              {sortedAppointments.length > 0 ? (
+                sortedAppointments.map((apt, index) =>
                   renderAppointmentCard(apt, index)
                 )
               ) : (
@@ -277,8 +294,8 @@ export default function DoctorDashboard() {
               }
               key="confirmed"
             >
-              {appointments.length > 0 ? (
-                appointments.map((apt, index) =>
+              {sortedAppointments.length > 0 ? (
+                sortedAppointments.map((apt, index) =>
                   renderAppointmentCard(apt, index)
                 )
               ) : (
@@ -287,8 +304,8 @@ export default function DoctorDashboard() {
             </TabPane>
 
             <TabPane tab={<span>📋 Tất cả</span>} key="all">
-              {appointments.length > 0 ? (
-                appointments.map((apt, index) =>
+              {sortedAppointments.length > 0 ? (
+                sortedAppointments.map((apt, index) =>
                   renderAppointmentCard(apt, index)
                 )
               ) : (

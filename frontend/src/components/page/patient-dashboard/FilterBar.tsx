@@ -5,7 +5,8 @@ import { Space, Button, Tag, Typography } from "antd";
 import { LeftOutlined, RightOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/vi";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 
 dayjs.locale("vi");
 
@@ -37,6 +38,8 @@ export default function FilterBar({
 }: FilterBarProps) {
   const t = useTranslations("patientDashboard.weekNavigation");
   const tStatus = useTranslations("patientDashboard.status");
+  const router = useRouter();
+  const locale = useLocale();
 
   // Calculate status counts
   const statusCounts = {
@@ -92,7 +95,11 @@ export default function FilterBar({
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={onNewAppointment}
+          onClick={() =>
+            onNewAppointment
+              ? onNewAppointment()
+              : router.push(`/${locale}/doctors`)
+          }
           style={{ backgroundColor: "#1890ff" }}
         >
           {t("newAppointment")}

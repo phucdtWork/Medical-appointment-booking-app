@@ -147,6 +147,8 @@
   "auth": {
     "loginTitle": "Login",
     "welcomeBack": "Welcome back",
+    "loading": "Loading...",
+    "loadingAuth": "Loading...",
     "email": "Email",
     "password": "Password",
     "emailRequired": "Please enter email",
@@ -309,7 +311,7 @@
           "doctorDashboard": "Doctor Dashboard",
           "appointments": "Appointments",
           "profile": "Profile",
-          "schedule": "Schedule",
+          "schedule": "Work Schedule",
           "patients": "Patients"
         },
         "drawer": {
@@ -440,8 +442,22 @@
       "fee": "Consultation Fee",
       "viewDoctor": "View Doctor Information",
       "reschedule": "Reschedule",
+      "selectTime": "Select Time",
+      "noSlots": "No available slots on this date",
       "cancel": "Cancel",
-      "reminder": "Please arrive 15 minutes early. If you need to reschedule, please notify at least 24 hours in advance."
+      "reminder": "Please arrive 15 minutes early. If you need to reschedule, please notify at least 24 hours in advance.",
+      "rescheduleDisabledTooltip": "Rescheduling is disabled within 24 hours before the appointment.",
+      "rescheduleTitle": "Reschedule Appointment",
+      "cancelConfirmTitle": "Confirm cancellation",
+      "cancelConfirmMessage": "Are you sure you want to cancel this appointment?",
+      "leaveReviewButton": "Leave a review"
+    },
+    "actions": {
+      "confirm": "Confirm",
+      "reject": "Reject",
+      "accept": "Accept",
+      "complete": "Complete",
+      "cancel": "Cancel"
     },
     "status": {
       "pending": "Pending",
@@ -450,6 +466,27 @@
       "cancelled": "Cancelled",
       "rejected": "Rejected",
       "label": "Status"
+    },
+    "notAvailable": "N/A",
+    "none": "None",
+    "noReason": "No reason provided",
+    "patientInfo": {
+      "location": "Can Tho, Vietnam",
+      "previousVisits": "{count} previous visits"
+    },
+    "count": "{count} appointments",
+    "selectSlotNote": "Select a slot to view appointment details",
+    "notifications": {
+      "confirmed": "Appointment confirmed",
+      "rejected": "Appointment rejected",
+      "completed": "Marked as completed",
+      "cancelled": "Appointment cancelled",
+      "updated": "Updated successfully",
+      "created": "Appointment created",
+      "createdDescription": "Your appointment has been created and is awaiting doctor confirmation.",
+      "rescheduled": "Appointment rescheduled",
+      "reviewSubmitted": "Thank you for your review",
+      "error": "An error occurred"
     }
   },
   "scheduleManager": {
@@ -477,6 +514,18 @@
       "to": "to",
       "addButton": "Add Break Time"
     }
+  },
+  "doctorAppointments": {
+    "title": "Appointments (Weekly)",
+    "subtitle": "Manage and monitor patient appointments",
+    "count": "{count} items",
+    "noAppointments": "No appointments",
+    "timeLabel": "Time",
+    "weekCurrent": "Current Week",
+    "prevWeek": "Previous Week",
+    "today": "Today",
+    "nextWeek": "Next Week",
+    "emptyWeek": "You're free this week! 🎉"
   },
   "unauthorized": {
     "title": "Access Denied",

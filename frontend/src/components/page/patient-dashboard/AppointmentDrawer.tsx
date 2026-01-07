@@ -1,7 +1,21 @@
 "use client";
 
-import React from "react";
-import { Drawer, Button, Space, Tag, Descriptions, Divider } from "antd";
+import React, { useState } from "react";
+import ReviewModal from "@/components/ui/ReviewModal";
+import {
+  App,
+  Drawer,
+  Button,
+  Space,
+  Tag,
+  Descriptions,
+  Divider,
+  Tooltip,
+  Modal,
+  DatePicker,
+  Select,
+  message,
+} from "antd";
 import {
   CloseOutlined,
   CalendarOutlined,
@@ -13,9 +27,14 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
+import scheduleService, { TimeSlot } from "@/lib/services/scheduleService";
 import "dayjs/locale/vi";
 import { useTranslations } from "next-intl";
+import {
+  useCancelAppointment,
+  useRescheduleAppointment,
+} from "@/hooks/mutations/useAppointmentMutation";
 
 dayjs.locale("vi");
 
@@ -73,11 +92,21 @@ export default function AppointmentDrawer({
   onClose,
   onReschedule,
   onCancel,
-  onViewDoctor,
   isDark = false,
 }: AppointmentDrawerProps) {
   const t = useTranslations("patientDashboard.appointmentDrawer");
   const tStatus = useTranslations("patientDashboard.status");
+  const [showReview, setShowReview] = useState(false);
+  const [rescheduleVisible, setRescheduleVisible] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+  const [selectedDateStr, setSelectedDateStr] = useState<string | null>(null);
+  const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+
+  const cancelMutation = useCancelAppointment();
+  const rescheduleMutation = useRescheduleAppointment();
+  const { modal } = App.useApp();
 
   if (!appointment) return null;
 
@@ -85,6 +114,10 @@ export default function AppointmentDrawer({
   const appointmentDate = dayjs(appointment.date);
   const canModify =
     appointment.status === "pending" || appointment.status === "confirmed";
+
+  // Allow reschedule only when appointment is still pending and more than 24 hours away
+  const hoursUntil = appointmentDate.diff(dayjs(), "hour");
+  const canReschedule = appointment.status === "pending" && hoursUntil > 24;
 
   return (
     <Drawer
@@ -104,16 +137,64 @@ export default function AppointmentDrawer({
           <Space>
             {appointment.status !== "cancelled" && (
               <>
-                <Button
-                  icon={<EditOutlined />}
-                  onClick={() => onReschedule?.(appointment.id)}
+                <Tooltip
+                  title={
+                    !canReschedule ? t("rescheduleDisabledTooltip") : undefined
+                  }
                 >
-                  {t("reschedule")}
-                </Button>
+                  <Button
+                    icon={<EditOutlined />}
+                    onClick={() => {
+                      // open internal reschedule modal
+                      const d = dayjs(appointment.date);
+                      setSelectedDate(d);
+                      setSelectedDateStr(d.format("YYYY-MM-DD"));
+                      setSelectedSlot(
+                        `${appointment.timeSlot.start}-${appointment.timeSlot.end}`
+                      );
+                      // preload slots for the selected date
+                      (async () => {
+                        setSlotsLoading(true);
+                        try {
+                          const slots = await scheduleService.getAvailableSlots(
+                            appointment.doctorId,
+                            d.format("YYYY-MM-DD")
+                          );
+                          setAvailableSlots(slots || []);
+                        } catch (err) {
+                          setAvailableSlots([]);
+                        } finally {
+                          setSlotsLoading(false);
+                        }
+                      })();
+                      setRescheduleVisible(true);
+                    }}
+                    disabled={!canReschedule}
+                  >
+                    {t("reschedule")}
+                  </Button>
+                </Tooltip>
                 <Button
                   danger
                   icon={<DeleteOutlined />}
-                  onClick={() => onCancel?.(appointment.id)}
+                  onClick={() => {
+                    modal.confirm({
+                      title: t("cancelConfirmTitle") || "Xác nhận hủy",
+                      content:
+                        t("cancelConfirmMessage") ||
+                        "Bạn có chắc chắn muốn hủy lịch này?",
+                      onOk: async () => {
+                        try {
+                          await cancelMutation.mutateAsync(appointment.id);
+                          onCancel?.(appointment.id);
+                          onClose();
+                        } catch (e) {
+                          // errors handled by mutation
+                          message.error("Failed to cancel appointment: " + e);
+                        }
+                      },
+                    });
+                  }}
                 >
                   {t("cancel")}
                 </Button>
@@ -274,23 +355,6 @@ export default function AppointmentDrawer({
           </Descriptions.Item>
         </Descriptions>
 
-        {/* Actions */}
-        {appointment.doctorInfo && (
-          <div className="mt-6">
-            <Button
-              block
-              size="large"
-              onClick={() => onViewDoctor?.(appointment.doctorId)}
-              style={{
-                borderColor: "#1890ff",
-                color: "#1890ff",
-              }}
-            >
-              <UserOutlined /> {t("viewDoctor")}
-            </Button>
-          </div>
-        )}
-
         {/* Note */}
         <div
           className={`p-4 rounded-lg text-sm ${
@@ -299,6 +363,112 @@ export default function AppointmentDrawer({
         >
           {t("reminder")}
         </div>
+        {/* Review action for completed appointments */}
+        {appointment.status === "completed" && (
+          <div className="mt-4">
+            <Button
+              block
+              type="primary"
+              onClick={() => setShowReview(true)}
+              style={{ background: "#1890ff", borderColor: "#1890ff" }}
+            >
+              {t("leaveReviewButton")}
+            </Button>
+          </div>
+        )}
+        <ReviewModal
+          open={showReview}
+          doctorId={appointment.doctorId}
+          appointmentId={appointment.id}
+          onClose={() => setShowReview(false)}
+        />
+        <Modal
+          title={t("rescheduleTitle") || "Dời lịch hẹn"}
+          open={rescheduleVisible}
+          onCancel={() => setRescheduleVisible(false)}
+          okText={t("reschedule")}
+          confirmLoading={(rescheduleMutation as any).isLoading}
+          onOk={async () => {
+            if (!selectedDate || !selectedSlot) return;
+            try {
+              const [start, end] = selectedSlot.split("-");
+              const payload = {
+                date: selectedDate.startOf("day").toISOString(),
+                timeSlot: { start, end },
+              };
+              await rescheduleMutation.mutateAsync({
+                id: appointment.id,
+                data: payload,
+              });
+              setRescheduleVisible(false);
+              onReschedule?.(appointment.id);
+              onClose();
+            } catch (e) {
+              // mutation displays error notifications
+            }
+          }}
+        >
+          <div className="space-y-4">
+            <DatePicker
+              value={selectedDate}
+              onChange={(d) => {
+                setSelectedDate(d);
+                if (!d) {
+                  setSelectedDateStr(null);
+                  setAvailableSlots([]);
+                  setSelectedSlot(null);
+                  return;
+                }
+                const str = d.format("YYYY-MM-DD");
+                setSelectedDateStr(str);
+                (async () => {
+                  setSlotsLoading(true);
+                  try {
+                    const slots = await scheduleService.getAvailableSlots(
+                      appointment.doctorId,
+                      str
+                    );
+                    setAvailableSlots(slots || []);
+                  } catch (err) {
+                    setAvailableSlots([]);
+                    message.error("Failed to load available slots: " + err);
+                  } finally {
+                    setSlotsLoading(false);
+                  }
+                })();
+              }}
+              disabledDate={(current) => {
+                return current && current < dayjs().startOf("day");
+              }}
+              style={{ width: "100%" }}
+            />
+
+            <Select
+              placeholder={t("selectTime")}
+              value={selectedSlot ?? undefined}
+              onChange={(val) => setSelectedSlot(val)}
+              style={{ width: "100%" }}
+              loading={slotsLoading}
+              disabled={!selectedDateStr || slotsLoading}
+            >
+              {!slotsLoading && availableSlots.length === 0 && (
+                <Select.Option value="" disabled>
+                  {t("noSlots")}
+                </Select.Option>
+              )}
+              {availableSlots
+                .filter((s) => s.isAvailable)
+                .map((s) => {
+                  const val = `${s.start}-${s.end}`;
+                  return (
+                    <Select.Option key={val} value={val}>
+                      {val}
+                    </Select.Option>
+                  );
+                })}
+            </Select>
+          </div>
+        </Modal>
       </div>
     </Drawer>
   );

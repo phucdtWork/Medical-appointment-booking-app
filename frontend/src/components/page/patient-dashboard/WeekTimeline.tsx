@@ -5,28 +5,12 @@ import { Card, Button, Empty } from "antd";
 import { PlusOutlined, CalendarOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/vi";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import type { Appointment } from "@/types/appointment";
+import { DEFAULT_TIMES } from "@/utils/timeSlots";
+import { useRouter } from "next/navigation";
 
 dayjs.locale("vi");
-
-interface Appointment {
-  id: string;
-  date: string | Date;
-  status: "pending" | "confirmed" | "completed" | "cancelled" | "rejected";
-  timeSlot: {
-    start: string;
-    end: string;
-  };
-  doctorId: string;
-  reason: string;
-  fee: number;
-  doctorInfo?: {
-    fullName: string;
-    specialization: string;
-    hospital?: string;
-    avatar?: string;
-  };
-}
 
 interface WeekTimelineProps {
   selectedWeek: Dayjs;
@@ -36,18 +20,7 @@ interface WeekTimelineProps {
   isDark?: boolean;
 }
 
-const TIME_SLOTS = [
-  "08:00",
-  "08:30",
-  "09:00",
-  "09:30",
-  "10:00",
-  "10:30",
-  "14:00",
-  "14:30",
-  "15:00",
-  "15:30",
-];
+const TIME_SLOTS = DEFAULT_TIMES;
 
 const STATUS_COLORS = {
   pending: { bg: "#fff7e6", border: "#ffa940", text: "#d46b08" },
@@ -64,6 +37,8 @@ export default function WeekTimeline({
   isDark = false,
 }: WeekTimelineProps) {
   const t = useTranslations("patientDashboard");
+  const locale = useLocale();
+  const router = useRouter();
   const startOfWeek = selectedWeek.startOf("week").add(1, "day"); // Monday
   const weekDays = Array.from({ length: 7 }, (_, i) =>
     startOfWeek.add(i, "day")
@@ -153,7 +128,7 @@ export default function WeekTimeline({
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={onNewAppointment}
+            onClick={() => router.push(`/${locale}/doctors`)}
             size="large"
           >
             {t("weekNavigation.newAppointment")}

@@ -2,6 +2,7 @@ import React from "react";
 import { TimePicker, Button, Select, Divider, Switch } from "antd";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { WeeklySchedule, TimeRange } from "@/lib/services/scheduleService";
+import { DEFAULT_PERIODS } from "@/utils/timeSlots";
 import dayjs from "dayjs";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -41,7 +42,13 @@ const WorkingHoursForm: React.FC<WorkingHoursFormProps> = ({
 
   const handleAddRange = (day: keyof WeeklySchedule) => {
     const currentRanges = workingHours[day];
-    handleDayChange(day, [...currentRanges, { start: "09:00", end: "17:00" }]);
+    const defaultStart = DEFAULT_PERIODS[0]?.start || "09:00";
+    const defaultEnd =
+      DEFAULT_PERIODS[DEFAULT_PERIODS.length - 1]?.end || "17:00";
+    handleDayChange(day, [
+      ...currentRanges,
+      { start: defaultStart, end: defaultEnd },
+    ]);
   };
 
   const handleRemoveRange = (day: keyof WeeklySchedule, index: number) => {

@@ -15,9 +15,9 @@ export default function PatientLayout({
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Layout>
-        <Header />D
+        <Header />
         <ProtectedRoute requireRole="patient">
-          <Content className="p-6">{children}</Content>
+          <Content>{children}</Content>
         </ProtectedRoute>
       </Layout>
       <Footer />

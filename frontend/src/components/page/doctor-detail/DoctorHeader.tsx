@@ -16,8 +16,8 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import type { Doctor } from "@/types/doctor";
 import Image from "next/image";
-import { formatCurrency, formatPriceRange } from "@/utils/currency";
-import { truncateText, getTextWithTooltip } from "@/utils/text";
+import { formatPriceRange } from "@/utils/currency";
+import { getTextWithTooltip } from "@/utils/text";
 
 interface DoctorHeaderProps {
   doctor: Doctor;
@@ -106,7 +106,6 @@ export default function DoctorHeader({ doctor }: DoctorHeaderProps) {
         }}
       >
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-8">
-          {/* Left: Avatar & Basic Info */}
           <div
             className={`flex flex-col items-center pb-6 lg:pb-0 lg:border-r-2 lg:pr-8`}
             style={{

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Card, Empty } from "antd";
+import { Card, Empty, Skeleton } from "antd";
 
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
@@ -23,49 +23,25 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 dayjs.locale("vi");
 
-interface Appointment {
-  id: string;
-  date: Date | string;
-  status: "pending" | "confirmed" | "completed" | "cancelled" | "rejected";
-  timeSlot: {
-    start: string;
-    end: string;
-  };
-  doctorId: string;
-  reason: string;
-  notes?: string;
-  fee: number;
-  doctorInfo?: {
-    fullName: string;
-    specialization: string;
-    hospital?: string;
-    avatar?: string;
-  };
-}
+import type { Appointment } from "@/types/appointment";
 
-interface PatientDashboardProps {
-  appointments?: Appointment[];
-  onNewAppointment?: () => void;
+type PatientDashboardPropsPartial = {
   onReschedule?: (appointmentId: string) => void;
   onCancel?: (appointmentId: string) => void;
   onViewDoctor?: (doctorId: string) => void;
   isDark?: boolean;
-}
-
-type SortBy = "date" | "fee" | "status" | "doctorName" | "none";
-type SortOrder = "asc" | "desc";
+};
 
 export default function PatientDashboard({
-  onNewAppointment,
   onReschedule,
   onCancel,
   onViewDoctor,
-}: Omit<PatientDashboardProps, "appointments">) {
+}: PatientDashboardPropsPartial) {
   const { isDark } = useTheme();
   const t = useTranslations("patientDashboard");
 
   // Fetch appointments from API
-  const { data: apiData } = useMyAppointments();
+  const { data: apiData, isLoading } = useMyAppointments();
 
   const appointments = useMemo(
     () => (Array.isArray(apiData?.data) ? apiData.data : []),
@@ -78,10 +54,7 @@ export default function PatientDashboard({
     useState<Appointment | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const [sortBy, setSortBy] = useState<SortBy>("none");
-  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
-
-  const filteredAndSortedAppointments = useMemo(() => {
+  const filteredAppointments = useMemo(() => {
     const appts = Array.isArray(appointments) ? appointments : [];
 
     let filtered = [...appts];
@@ -101,51 +74,8 @@ export default function PatientDashboard({
       );
     });
 
-    if (sortBy !== "none") {
-      const sorted = filtered.sort((a, b) => {
-        let compareValue = 0;
-
-        switch (sortBy) {
-          case "date":
-            compareValue =
-              new Date(a.date).getTime() - new Date(b.date).getTime();
-            break;
-
-          case "fee":
-            compareValue = a.fee - b.fee;
-            break;
-
-          case "status": {
-            const statusOrder = {
-              pending: 0,
-              confirmed: 1,
-              completed: 2,
-              cancelled: 3,
-            };
-            compareValue =
-              statusOrder[a.status as keyof typeof statusOrder] -
-              statusOrder[b.status as keyof typeof statusOrder];
-            break;
-          }
-
-          case "doctorName":
-            compareValue = (a.doctorInfo?.fullName || "").localeCompare(
-              b.doctorInfo?.fullName || ""
-            );
-            break;
-
-          default:
-            compareValue = 0;
-        }
-
-        return sortOrder === "asc" ? compareValue : -compareValue;
-      });
-
-      return sorted;
-    }
-
     return filtered;
-  }, [appointments, statusFilter, selectedWeek, sortBy, sortOrder]);
+  }, [appointments, statusFilter, selectedWeek]);
 
   const handleStatusFilterChange = (status: string) => {
     if (status === "") {
@@ -211,19 +141,30 @@ export default function PatientDashboard({
               onWeekChange={setSelectedWeek}
               statusFilter={statusFilter}
               onStatusFilterChange={handleStatusFilterChange}
-              appointments={filteredAndSortedAppointments}
-              onNewAppointment={onNewAppointment}
+              appointments={filteredAppointments}
               isDark={isDark}
             />
           </div>
         </Card>
 
-        {filteredAndSortedAppointments.length > 0 ? (
+        {isLoading ? (
+          <Card
+            className={`shadow-md border-2 ${
+              isDark
+                ? "bg-slate-800 border-slate-700"
+                : "bg-white border-gray-200"
+            }`}
+            style={{ borderColor: isDark ? undefined : "var(--primary-color)" }}
+          >
+            <div className="p-6">
+              <Skeleton active paragraph={{ rows: 6 }} />
+            </div>
+          </Card>
+        ) : filteredAppointments.length > 0 ? (
           <WeekTimeline
             selectedWeek={selectedWeek}
-            appointments={filteredAndSortedAppointments}
+            appointments={filteredAppointments}
             onAppointmentClick={handleAppointmentClick}
-            onNewAppointment={onNewAppointment}
             isDark={isDark}
           />
         ) : (
