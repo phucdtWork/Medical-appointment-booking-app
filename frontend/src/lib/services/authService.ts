@@ -1,5 +1,7 @@
 import api from "../api/axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useNotification } from "@/providers/NotificationProvider";
 
 export interface RegisterData {
   email: string;
@@ -56,6 +58,12 @@ export const authService = {
     return response.data;
   },
 
+  // Google Login - send Firebase ID token to backend
+  googleLogin: async (idToken: string): Promise<AuthResponse> => {
+    const response = await api.post("/auth/google", { idToken });
+    return response.data;
+  },
+
   // Get current user
   getMe: async () => {
     const response = await api.get("/auth/me");
@@ -90,4 +98,32 @@ export const useLogin = () => {
       },
     }
   );
+};
+
+export const useGoogleLogin = () => {
+  const qc = useQueryClient();
+  const router = useRouter();
+  const notification = useNotification();
+
+  return useMutation({
+    mutationFn: (idToken: string) => authService.googleLogin(idToken),
+    onSuccess: (res: any) => {
+      const token = res.data.token;
+      const user = res.data.user;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      qc.invalidateQueries(["me"]);
+
+      notification.success({ message: "Đăng nhập bằng Google thành công!" });
+      router.push("/");
+    },
+    onError: (error: any) => {
+      console.error("Google login failed:", error);
+      const message =
+        error?.response?.data?.error ||
+        error?.message ||
+        "Đăng nhập bằng Google thất bại";
+      notification.error({ message: "Lỗi", description: message });
+    },
+  });
 };

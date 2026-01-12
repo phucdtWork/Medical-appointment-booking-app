@@ -13,6 +13,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { formatCurrency } from "@/utils/currency";
 import { Appointment } from "@/types/appointment";
 import { useUpdateAppointmentStatus } from "@/hooks/mutations/useAppointmentMutation";
+import { useTheme } from "@/providers/ThemeProvider";
 
 dayjs.extend(weekOfYear);
 dayjs.extend(isSameOrBefore);
@@ -23,6 +24,8 @@ export default function DoctorAppointmentsPage() {
   const t = useTranslations("doctorAppointments");
   const locale = useLocale();
   const { data: apiData } = useDoctorAppointments();
+
+  const { isDark } = useTheme();
 
   const appointments = useMemo(
     () => (Array.isArray(apiData?.data) ? apiData.data : []),
@@ -74,8 +77,12 @@ export default function DoctorAppointmentsPage() {
     }
   };
 
+  const bgClass = isDark
+    ? "min-h-screen bg-background-dark text-white py-8"
+    : "min-h-screen bg-gray-50 py-8";
+
   return (
-    <div className="min-h-screen py-8">
+    <div className={bgClass}>
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-2xl font-semibold mb-4">{t("title")}</h2>
 

@@ -21,7 +21,8 @@ export interface PatientInfo {
 export interface DoctorInfo {
   id: string;
   fullName?: string;
-  specialty?: string;
+  specialization?: string;
+  hospital?: string;
 }
 
 export interface Appointment {

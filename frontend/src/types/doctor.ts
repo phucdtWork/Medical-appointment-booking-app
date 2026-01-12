@@ -10,7 +10,7 @@ export interface ConsultationFee {
  * Doctor information details
  */
 export interface DoctorInfo {
-  specialization: string; // e.g., "neurology", "cardiology"
+  specialization: string;
   licenseNumber: string; // Medical license number
   yearsOfExperience: number; // Years of experience
   education: string[]; // List of education/certifications

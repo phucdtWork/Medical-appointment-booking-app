@@ -431,7 +431,7 @@ export default function DoctorTabs({
           borderColor: "var(--primary-color)",
         }}
       >
-        <Tabs defaultActiveKey="info" className="mb-5" items={tabItems} />
+        variant="plain"
       </Card>
     </>
   );

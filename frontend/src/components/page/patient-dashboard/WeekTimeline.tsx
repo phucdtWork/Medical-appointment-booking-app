@@ -44,9 +44,9 @@ export default function WeekTimeline({
     startOfWeek.add(i, "day")
   );
 
-  // Group appointments by date and time
-  const getAppointmentForSlot = (date: Dayjs, time: string) => {
-    return appointments.find((apt) => {
+  // Return all appointments for a given date and time slot (may be multiple)
+  const getAppointmentsForSlot = (date: Dayjs, time: string) => {
+    return appointments.filter((apt) => {
       const aptDate = dayjs(apt.date);
       return (
         aptDate.format("YYYY-MM-DD") === date.format("YYYY-MM-DD") &&
@@ -203,7 +203,7 @@ export default function WeekTimeline({
                   {time}
                 </td>
                 {weekDays.map((day) => {
-                  const appointment = getAppointmentForSlot(day, time);
+                  const slotAppointments = getAppointmentsForSlot(day, time);
                   return (
                     <td
                       key={`${day.format("YYYY-MM-DD")}-${time}`}
@@ -212,8 +212,12 @@ export default function WeekTimeline({
                         backgroundColor: isDark ? "#0f172a" : "#ffffff",
                       }}
                     >
-                      {appointment ? (
-                        <AppointmentBlock appointment={appointment} />
+                      {slotAppointments.length > 0 ? (
+                        <div className="flex flex-col gap-1">
+                          {slotAppointments.map((a) => (
+                            <AppointmentBlock key={a.id} appointment={a} />
+                          ))}
+                        </div>
                       ) : (
                         <div style={{ minHeight: "60px" }} />
                       )}
@@ -256,7 +260,7 @@ export default function WeekTimeline({
                   {time}
                 </td>
                 {weekDays.map((day) => {
-                  const appointment = getAppointmentForSlot(day, time);
+                  const slotAppointments = getAppointmentsForSlot(day, time);
                   return (
                     <td
                       key={`${day.format("YYYY-MM-DD")}-${time}`}
@@ -265,8 +269,12 @@ export default function WeekTimeline({
                         backgroundColor: isDark ? "#0f172a" : "#ffffff",
                       }}
                     >
-                      {appointment ? (
-                        <AppointmentBlock appointment={appointment} />
+                      {slotAppointments.length > 0 ? (
+                        <div className="flex flex-col gap-1">
+                          {slotAppointments.map((a) => (
+                            <AppointmentBlock key={a.id} appointment={a} />
+                          ))}
+                        </div>
                       ) : (
                         <div style={{ minHeight: "60px" }} />
                       )}

@@ -4,6 +4,14 @@ import { Form, Input, Button, Card, Divider } from "antd";
 import { UserOutlined, LockOutlined, GoogleOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useLogin } from "@/hooks";
+import { useGoogleLogin } from "@/lib/services/authService";
+import getFirebaseAuth from "@/lib/firebaseClient";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+} from "firebase/auth";
 import { useAuth } from "@/hooks";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -14,6 +22,7 @@ import { Logo } from "@/components/ui";
 export default function LoginPage() {
   const t = useTranslations("auth");
   const loginMutation = useLogin();
+  const googleMutation = useGoogleLogin();
   const { isAuthenticated } = useAuth();
   const router = useRouter();
   const { isDark } = useTheme();
@@ -24,8 +33,45 @@ export default function LoginPage() {
     }
   }, [isAuthenticated, router]);
 
+  // If a redirect sign-in was used, handle the result here
+  useEffect(() => {
+    const handleRedirectResult = async () => {
+      try {
+        const auth = getFirebaseAuth();
+        const result = await getRedirectResult(auth);
+        if (result?.user) {
+          const idToken = await result.user.getIdToken();
+          googleMutation.mutate(idToken);
+        }
+      } catch (err) {
+        console.error("getRedirectResult error:", err);
+      }
+    };
+
+    handleRedirectResult();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onFinish = (values: any) => {
     loginMutation.mutate(values);
+  };
+
+  const handleGoogle = async () => {
+    const auth = getFirebaseAuth();
+    const provider = new GoogleAuthProvider();
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const idToken = await result.user.getIdToken();
+      googleMutation.mutate(idToken);
+    } catch (err: any) {
+      console.warn("signInWithPopup failed, falling back to redirect:", err);
+      try {
+        await signInWithRedirect(auth, provider);
+      } catch (redirectErr) {
+        console.error("signInWithRedirect failed:", redirectErr);
+      }
+    }
   };
 
   // Dark mode classes
@@ -56,7 +102,7 @@ export default function LoginPage() {
           onFinish={onFinish}
           layout="vertical"
           size="large"
-          autoComplete="off"
+          autoComplete="on"
         >
           <Form.Item
             label={<span className={textPrimary}>{t("email")}</span>}
@@ -69,6 +115,7 @@ export default function LoginPage() {
             <Input
               prefix={<UserOutlined className={textSecondary} />}
               placeholder="your.email@example.com"
+              autoComplete="email"
               className={isDark ? "bg-gray-700 border-gray-600 text-white" : ""}
             />
           </Form.Item>
@@ -84,6 +131,7 @@ export default function LoginPage() {
             <Input.Password
               prefix={<LockOutlined className={textSecondary} />}
               placeholder="••••••••"
+              autoComplete="current-password"
               className={isDark ? "bg-gray-700 border-gray-600 text-white" : ""}
             />
           </Form.Item>
@@ -132,11 +180,10 @@ export default function LoginPage() {
         {/* Google Login */}
         <Button
           icon={<GoogleOutlined />}
-          variant="outline"
-          color={"primary"}
-          size="large"
+          onClick={handleGoogle}
+          loading={googleMutation.isLoading}
           block
-          className="mb-6 bg-red-500"
+          className="mb-6 bg-red-500 flex items-center justify-center"
         >
           {t("loginWithGoogle")}
         </Button>

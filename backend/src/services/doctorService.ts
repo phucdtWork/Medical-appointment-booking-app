@@ -1,11 +1,24 @@
 import { db } from "../config/firebase";
 import { User } from "../models/User";
 
+// Simple in-memory cache for doctors list to avoid repeating expensive reads
+// Cache key is JSON.stringify(filters). TTL is short (30s) in dev; adjust as needed.
+const doctorsCache: Map<string, { data: User[]; expiresAt: number }> =
+  new Map();
+
 export class DoctorService {
   async getDoctors(filters?: {
     specialization?: string;
     minRating?: number;
   }): Promise<User[]> {
+    const cacheKey = JSON.stringify(filters || {});
+    const cached = doctorsCache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now()) {
+      console.log("doctorService.getDoctors: cache hit", cacheKey);
+      return cached.data;
+    }
+
+    const start = Date.now();
     let query = db.collection("users").where("role", "==", "doctor");
 
     if (filters?.specialization) {
@@ -30,6 +43,16 @@ export class DoctorService {
     }
 
     doctors.forEach((doc) => delete (doc as any).password);
+    const duration = Date.now() - start;
+    console.log(
+      `doctorService.getDoctors: fetched ${doctors.length} doctors in ${duration}ms`
+    );
+
+    // store in cache for 30s
+    doctorsCache.set(cacheKey, {
+      data: doctors,
+      expiresAt: Date.now() + 30_000,
+    });
 
     return doctors;
   }
@@ -99,7 +122,7 @@ export class DoctorService {
         ({
           id: ref.id,
           ...doctorsData[index],
-        } as User)
+        }) as User
     );
   }
 }

@@ -1,7 +1,6 @@
 import api from "../api/axios";
 import { useQuery } from "@tanstack/react-query";
 import type {
-  Doctor,
   DoctorFilters as DoctorFiltersType,
   DoctorsResponse as DoctorsResponseType,
   DoctorResponse as DoctorResponseType,

@@ -29,6 +29,7 @@ import {
 } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import scheduleService, { TimeSlot } from "@/lib/services/scheduleService";
+import type { Appointment } from "@/types/appointment";
 import "dayjs/locale/vi";
 import { useTranslations } from "next-intl";
 import {
@@ -37,26 +38,6 @@ import {
 } from "@/hooks/mutations/useAppointmentMutation";
 
 dayjs.locale("vi");
-
-interface Appointment {
-  id: string;
-  date: string | Date;
-  status: "pending" | "confirmed" | "completed" | "cancelled" | "rejected";
-  timeSlot: {
-    start: string;
-    end: string;
-  };
-  doctorId: string;
-  reason: string;
-  notes?: string;
-  fee: number;
-  doctorInfo?: {
-    fullName: string;
-    specialization: string;
-    hospital?: string;
-    avatar?: string;
-  };
-}
 
 interface AppointmentDrawerProps {
   open: boolean;
@@ -163,6 +144,9 @@ export default function AppointmentDrawer({
                           setAvailableSlots(slots || []);
                         } catch (err) {
                           setAvailableSlots([]);
+                          message.error(
+                            "Failed to load available slots: " + err
+                          );
                         } finally {
                           setSlotsLoading(false);
                         }
@@ -350,7 +334,7 @@ export default function AppointmentDrawer({
             }
           >
             <span className="text-lg font-bold text-blue-600">
-              {appointment.fee.toLocaleString()}đ
+              {(appointment.fee ?? 0).toLocaleString()}đ
             </span>
           </Descriptions.Item>
         </Descriptions>
@@ -387,7 +371,7 @@ export default function AppointmentDrawer({
           open={rescheduleVisible}
           onCancel={() => setRescheduleVisible(false)}
           okText={t("reschedule")}
-          confirmLoading={(rescheduleMutation as any).isLoading}
+          confirmLoading={rescheduleMutation.isLoading}
           onOk={async () => {
             if (!selectedDate || !selectedSlot) return;
             try {
@@ -405,6 +389,7 @@ export default function AppointmentDrawer({
               onClose();
             } catch (e) {
               // mutation displays error notifications
+              message.error("Failed to reschedule appointment: " + e);
             }
           }}
         >

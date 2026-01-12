@@ -93,6 +93,24 @@ export const login = async (
   }
 };
 
+// Google sign-in / register
+export const googleAuth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idToken } = req.body;
+    if (!idToken) return res.status(400).json({ error: "idToken is required" });
+
+    const result = await authService.googleSignIn(idToken);
+
+    res.json({ success: true, data: result });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
 export const getMe = async (
   req: Request,
   res: Response,

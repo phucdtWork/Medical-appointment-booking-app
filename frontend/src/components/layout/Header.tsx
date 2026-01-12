@@ -63,29 +63,22 @@ export default function Header() {
 
   // User menu (when logged in)
   const patientNav = [
-    { key: "doctors", label: t("nav.doctors"), href: "/doctors" },
+    { key: "profile", label: t("nav.profile"), href: "/patient/profile" },
     {
       key: "appointments",
       label: t("nav.appointments"),
       href: "/appointments",
     },
-    { key: "profile", label: t("nav.profile"), href: "/patient/profile" },
   ];
 
   const doctorNav = [
-    {
-      key: "doctorDashboard",
-      label: t("nav.doctorDashboard"),
-      href: "/doctor-dashboard",
-    },
+    { key: "profile", label: t("nav.profile"), href: "/doctor/profile" },
     { key: "schedule", label: t("nav.schedule"), href: "/schedule" },
     {
       key: "doctorAppointments",
       label: t("nav.appointments"),
       href: "/doctor/appointments",
     },
-    { key: "patients", label: t("nav.patients"), href: "/patients" },
-    { key: "profile", label: t("nav.profile"), href: "/doctor/profile" },
   ];
 
   const roleNav = user?.role === "doctor" ? doctorNav : patientNav;
@@ -215,20 +208,6 @@ export default function Header() {
                 <p className={`text-lg`}>{item.label}</p>
               </Link>
             ))}
-
-            {isAuthenticated && (
-              <div className="mt-4">
-                <div className="text-sm font-semibold mb-2">
-                  {user?.role === "doctor"
-                    ? t("nav.doctorDashboard")
-                    : t("nav.patientAppointment")}
-                </div>
-                <UserDropdown
-                  variant="list"
-                  onItemClick={() => setDrawerOpen(false)}
-                />
-              </div>
-            )}
           </nav>
 
           {/* Theme Segmented */}

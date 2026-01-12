@@ -6,6 +6,7 @@ import {
   requestOtp,
   verifyAndRegister,
   resendOtp,
+  googleAuth,
 } from "../controllers/authController";
 import { authenticate } from "../middleware/auth";
 import { uploadAvatar } from "../config/multer";
@@ -18,6 +19,7 @@ router.post("/register/verify-otp", verifyAndRegister);
 router.post("/register/resend-otp", resendOtp);
 
 router.post("/login", login);
+router.post("/google", googleAuth);
 router.get("/me", authenticate, getMe);
 router.put("/me", authenticate, uploadAvatar.single("avatar"), editProfile);
 

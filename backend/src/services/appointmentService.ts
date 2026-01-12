@@ -40,7 +40,7 @@ export class AppointmentService {
     const payload: any = {
       patientId: appointmentData.patientId!,
       doctorId: appointmentData.doctorId!,
-      date: appointmentData.date!,
+      date: new Date(appointmentData.date as any),
       timeSlot: appointmentData.timeSlot!,
       status: "pending",
       reason: appointmentData.reason!,
@@ -352,7 +352,7 @@ export class AppointmentService {
     }
 
     await docRef.update({
-      date: newDate,
+      date: new Date(newDate as any),
       timeSlot: newTimeSlot,
       updatedAt: new Date(),
     });

@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt, { type Secret, type SignOptions } from "jsonwebtoken";
 import { db } from "../config/firebase";
+import { auth } from "../config/firebase";
 import { User } from "../models/User";
 import { uploadAvatar } from "../config/multer";
 import uploadService, { UploadService } from "./uploadService";
@@ -124,6 +125,55 @@ export class AuthService {
     delete (user as any).password;
 
     return user;
+  }
+
+  // Google sign-in / register (accepts Firebase ID token)
+  async googleSignIn(idToken: string): Promise<{ token: string; user: User }> {
+    // verify idToken with Firebase Admin
+    const decoded = await auth.verifyIdToken(idToken);
+
+    const email = decoded.email;
+    const fullName =
+      (decoded.name as string) || (email ? email.split("@")[0] : "");
+    const avatar = decoded.picture as string | undefined;
+
+    if (!email) {
+      throw new Error("Google token does not contain email");
+    }
+
+    const usersRef = db.collection("users");
+    const snapshot = await usersRef.where("email", "==", email).get();
+
+    if (!snapshot.empty) {
+      const userDoc = snapshot.docs[0];
+      const user = { id: userDoc.id, ...userDoc.data() } as User;
+      delete (user as any).password;
+
+      const token = this.generateToken(user.id!, user.email, user.role);
+      return { token, user };
+    }
+
+    // create new patient user
+    const newUserData = {
+      email,
+      password: "",
+      fullName,
+      phone: "",
+      role: "patient" as const,
+      avatar: avatar || process.env.DEFAULT_AVATAR_URL,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const docRef = await usersRef.add(newUserData);
+    const userId = docRef.id;
+
+    const token = this.generateToken(userId, email, "patient");
+
+    const userWithId = { id: userId, ...newUserData } as User;
+    delete (userWithId as any).password;
+
+    return { token, user: userWithId };
   }
 
   // Edit user profile

@@ -10,12 +10,18 @@ export const getDoctors = async (
   next: NextFunction
 ) => {
   try {
+    const start = Date.now();
     const { specialization, minRating } = req.query;
 
     const doctors = await doctorService.getDoctors({
       specialization: specialization as string,
       minRating: minRating ? parseFloat(minRating as string) : undefined,
     });
+
+    const duration = Date.now() - start;
+    console.log(
+      `doctorController.getDoctors: returned ${doctors.length} doctors in ${duration}ms`
+    );
 
     res.json({
       success: true,
