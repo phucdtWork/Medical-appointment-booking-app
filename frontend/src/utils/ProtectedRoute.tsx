@@ -24,7 +24,13 @@ export default function ProtectedRoute({
       router.push("/login");
     }
 
-    if (!isLoading && requireRole && user?.role !== requireRole) {
+    // If role is null or undefined, redirect to home
+    if (!isLoading && isAuthenticated && !user?.role) {
+      router.push("/");
+    }
+
+    // If requireRole is specified and role doesn't match, redirect to unauthorized
+    if (!isLoading && requireRole && user?.role && user.role !== requireRole) {
       router.push("/unauthorized");
     }
   }, [isLoading, isAuthenticated, user, requireRole, router]);

@@ -67,7 +67,7 @@ export default function DoctorFilters({
             size="large"
             placeholder={t("page.ratingPlaceholder")}
             style={{ width: "100%" }}
-            value={filters.minRating}
+            value={filters.minRating || undefined}
             onChange={(value) => onFilterChange("minRating", value)}
             allowClear
           >

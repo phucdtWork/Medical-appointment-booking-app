@@ -1,15 +1,14 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { authService, LoginData, RegisterData } from "../../lib/services";
 import { authKeys } from "../queries/useAuthQuery";
 import { useNotification } from "@/providers/NotificationProvider";
+import { useRouter } from "next/navigation";
 
 // Login mutation
 export const useLogin = () => {
   const queryClient = useQueryClient();
-  const router = useRouter();
   const notification = useNotification();
 
   return useMutation({
@@ -26,7 +25,7 @@ export const useLogin = () => {
         message: "Đăng nhập thành công!",
       });
 
-      router.push("/");
+      // Don't redirect here - let the component handle it based on role
     },
     onError: (error: any) => {
       const errorMessage = error.response?.data?.error || "Đăng nhập thất bại";
@@ -142,4 +141,35 @@ export const useResendOtp = () => {
     },
   });
   return mutation;
+};
+
+// Update profile mutation (for both patient and doctor)
+export const useUpdateProfile = () => {
+  const queryClient = useQueryClient();
+  const notification = useNotification();
+
+  return useMutation({
+    mutationFn: (formData: FormData) => authService.updateProfile(formData),
+    onSuccess: (response) => {
+      // Update cache with new user data
+      queryClient.setQueryData(authKeys.me(), response.data);
+
+      // Update localStorage
+      localStorage.setItem("user", JSON.stringify(response.data));
+
+      notification.success({
+        message: "Cập nhật hồ sơ thành công!",
+      });
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        "Cập nhật hồ sơ thất bại";
+      notification.error({
+        message: "Lỗi",
+        description: errorMessage,
+      });
+    },
+  });
 };

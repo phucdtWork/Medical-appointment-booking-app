@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Form, Select, Empty, Tag } from "antd";
 import {
   MedicineBoxOutlined,
@@ -9,148 +9,208 @@ import {
 } from "@ant-design/icons";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
+import { medicalDataService } from "@/lib/services/medicalDataService";
 
 type Props = { form: any; isEditing: boolean };
 
 export default function MedicalInfoCard({ form, isEditing }: Props) {
   const t = useTranslations("profile");
   const { isDark } = useTheme();
+  const [conditions, setConditions] = useState<string[]>([]);
+  const [allergies, setAllergies] = useState<string[]>([]);
+  const [loadingConditions, setLoadingConditions] = useState(false);
+  const [loadingAllergies, setLoadingAllergies] = useState(false);
 
-  const cardBg = isDark
-    ? "bg-gradient-to-br from-gray-800 via-gray-850 to-gray-900"
-    : "bg-gradient-to-br from-white via-red-50/30 to-pink-50/20";
+  // Load initial data
+  useEffect(() => {
+    const loadData = async () => {
+      setLoadingConditions(true);
+      setLoadingAllergies(true);
+      const [conditionsData, allergiesData] = await Promise.all([
+        medicalDataService.getMedicalConditions(),
+        medicalDataService.getAllergies(),
+      ]);
+      setConditions(conditionsData);
+      setAllergies(allergiesData);
+      setLoadingConditions(false);
+      setLoadingAllergies(false);
+    };
+    loadData();
+  }, []);
 
-  const cardBorder = isDark
-    ? "border-2 border-gray-700/50"
-    : "border-2 border-red-100/50";
+  // Handle search/filter
+  const handleConditionsSearch = async (value: string) => {
+    if (value) {
+      setLoadingConditions(true);
+      const filtered = await medicalDataService.getMedicalConditions(value);
+      setConditions(filtered);
+      setLoadingConditions(false);
+    } else {
+      setLoadingConditions(true);
+      const all = await medicalDataService.getMedicalConditions();
+      setConditions(all);
+      setLoadingConditions(false);
+    }
+  };
+
+  const handleAllergiesSearch = async (value: string) => {
+    if (value) {
+      setLoadingAllergies(true);
+      const filtered = await medicalDataService.getAllergies(value);
+      setAllergies(filtered);
+      setLoadingAllergies(false);
+    } else {
+      setLoadingAllergies(true);
+      const all = await medicalDataService.getAllergies();
+      setAllergies(all);
+      setLoadingAllergies(false);
+    }
+  };
+
+  const cardBg = isDark ? "bg-gray-800" : "bg-white";
+  const borderColor = isDark ? "border-gray-700" : "border-gray-200";
+  const textPrimary = isDark ? "text-text-primary-dark" : "text-text-primary";
+  const textSecondary = isDark
+    ? "text-text-secondary-dark"
+    : "text-text-secondary";
 
   return (
     <Card
       className={`
         ${cardBg}
-        ${cardBorder}
-        shadow-xl rounded-3xl mb-8 overflow-hidden
-        transition-all duration-500 ease-out
-        hover:shadow-2xl hover:-translate-y-1
+        border ${borderColor}
+        shadow-sm rounded-lg
+        transition-all duration-300
+        hover:shadow-md hover:border-primary
       `}
-      variant="plain"
     >
-      {/* Card Header with Icon - RED THEME */}
-      <div className="flex items-center gap-4 mb-8 pb-6 border-b-2 border-gradient-to-r from-red-500 to-pink-500">
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl blur opacity-50"></div>
-          <div className="relative p-4 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl shadow-lg">
-            <MedicineBoxOutlined className="text-3xl text-white" />
-          </div>
+      {/* Card Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2 bg-primary/10 rounded-lg">
+          <MedicineBoxOutlined className="text-xl text-primary" />
         </div>
         <div>
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-red-600 via-pink-600 to-rose-600 bg-clip-text text-transparent">
+          <h3 className={`text-lg font-semibold ${textPrimary}`}>
             {t("medicalInfo")}
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p className={`text-xs ${textSecondary}`}>
             {t("medicalInfoDescription")}
           </p>
         </div>
       </div>
 
-      <Form form={form} layout="vertical" size="large">
-        {/* Medical History */}
-        <Form.Item
-          name="medicalHistory"
-          label={
-            <span className="flex items-center gap-2 text-base font-semibold text-gray-700 dark:text-gray-300">
-              <MedicineBoxOutlined className="text-red-500 text-lg" />
-              {t("medicalHistory")}
-            </span>
-          }
-        >
-          <Select
-            mode="tags"
-            disabled={!isEditing}
-            placeholder={
-              <span className="flex items-center gap-2">
-                <PlusOutlined />
-                {t("addMedicalHistory")}
+      <Form form={form} layout="vertical">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Medical History */}
+          <Form.Item
+            name="medicalHistory"
+            label={
+              <span
+                className={`text-sm ${textSecondary} flex items-center gap-2`}
+              >
+                <MedicineBoxOutlined className="text-primary" />
+                {t("medicalHistory")}
               </span>
             }
-            className="w-full"
-            tagRender={(props) => (
-              <Tag
-                color="red"
-                closable={isEditing && props.closable}
-                onClose={props.onClose}
-                className="text-sm py-1 px-3 rounded-lg"
-              >
-                {props.label}
-              </Tag>
-            )}
-            notFoundContent={
-              <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description={
-                  <div className="text-center py-4">
-                    <MedicineBoxOutlined className="text-4xl text-gray-300 mb-2" />
-                    <p className="text-gray-500 dark:text-gray-400 font-medium">
+            help={
+              isEditing ? (
+                <span className={`text-xs ${textSecondary}`}>
+                  {t("addMedicalHistoryHint")}
+                </span>
+              ) : null
+            }
+          >
+            <Select
+              mode="tags"
+              disabled={!isEditing}
+              placeholder={
+                <span className="flex items-center gap-2">
+                  <PlusOutlined />
+                  {t("addMedicalHistory")}
+                </span>
+              }
+              className="w-full"
+              options={conditions.map((c) => ({ label: c, value: c }))}
+              onSearch={handleConditionsSearch}
+              loading={loadingConditions}
+              filterOption={false}
+              notFoundContent={
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description={
+                    <span className={textSecondary}>
                       {t("noMedicalHistory")}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {t("addMedicalHistoryHint")}
-                    </p>
-                  </div>
-                }
-              />
-            }
-          />
-        </Form.Item>
+                    </span>
+                  }
+                />
+              }
+              tagRender={(props) => (
+                <Tag
+                  color="blue"
+                  closable={isEditing && props.closable}
+                  onClose={props.onClose}
+                  className="text-sm py-1 px-2"
+                >
+                  {props.label}
+                </Tag>
+              )}
+            />
+          </Form.Item>
 
-        {/* Allergies */}
-        <Form.Item
-          name="allergies"
-          label={
-            <span className="flex items-center gap-2 text-base font-semibold text-gray-700 dark:text-gray-300">
-              <AlertOutlined className="text-orange-500 text-lg" />
-              {t("allergies")}
-            </span>
-          }
-        >
-          <Select
-            mode="tags"
-            disabled={!isEditing}
-            placeholder={
-              <span className="flex items-center gap-2">
-                <PlusOutlined />
-                {t("addAllergies")}
+          {/* Allergies */}
+          <Form.Item
+            name="allergies"
+            label={
+              <span
+                className={`text-sm ${textSecondary} flex items-center gap-2`}
+              >
+                <AlertOutlined className="text-orange-500" />
+                {t("allergies")}
               </span>
             }
-            className="w-full"
-            tagRender={(props) => (
-              <Tag
-                color="orange"
-                closable={isEditing && props.closable}
-                onClose={props.onClose}
-                className="text-sm py-1 px-3 rounded-lg"
-              >
-                {props.label}
-              </Tag>
-            )}
-            notFoundContent={
-              <Empty
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                description={
-                  <div className="text-center py-4">
-                    <AlertOutlined className="text-4xl text-gray-300 mb-2" />
-                    <p className="text-gray-500 dark:text-gray-400 font-medium">
-                      {t("noAllergies")}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {t("addAllergiesHint")}
-                    </p>
-                  </div>
-                }
-              />
+            help={
+              isEditing ? (
+                <span className={`text-xs ${textSecondary}`}>
+                  {t("addAllergiesHint")}
+                </span>
+              ) : null
             }
-          />
-        </Form.Item>
+          >
+            <Select
+              mode="tags"
+              disabled={!isEditing}
+              placeholder={
+                <span className="flex items-center gap-2">
+                  <PlusOutlined />
+                  {t("addAllergies")}
+                </span>
+              }
+              className="w-full"
+              options={allergies.map((a) => ({ label: a, value: a }))}
+              onSearch={handleAllergiesSearch}
+              loading={loadingAllergies}
+              filterOption={false}
+              notFoundContent={
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description={
+                    <span className={textSecondary}>{t("noAllergies")}</span>
+                  }
+                />
+              }
+              tagRender={(props) => (
+                <Tag
+                  color="orange"
+                  closable={isEditing && props.closable}
+                  onClose={props.onClose}
+                  className="text-sm py-1 px-2"
+                >
+                  {props.label}
+                </Tag>
+              )}
+            />
+          </Form.Item>
+        </div>
       </Form>
     </Card>
   );

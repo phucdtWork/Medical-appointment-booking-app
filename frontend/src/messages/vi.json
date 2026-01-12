@@ -391,9 +391,13 @@
     "cancel": "Hủy",
 
     "personalInfo": "Thông tin cá nhân",
+    "generalInfo": "Thông tin chung",
+    "generalInfoDescription": "Thông tin cá nhân và liên hệ của bạn",
     "contactInfo": "Thông tin liên hệ",
     "medicalInfo": "Thông tin y tế",
     "professionalInfo": "Thông tin chuyên môn",
+    "professionalProfile": "Hồ sơ chuyên môn",
+    "professionalProfileDescription": "Thông tin chứng chỉ và chuyên môn y tế của bạn",
     "statistics": "Thống kê",
 
     "fullName": "Họ và tên",

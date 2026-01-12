@@ -16,8 +16,18 @@ export const doctorKeys = {
 export const useDoctors = (filters?: DoctorFilters) => {
   return useQuery({
     queryKey: doctorKeys.list(filters),
-    queryFn: () => doctorService.getDoctors(filters),
+    queryFn: async () => {
+      try {
+        const response = await doctorService.getDoctors(filters);
+        console.log("useDoctors response:", response);
+        return response;
+      } catch (error) {
+        console.error("useDoctors error:", error);
+        throw error;
+      }
+    },
     staleTime: 1000 * 60 * 5, // 5 minutes
+    retry: 2,
   });
 };
 
@@ -25,8 +35,18 @@ export const useDoctors = (filters?: DoctorFilters) => {
 export const useDoctor = (id: string) => {
   return useQuery({
     queryKey: doctorKeys.detail(id),
-    queryFn: () => doctorService.getDoctorById(id),
+    queryFn: async () => {
+      try {
+        const response = await doctorService.getDoctorById(id);
+        console.log("useDoctor response:", response);
+        return response;
+      } catch (error) {
+        console.error("useDoctor error:", error);
+        throw error;
+      }
+    },
     enabled: !!id, // Only run if id exists
     staleTime: 1000 * 60 * 10, // 10 minutes
+    retry: 2,
   });
 };

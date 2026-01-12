@@ -371,9 +371,13 @@
     "cancel": "Cancel",
 
     "personalInfo": "Personal Information",
+    "generalInfo": "General Information",
+    "generalInfoDescription": "Your personal and contact information",
     "contactInfo": "Contact Information",
     "medicalInfo": "Medical Information",
     "professionalInfo": "Professional Information",
+    "professionalProfile": "Professional Profile",
+    "professionalProfileDescription": "Your medical credentials and professional information",
     "statistics": "Statistics",
 
     "fullName": "Full Name",

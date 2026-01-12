@@ -23,15 +23,20 @@ export default function LoginPage() {
   const t = useTranslations("auth");
   const loginMutation = useLogin();
   const googleMutation = useGoogleLogin();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const router = useRouter();
   const { isDark } = useTheme();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/");
+    if (isAuthenticated && user) {
+      // Redirect based on user role
+      if (user.role === "doctor") {
+        router.push("/doctor/appointments");
+      } else {
+        router.push("/");
+      }
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, user, router]);
 
   // If a redirect sign-in was used, handle the result here
   useEffect(() => {

@@ -4,11 +4,15 @@ import { useState, useEffect } from "react";
 import { Form, message } from "antd";
 import dayjs from "dayjs";
 import type { User } from "@/types/appointment";
+import { useUpdateProfile } from "./mutations/useAuthMutation";
+import { useAuth } from "./queries/useAuthQuery";
 
 export const useProfileForm = (user?: any) => {
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const { mutate: updateProfile, isPending } = useUpdateProfile();
+  const { refetch } = useAuth();
 
   useEffect(() => {
     if (user) {
@@ -28,6 +32,7 @@ export const useProfileForm = (user?: any) => {
 
   const resetToUser = () => {
     form.resetFields();
+    setAvatarFile(null);
     if (user) {
       const values: any = { ...user };
       if (user.dateOfBirth) {
@@ -44,26 +49,60 @@ export const useProfileForm = (user?: any) => {
   const handleSave = async () => {
     try {
       const values = await form.validateFields();
-      setLoading(true);
-      // Call API to update profile (placeholder endpoint)
-      const res = await fetch("/api/users/me", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+
+      // Create FormData for multipart request
+      const formData = new FormData();
+
+      // Add all form fields
+      Object.keys(values).forEach((key) => {
+        const value = values[key];
+
+        // Skip avatar field from form data
+        if (key === "avatar") return;
+
+        // Handle date fields
+        if (key === "dateOfBirth" && value) {
+          formData.append(key, value.toISOString());
+          return;
+        }
+
+        // Handle doctor info (if exists)
+        if (key === "doctorInfo" && value) {
+          formData.append(key, JSON.stringify(value));
+          return;
+        }
+
+        // Handle other fields
+        if (value !== null && value !== undefined && value !== "") {
+          formData.append(key, String(value));
+        }
       });
-      if (!res.ok) throw new Error("Failed to update profile");
-      message.success("Profile updated successfully");
-      setIsEditing(false);
+
+      // Add avatar file if exists
+      if (avatarFile) {
+        formData.append("avatar", avatarFile);
+      }
+
+      // Call mutation
+      updateProfile(formData, {
+        onSuccess: () => {
+          setIsEditing(false);
+          setAvatarFile(null);
+          refetch();
+        },
+      });
     } catch (err: any) {
-      message.error(err?.message || "Failed to update profile");
-    } finally {
-      setLoading(false);
+      console.error("Validation error:", err);
     }
   };
 
   const handleAvatarChange = (file: File | null) => {
     if (!file) return;
-    // simple preview using FileReader; actual upload should call API
+
+    // Store file for upload
+    setAvatarFile(file);
+
+    // Create preview
     const reader = new FileReader();
     reader.onload = () => {
       form.setFieldsValue({ avatar: reader.result });
@@ -75,7 +114,7 @@ export const useProfileForm = (user?: any) => {
     form,
     isEditing,
     setIsEditing,
-    loading,
+    loading: isPending,
     handleSave,
     handleAvatarChange,
     resetToUser,

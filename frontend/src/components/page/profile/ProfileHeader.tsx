@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { Avatar, Button, Row, Col, Upload, Badge } from "antd";
 import {
@@ -11,15 +9,24 @@ import {
 } from "@ant-design/icons";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
-import type { User } from "@/types/user";
+import type { UserProfile } from "@/types/profile";
 
+/**
+ * Props for ProfileHeader component
+ */
 type Props = {
-  user: User | null;
+  /** User profile data (patient or doctor) */
+  user: UserProfile | null;
+  /** Whether the profile is in editing mode */
   isEditing: boolean;
+  /** Callback when edit button is clicked */
   onEdit: () => void;
+  /** Callback when save button is clicked */
   onSave: () => void;
+  /** Callback when cancel button is clicked */
   onCancel: () => void;
-  onAvatarChange: (file: any) => void;
+  /** Callback when avatar file is selected/changed */
+  onAvatarChange: (file: File) => void | Promise<void>;
 };
 
 export default function ProfileHeader({
@@ -33,27 +40,19 @@ export default function ProfileHeader({
   const t = useTranslations("profile");
   const { isDark } = useTheme();
 
-  const bgGradient = isDark ? "bg-gray-900" : "bg-white";
-
-  const bgBlueBlur = isDark ? "bg-blue-700" : "bg-blue-100";
-  const bgPurpleBlur = isDark ? "bg-purple-700" : "bg-purple-100";
-  const textPrimary = isDark ? "text-white" : "text-gray-900";
-  const textSecondary = isDark ? "text-gray-300" : "text-gray-600";
+  const bgColor = isDark ? "bg-background-dark" : "bg-white";
+  const textPrimary = isDark ? "text-text-primary-dark" : "text-text-primary";
+  const textSecondary = isDark
+    ? "text-text-secondary-dark"
+    : "text-text-secondary";
+  const borderColor = isDark ? "border-gray-700" : "border-gray-200";
 
   return (
-    <section className={`relative ${bgGradient} py-20 overflow-hidden`}>
-      {/* Background blur effects - VERY IMPORTANT */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div
-          className={`absolute -top-40 -right-40 w-96 h-96 ${bgBlueBlur} rounded-full opacity-20 blur-3xl animate-float`}
-        />
-        <div
-          className={`absolute -bottom-40 -left-40 w-96 h-96 ${bgPurpleBlur} rounded-full opacity-20 blur-3xl animate-float-delayed`}
-        />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <Row gutter={[32, 32]} align="middle">
+    <section
+      className={`${bgColor} max-w-7xl mx-auto border-b ${borderColor} py-12`}
+    >
+      <div className="px-4 sm:px-6 lg:px-8">
+        <Row gutter={[24, 24]} align="middle">
           {/* Avatar Section */}
           <Col xs={24} sm={24} md={6} lg={5} xl={4}>
             <div className="flex justify-center md:justify-start">
@@ -68,22 +67,21 @@ export default function ProfileHeader({
                 disabled={!isEditing}
               >
                 <div className="relative group cursor-pointer">
-                  {/* Gradient border wrapper - MAKE IT STAND OUT */}
-                  <div className="p-1.5 rounded-full shadow transform transition-all duration-300 group-hover:scale-105">
-                    <div className="p-1 bg-white dark:bg-gray-800 rounded-full border">
-                      <Avatar
-                        size={140}
-                        src={user?.avatar}
-                        icon={<UserOutlined className="text-5xl" />}
-                        className="bg-gray-100 dark:bg-gray-800"
-                      />
-                    </div>
+                  <div
+                    className={`p-1 rounded-full border-2 ${isEditing ? "border-primary" : borderColor} transition-all duration-300 group-hover:border-primary`}
+                  >
+                    <Avatar
+                      size={120}
+                      src={user?.avatar}
+                      icon={<UserOutlined className="text-4xl" />}
+                      className={`${isDark ? "bg-gray-700" : "bg-gray-100"}`}
+                    />
                   </div>
 
-                  {/* Upload overlay - VISIBLE HINT */}
+                  {/* Upload overlay */}
                   {isEditing && (
-                    <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center">
-                      <CameraOutlined className="text-white text-3xl mb-1" />
+                    <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
+                      <CameraOutlined className="text-white text-2xl mb-1" />
                       <span className="text-white text-xs font-medium">
                         {t("changePhoto")}
                       </span>
@@ -93,9 +91,9 @@ export default function ProfileHeader({
                   {/* Online badge */}
                   <Badge
                     status="success"
-                    className="absolute bottom-3 right-3"
+                    className="absolute bottom-2 right-2"
                     dot
-                    style={{ width: 16, height: 16 }}
+                    style={{ width: 14, height: 14 }}
                   />
                 </div>
               </Upload>
@@ -105,17 +103,15 @@ export default function ProfileHeader({
           {/* User Info Section */}
           <Col xs={24} sm={24} md={12} lg={13} xl={14}>
             <div className="text-center md:text-left">
-              {/* Name with gradient */}
-              <h1
-                className={`text-3xl md:text-4xl font-semibold ${textPrimary} mb-2 leading-tight`}
-              >
+              {/* Name */}
+              <h1 className={`text-3xl font-semibold ${textPrimary} mb-2`}>
                 {user?.fullName || t("userNamePlaceholder")}
               </h1>
 
               {/* Role Badge */}
               {user?.role === "patient" && (
-                <div className="mt-3">
-                  <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700">
+                <div className="mt-2">
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary">
                     <UserOutlined />
                     {t("patient")}
                   </span>
@@ -131,38 +127,42 @@ export default function ProfileHeader({
                     • {user.doctorInfo?.yearsOfExperience || 0} {t("yearsExp")}
                   </p>
 
-                  {/* Doctor Statistics - PROMINENT */}
-                  <div className="flex flex-wrap gap-8 mt-6 justify-center md:justify-start">
+                  {/* Doctor Statistics - Compact */}
+                  <div className="flex flex-wrap gap-6 mt-4 justify-center md:justify-start">
                     {/* Rating */}
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-2 mb-1">
-                        <StarFilled className="text-yellow-400 text-3xl drop-shadow-lg" />
-                        <span className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white">
+                    <div className="flex items-center gap-2">
+                      <StarFilled className="text-yellow-500 text-xl" />
+                      <div>
+                        <span className="text-2xl font-bold text-primary">
                           {(user.doctorInfo?.rating || 0).toFixed(1)}
                         </span>
-                      </div>
-                      <div className={`text-sm font-medium ${textSecondary}`}>
-                        {t("rating")}
+                        <span className={`text-xs ml-1 ${textSecondary}`}>
+                          {t("rating")}
+                        </span>
                       </div>
                     </div>
 
                     {/* Reviews */}
-                    <div className="text-center">
-                      <div className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-1">
-                        {user.doctorInfo?.totalReviews || 0}+
-                      </div>
-                      <div className={`text-sm font-medium ${textSecondary}`}>
-                        {t("reviews")}
+                    <div className="flex items-center gap-2">
+                      <div>
+                        <span className="text-2xl font-bold text-primary">
+                          {user.doctorInfo?.totalReviews || 0}+
+                        </span>
+                        <span className={`text-xs ml-1 ${textSecondary}`}>
+                          {t("reviews")}
+                        </span>
                       </div>
                     </div>
 
                     {/* Patients */}
-                    <div className="text-center">
-                      <div className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-1">
-                        {user.doctorInfo?.totalPatients || 0}+
-                      </div>
-                      <div className={`text-sm font-medium ${textSecondary}`}>
-                        {t("patients")}
+                    <div className="flex items-center gap-2">
+                      <div>
+                        <span className="text-2xl font-bold text-primary">
+                          {user.doctorInfo?.totalPatients || 0}+
+                        </span>
+                        <span className={`text-xs ml-1 ${textSecondary}`}>
+                          {t("patients")}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -181,14 +181,14 @@ export default function ProfileHeader({
                     size="large"
                     icon={<SaveOutlined />}
                     onClick={onSave}
-                    className="w-full md:w-auto h-14 px-8 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+                    className="w-full md:w-auto px-8"
                   >
                     {t("saveChanges")}
                   </Button>
                   <Button
                     size="large"
                     onClick={onCancel}
-                    className="w-full md:w-auto h-14 px-8 text-base font-semibold"
+                    className="w-full md:w-auto px-8"
                   >
                     {t("cancel")}
                   </Button>
@@ -199,7 +199,7 @@ export default function ProfileHeader({
                   size="large"
                   icon={<EditOutlined />}
                   onClick={onEdit}
-                  className="w-full md:w-auto h-14 px-8 text-base font-semibold shadow-lg hover:shadow-xl transition-all"
+                  className="w-full md:w-auto px-8"
                 >
                   {t("editProfile")}
                 </Button>

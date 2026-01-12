@@ -70,6 +70,16 @@ export const authService = {
     return response.data;
   },
 
+  // Update user profile (for both patient and doctor)
+  updateProfile: async (formData: FormData) => {
+    const response = await api.put("/auth/me", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  },
+
   // Logout (client-side)
   logout: () => {
     localStorage.removeItem("token");

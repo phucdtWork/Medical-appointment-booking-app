@@ -3,7 +3,13 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["i.pravatar.cc", "via.placeholder.com"], // Thêm "via.placeholder.com" để cho phép external image
+    domains: ["i.pravatar.cc", "via.placeholder.com", "res.cloudinary.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
   },
   transpilePackages: ["antd"],
   experimental: {

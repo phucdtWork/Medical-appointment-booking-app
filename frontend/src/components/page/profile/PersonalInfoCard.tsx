@@ -37,18 +37,18 @@ export default function PersonalInfoCard({ form, isEditing }: Props) {
         transition-all duration-500 ease-out
         hover:shadow-2xl hover:-translate-y-1
       `}
-      variant="plain"
     >
       {/* Card Header with Icon - MUCH MORE PROMINENT */}
+      {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
       <div className="flex items-center gap-4 mb-8 pb-6 border-b-2 border-gradient-to-r from-blue-500 to-purple-500">
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl blur opacity-50"></div>
-          <div className="relative p-4 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl shadow-lg">
+          <div className="absolute inset-0 bg-linear-to-br from-blue-500 to-purple-500 rounded-2xl blur opacity-50"></div>
+          <div className="relative p-4 bg-linear-to-br from-blue-500 to-purple-500 rounded-2xl shadow-lg">
             <UserOutlined className="text-3xl text-white" />
           </div>
         </div>
         <div>
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h3 className="text-2xl font-bold bg-linear-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
             {t("personalInfo")}
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">

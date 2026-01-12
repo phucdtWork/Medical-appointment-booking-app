@@ -34,18 +34,18 @@ export default function ContactInfoCard({ form, isEditing }: Props) {
         transition-all duration-500 ease-out
         hover:shadow-2xl hover:-translate-y-1
       `}
-      variant="plain"
     >
       {/* Card Header with Icon - GREEN THEME */}
+      {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
       <div className="flex items-center gap-4 mb-8 pb-6 border-b-2 border-gradient-to-r from-green-500 to-blue-500">
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-blue-500 rounded-2xl blur opacity-50"></div>
-          <div className="relative p-4 bg-gradient-to-br from-green-500 to-blue-500 rounded-2xl shadow-lg">
+          <div className="absolute inset-0 bg-linear-to-br from-green-500 to-blue-500 rounded-2xl blur opacity-50"></div>
+          <div className="relative p-4 bg-linear-to-br from-green-500 to-blue-500 rounded-2xl shadow-lg">
             <PhoneOutlined className="text-3xl text-white" />
           </div>
         </div>
         <div>
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-green-600 via-teal-600 to-blue-600 bg-clip-text text-transparent">
+          <h3 className="text-2xl font-bold bg-linear-to-r from-green-600 via-teal-600 to-blue-600 bg-clip-text text-transparent">
             {t("contactInfo")}
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">

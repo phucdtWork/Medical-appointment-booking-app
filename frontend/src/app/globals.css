@@ -75,15 +75,7 @@ html {
   background: linear-gradient(180deg, #40a9ff, #1890ff);
 }
 
-/* For Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #1890ff #f1f1f1;
-}
-
-.dark * {
-  scrollbar-color: #1890ff #1a2c3f;
-}
+/* Scrollbar styles handled via webkit */
 
 /* Scroll offset for fixed header */
 section[id] {

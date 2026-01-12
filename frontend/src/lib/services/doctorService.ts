@@ -1,5 +1,4 @@
 import api from "../api/axios";
-import { useQuery } from "@tanstack/react-query";
 import type {
   DoctorFilters as DoctorFiltersType,
   DoctorsResponse as DoctorsResponseType,
@@ -11,35 +10,36 @@ export const doctorService = {
   getDoctors: async (
     filters?: DoctorFiltersType
   ): Promise<DoctorsResponseType> => {
-    const response = await api.get("/doctors", { params: filters });
-    return response.data;
+    try {
+      const response = await api.get("/doctors", { params: filters });
+      return response.data;
+    } catch (error: any) {
+      console.error("Error fetching doctors:", error);
+      throw error;
+    }
   },
 
   // Get doctor by ID
   getDoctorById: async (id: string): Promise<DoctorResponseType> => {
-    const response = await api.get(`/doctors/${id}`);
-
-    return response.data;
+    try {
+      const response = await api.get(`/doctors/${id}`);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error fetching doctor:", error);
+      throw error;
+    }
   },
 
   // Search doctors
-  searchDoctors: async (query: string): Promise<DoctorsResponse> => {
-    const response = await api.get("/doctors/search", { params: { q: query } });
-    return response.data;
+  searchDoctors: async (query: string): Promise<DoctorsResponseType> => {
+    try {
+      const response = await api.get("/doctors/search", {
+        params: { q: query },
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("Error searching doctors:", error);
+      throw error;
+    }
   },
-};
-
-// React Query hooks
-export const useDoctors = (filters?: any) => {
-  return useQuery(["doctors", filters], () =>
-    doctorService.getDoctors(filters)
-  );
-};
-
-export const useDoctorById = (id?: string) => {
-  return useQuery(
-    ["doctor", id],
-    () => doctorService.getDoctorById(id as string),
-    { enabled: !!id }
-  );
 };
