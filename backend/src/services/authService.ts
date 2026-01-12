@@ -2,9 +2,9 @@ import bcrypt from "bcryptjs";
 import jwt, { type Secret, type SignOptions } from "jsonwebtoken";
 import { db } from "../config/firebase";
 import { auth } from "../config/firebase";
-import { User } from "../models/User";
+import { User, DoctorInfo } from "../models/User";
 import { uploadAvatar } from "../config/multer";
-import uploadService, { UploadService } from "./uploadService";
+import uploadService, { UploadService, UploadedFile } from "./uploadService";
 
 export class AuthService {
   // Register Patient
@@ -176,10 +176,11 @@ export class AuthService {
     return { token, user: userWithId };
   }
 
-  // Edit user profile
+  // Edit user profile (Patient or Doctor)
   async editUserProfile(
     userId: string,
-    updateData: Partial<User>
+    updateData: Partial<User>,
+    avatarFile?: Express.Multer.File
   ): Promise<User> {
     const docRef = db.collection("users").doc(userId);
 
@@ -189,10 +190,32 @@ export class AuthService {
       throw new Error("User not found");
     }
 
+    const currentUser = userDoc.data() as User;
+
     const updates: Partial<User> & { updatedAt: Date } = {
       ...updateData,
       updatedAt: new Date(),
     };
+
+    // Handle avatar upload
+    if (avatarFile) {
+      try {
+        // Delete old avatar if it exists
+        if (currentUser.avatar) {
+          const publicId = uploadService.extractPublicId(currentUser.avatar);
+          if (publicId) {
+            await uploadService.deleteFile(publicId);
+          }
+        }
+
+        // Upload new avatar
+        const uploadedFile = await uploadService.uploadFile(avatarFile);
+        updates.avatar = uploadedFile.secure_url;
+      } catch (error) {
+        console.error("Avatar upload error:", error);
+        throw new Error("Failed to upload avatar");
+      }
+    }
 
     // Remove fields that shouldn't be updated
     delete (updates as any).id;
@@ -201,6 +224,41 @@ export class AuthService {
     delete (updates as any).role;
     delete (updates as any).createdAt;
 
+    // Validate and merge doctor info if role is doctor
+    if (currentUser.role === "doctor" && updates.doctorInfo) {
+      const newDoctorInfo = updates.doctorInfo as Partial<DoctorInfo>;
+      const existingDoctorInfo = currentUser.doctorInfo || {};
+
+      // Only validate if all three required fields are being set
+      const hasRequiredFields =
+        newDoctorInfo.specialization &&
+        newDoctorInfo.licenseNumber &&
+        newDoctorInfo.yearsOfExperience !== undefined;
+
+      const isPartialUpdate =
+        Object.keys(newDoctorInfo).length > 0 &&
+        Object.keys(newDoctorInfo).length < 3;
+
+      // If partial update, merge with existing doctor info
+      if (isPartialUpdate) {
+        updates.doctorInfo = {
+          ...existingDoctorInfo,
+          ...newDoctorInfo,
+        } as DoctorInfo;
+      } else if (!hasRequiredFields) {
+        // Only throw error if trying to set all fields but incomplete
+        if (
+          newDoctorInfo.specialization ||
+          newDoctorInfo.licenseNumber ||
+          newDoctorInfo.yearsOfExperience !== undefined
+        ) {
+          throw new Error(
+            "Invalid doctor info: specialization, licenseNumber, and yearsOfExperience are required when updating"
+          );
+        }
+      }
+    }
+
     await docRef.update(updates);
 
     const updatedDoc = await docRef.get();
@@ -208,5 +266,62 @@ export class AuthService {
     delete (updatedUser as any).password;
 
     return updatedUser;
+  }
+
+  // Register as Doctor
+  async registerDoctor(
+    userData: Partial<User>,
+    doctorInfo: Partial<DoctorInfo>
+  ): Promise<{ token: string; user: User }> {
+    const { email, password, fullName, phone } = userData;
+
+    if (!doctorInfo.specialization || !doctorInfo.licenseNumber) {
+      throw new Error("Doctor specialization and license number are required");
+    }
+
+    // Check if user exists
+    const usersRef = db.collection("users");
+    const existingUser = await usersRef.where("email", "==", email).get();
+
+    if (!existingUser.empty) {
+      throw new Error("Email already exists");
+    }
+
+    const hashedPassword = await bcrypt.hash(password!, 10);
+
+    // Create doctor user
+    const newUserData = {
+      email,
+      password: hashedPassword,
+      fullName,
+      phone,
+      role: "doctor" as const,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      doctorInfo: {
+        specialization: doctorInfo.specialization,
+        licenseNumber: doctorInfo.licenseNumber,
+        yearsOfExperience: doctorInfo.yearsOfExperience || 0,
+        education: doctorInfo.education || [],
+        hospital: doctorInfo.hospital || "",
+        consultationFee: doctorInfo.consultationFee || { min: 0, max: 0 },
+        bio: doctorInfo.bio || "",
+        rating: 0,
+        totalReviews: 0,
+        totalPatients: 0,
+      },
+    };
+
+    const docRef = await usersRef.add(newUserData);
+    const userId = docRef.id;
+
+    // Generate JWT
+    const token = this.generateToken(userId, email!, "doctor");
+
+    // Build user object to return (remove password)
+    const userWithId = { id: userId, ...newUserData } as User;
+    delete (userWithId as any).password;
+
+    return { token, user: userWithId };
   }
 }

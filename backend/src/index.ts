@@ -24,7 +24,30 @@ initializeSocket(server);
 
 // Middleware
 app.use(helmet());
-app.use(cors({ origin: process.env.CORS_ORIGIN }));
+
+// CORS configuration - allow all origins in development
+const corsOptions = {
+  origin: (
+    origin: string | undefined,
+    callback: (err: Error | null, allow?: boolean) => void
+  ) => {
+    if (process.env.NODE_ENV === "development") {
+      // Allow all origins in development
+      callback(null, true);
+    } else {
+      // In production, use CORS_ORIGIN from env
+      const allowedOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
+      if (!origin || origin === allowedOrigin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));

@@ -128,6 +128,7 @@ export const getMe = async (
   }
 };
 
+// Edit profile for both patient and doctor
 export const editProfile = async (
   req: Request,
   res: Response,
@@ -136,12 +137,59 @@ export const editProfile = async (
   try {
     const userId = req.user!.userId;
     const updateData = req?.body;
-    const updatedUser = await authService.editUserProfile(userId, updateData);
+    const avatarFile = req?.file;
+
+    const updatedUser = await authService.editUserProfile(
+      userId,
+      updateData,
+      avatarFile
+    );
 
     res.json({
       success: true,
       message: "Profile updated successfully",
       data: updatedUser,
+    });
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+// Register as doctor (after OTP verification)
+export const registerDoctor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, otp, password, fullName, phone, doctorInfo } = req.body;
+
+    if (!email || !otp || !password || !fullName || !doctorInfo) {
+      return res.status(400).json({
+        error: "email, otp, password, fullName and doctorInfo are required",
+      });
+    }
+
+    // Verify OTP
+    await otpService.verifyOTP(email, otp);
+
+    // Create doctor user
+    const { token, user } = await authService.registerDoctor(
+      { email, password, fullName, phone },
+      doctorInfo
+    );
+
+    // Send welcome email
+    try {
+      await emailService.sendWelcomeEmail(email, fullName);
+    } catch (e) {
+      console.warn("Welcome email failed:", e);
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Doctor registration successful",
+      data: { token, user },
     });
   } catch (error: any) {
     next(error);
