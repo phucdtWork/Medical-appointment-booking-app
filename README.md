@@ -25,7 +25,6 @@ Medical Appointment Booking App is a comprehensive healthcare management platfor
 
 - **Patients** to search for doctors, book appointments, write reviews, and manage their medical profile
 - **Doctors** to manage schedules, view appointments, interact with patients, and build their professional reputation
-- **Real-time updates** with WebSocket for live appointment status notifications
 - **Multi-language support** (Vietnamese & English) for global accessibility
 - **Secure authentication** with JWT tokens and Google OAuth integration
 - **Advanced search & filtering** to find the right doctor quickly
@@ -44,7 +43,6 @@ Medical Appointment Booking App is a comprehensive healthcare management platfor
 | **Tailwind CSS**      | Utility-first CSS styling             | 3+                    |
 | **Ant Design (AntD)** | Component library                     | 5+                    |
 | **React Query**       | Server state management & caching     | @tanstack/react-query |
-| **Socket.io Client**  | Real-time WebSocket communication     | Latest                |
 | **next-intl**         | Internationalization (i18n)           | Latest                |
 | **Firebase Auth**     | Authentication & ID tokens            | Latest                |
 | **Dayjs**             | Date/time manipulation                | Latest                |
@@ -62,7 +60,6 @@ Medical Appointment Booking App is a comprehensive healthcare management platfor
 | **Nodemailer**                 | Email notifications (OTP, confirmations) | Latest  |
 | **Multer**                     | File upload handling                     | Latest  |
 | **Cloudinary**                 | Cloud storage for images/documents       | Latest  |
-| **Socket.io**                  | Real-time bi-directional communication   | Latest  |
 | **Helmet**                     | Security headers middleware              | Latest  |
 | **CORS**                       | Cross-origin request handling            | Latest  |
 | **Morgan**                     | HTTP request logging                     | Latest  |
@@ -109,7 +106,6 @@ Medical Appointment Booking App is a comprehensive healthcare management platfor
 - ✅ Doctor notes & patient notes on appointments
 - ✅ Appointment history & analytics
 - ✅ Appointment cancellation & rescheduling
-- ✅ Real-time appointment updates via WebSocket
 
 ### 🗓️ Schedule Management (Doctor Only)
 
@@ -192,55 +188,48 @@ Medical Appointment Booking App is a comprehensive healthcare management platfor
 | **Appointment Actions** | Confirm, reject, mark completed, add notes  |
 | **Manage Reviews**      | View & respond to patient reviews           |
 | **Analytics Dashboard** | Patient count, ratings, appointment stats   |
-| **Real-time Updates**   | Live notification of new appointments       |
 | **Consultation Fee**    | Set minimum & maximum fees                  |
 
 ---
 
 ## 🌟 Key Highlights
 
-### 1. **Real-time Updates**
-
-- WebSocket integration for instant appointment notifications
-- Live slot availability updates
-- Bi-directional communication between doctor & patient
-
-### 2. **Secure Authentication**
+### 1. **Secure Authentication**
 
 - Industry-standard JWT tokens
 - Google OAuth for seamless login
 - OTP email verification for registration
 - Automatic session management
 
-### 3. **Optimized Performance**
+### 2. **Optimized Performance**
 
 - React Query caching strategy (5-minute staleTime)
 - Image optimization via Cloudinary
 - Code splitting & lazy loading
 - Memoization for expensive components
 
-### 4. **Responsive Design**
+### 3. **Responsive Design**
 
 - Mobile-first approach
 - Works on all device sizes
 - Touch-optimized interface
 - Fast performance on slow networks
 
-### 5. **International Support**
+### 4. **International Support**
 
 - Full Vietnamese & English translations
 - Next-intl for type-safe i18n
 - Currency & date formatting per locale
 - RTL support ready
 
-### 6. **Cloud Infrastructure**
+### 5. **Cloud Infrastructure**
 
 - Firebase for scalable backend
 - Cloudinary for reliable file storage
 - Nodemailer for email delivery
 - No server maintenance required
 
-### 7. **Type Safety**
+### 6. **Type Safety**
 
 - Full TypeScript codebase
 - Strict type checking

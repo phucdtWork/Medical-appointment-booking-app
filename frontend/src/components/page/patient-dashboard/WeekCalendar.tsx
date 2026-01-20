@@ -39,6 +39,18 @@ const STATUS_COLORS = {
   rejected: "#ff4d4f",
 };
 
+// Helper: Normalize date (Firestore timestamp or ISO string to ISO string)
+const normalizeDate = (date: unknown): string | null => {
+  if (!date) return null;
+  if (typeof date === "object" && "_seconds" in date) {
+    return new Date(date._seconds * 1000).toISOString();
+  }
+  if (typeof date === "string") {
+    return date;
+  }
+  return null;
+};
+
 export default function WeekCalendar({
   selectedWeek,
   onWeekChange,
@@ -50,16 +62,30 @@ export default function WeekCalendar({
   const tStatus = useTranslations("patientDashboard.status");
   const startOfWeek = selectedWeek.startOf("week").add(1, "day"); // Monday
   const weekDays = Array.from({ length: 7 }, (_, i) =>
-    startOfWeek.add(i, "day")
+    startOfWeek.add(i, "day"),
   );
+
+  console.log(appointments);
 
   const today = dayjs();
 
   // Get appointments for a specific date
   const getAppointmentsForDate = (date: Dayjs) => {
     return appointments.filter((apt) => {
-      const aptDate = dayjs(apt.date);
-      return aptDate.format("YYYY-MM-DD") === date.format("YYYY-MM-DD");
+      // Normalize date
+      const normalizedDate = normalizeDate(apt.date);
+      if (!normalizedDate) return false;
+      // Extract only YYYY-MM-DD from ISO string to avoid timezone issues
+      const dateStr = normalizedDate.split("T")[0];
+      const aptDate = dayjs(dateStr);
+      const dateCompare = date.format("YYYY-MM-DD");
+      const aptDateStr = aptDate.format("YYYY-MM-DD");
+      console.log(`Comparing: ${dateCompare} vs ${aptDateStr}`, {
+        date,
+        aptDate,
+        aptDateStr,
+      });
+      return aptDateStr === dateCompare;
     });
   };
 
@@ -95,7 +121,7 @@ export default function WeekCalendar({
               size="small"
               className={isDark ? "border-slate-600" : ""}
             >
-              Hôm nay
+              {t("weekNavigation.today")}
             </Button>
             <Button
               icon={<RightOutlined />}
@@ -185,7 +211,7 @@ export default function WeekCalendar({
                           isDark ? "text-blue-400" : "text-blue-600"
                         }`}
                       >
-                        +{dayAppointments.length - 3} lịch
+                        +{dayAppointments.length - 3} {t("count").split(" ")[1]}
                       </div>
                     )}
                   </>
@@ -195,7 +221,7 @@ export default function WeekCalendar({
                       isDark ? "text-slate-600" : "text-gray-400"
                     }`}
                   >
-                    Trống
+                    {t("none")}
                   </div>
                 )}
               </div>

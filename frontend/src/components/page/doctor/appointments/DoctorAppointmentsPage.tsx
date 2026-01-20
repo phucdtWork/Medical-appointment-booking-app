@@ -32,7 +32,7 @@ export default function DoctorAppointmentsPage() {
 
   const appointments = useMemo(
     () => (Array.isArray(apiData?.data) ? apiData.data : []),
-    [apiData]
+    [apiData],
   );
 
   const sortedAppointments = useMemo(() => {
@@ -79,13 +79,13 @@ export default function DoctorAppointmentsPage() {
 
   const handleQuickAction = async (
     id: string,
-    action: "confirm" | "reject"
+    action: "confirm" | "reject",
   ) => {
     try {
       const status = action === "confirm" ? "confirmed" : "rejected";
       await updateStatus({ id, data: { status } });
       message.success(
-        action === "confirm" ? tNotify("confirmed") : tNotify("rejected")
+        action === "confirm" ? tNotify("confirmed") : tNotify("rejected"),
       );
     } catch {
       message.error(tNotify("error"));

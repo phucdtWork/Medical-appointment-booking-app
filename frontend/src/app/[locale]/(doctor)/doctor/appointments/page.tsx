@@ -1,16 +1,17 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Card, Calendar, Col, Row, Empty, List, Tag } from "antd";
-import dayjs from "dayjs";
+import { Card, Calendar, Empty, Skeleton } from "antd";
+import dayjs, { Dayjs } from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import "dayjs/locale/vi";
 import { useDoctorAppointments } from "@/hooks/queries/useAppointmentsQuery";
 import DoctorAppointmentDrawer from "@/components/page/doctor/appointments/DoctorAppointmentDrawer";
-import { useTranslations, useLocale } from "next-intl";
-import { formatCurrency } from "@/utils/currency";
+import DoctorFilterBar from "@/components/page/doctor/appointments/DoctorFilterBar";
+import StatsCards from "@/components/page/doctor/appointments/StatsCards";
+import { useTranslations } from "next-intl";
 import { Appointment } from "@/types/appointment";
 import { useUpdateAppointmentStatus } from "@/hooks/mutations/useAppointmentMutation";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -20,19 +21,44 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 dayjs.locale("vi");
 
+const STATUS_COLORS = {
+  pending: { bg: "#fff7e6", border: "#ffa940", text: "#d46b08" },
+  confirmed: { bg: "#f6ffed", border: "#95de64", text: "#389e0d" },
+  completed: { bg: "#fffbe6", border: "#ffd666", text: "#ad6800" },
+  cancelled: { bg: "#fff1f0", border: "#ff7875", text: "#cf1322" },
+};
+
+// Helper: Normalize date (Firestore timestamp or ISO string to ISO string)
+const normalizeDate = (date: unknown): string | null => {
+  if (!date) return null;
+  if (typeof date === "object" && "_seconds" in date) {
+    return new Date(
+      ((date as Record<string, unknown>)._seconds as number) * 1000,
+    ).toISOString();
+  }
+  if (typeof date === "string") {
+    return date;
+  }
+  return null;
+};
+
 export default function DoctorAppointmentsPage() {
   const t = useTranslations("doctorAppointments");
-  const locale = useLocale();
-  const { data: apiData } = useDoctorAppointments();
-
+  const { data: apiData, isLoading } = useDoctorAppointments();
   const { isDark } = useTheme();
 
   const appointments = useMemo(
     () => (Array.isArray(apiData?.data) ? apiData.data : []),
-    [apiData]
+    [apiData],
   );
 
-  const [selectedDate, setSelectedDate] = useState(dayjs());
+  const [selectedMonth, setSelectedMonth] = useState(dayjs());
+  const [statusFilter, setStatusFilter] = useState<string[]>([
+    "pending",
+    "confirmed",
+    "completed",
+    "cancelled",
+  ]); // Default: show all statuses
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
   const [appointmentsForDay, setAppointmentsForDay] = useState<
@@ -40,30 +66,78 @@ export default function DoctorAppointmentsPage() {
   >(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const groupedByDay = useMemo(() => {
-    const startOfWeek = selectedDate.startOf("week");
-
-    const days: Record<string, Appointment[]> = {};
-    for (let i = 0; i < 7; i++) {
-      const d = startOfWeek.add(i, "day");
-      days[d.format("YYYY-MM-DD")] = [];
-    }
-
-    appointments.forEach((a: Appointment) => {
-      const key = dayjs(a.date).format("YYYY-MM-DD");
-      if (days[key]) days[key].push(a);
-    });
-
-    return days;
-  }, [appointments, selectedDate]);
-
-  const onSelectDate = (value: dayjs.Dayjs) => setSelectedDate(value);
-
   const { mutateAsync: updateStatus } = useUpdateAppointmentStatus();
 
-  const handleOpen = (appt: Appointment, dayKey?: string) => {
-    setSelectedAppointment(appt);
-    setAppointmentsForDay(dayKey ? (groupedByDay[dayKey] ?? [appt]) : [appt]);
+  // Filter appointments by status
+  const filteredAppointments = useMemo(() => {
+    if (!statusFilter || statusFilter.length === 0) {
+      return [];
+    }
+    return appointments.filter((apt) => statusFilter.includes(apt.status));
+  }, [appointments, statusFilter]);
+
+  const handleStatusFilterChange = (status: string) => {
+    if (status === "") {
+      setStatusFilter([]);
+      return;
+    }
+
+    setStatusFilter((prev) =>
+      prev.includes(status)
+        ? prev.filter((s) => s !== status)
+        : [...prev, status],
+    );
+  };
+
+  // Get appointments for a specific date
+  const getAppointmentsForDate = (date: Dayjs): Appointment[] => {
+    return filteredAppointments.filter((apt) => {
+      const normalizedDate = normalizeDate(apt.date);
+      if (!normalizedDate) return false;
+      const dateStr = normalizedDate.split("T")[0];
+      const aptDate = dayjs(dateStr);
+      return aptDate.format("YYYY-MM-DD") === date.format("YYYY-MM-DD");
+    });
+  };
+
+  const AppointmentBlock = ({ appointment }: { appointment: Appointment }) => {
+    const color = STATUS_COLORS[appointment.status];
+    const normalizedDate = normalizeDate(appointment.date);
+    const displayTime = normalizedDate
+      ? dayjs(normalizedDate).format("HH:mm")
+      : "N/A";
+
+    return (
+      <div
+        onClick={() => handleOpen(appointment)}
+        className="cursor-pointer text-xs p-1 rounded mb-1 truncate hover:shadow-md"
+        style={{
+          backgroundColor: color.bg,
+          border: `1px solid ${color.border}`,
+          color: color.text,
+        }}
+        title={`${appointment.patientInfo?.fullName || "Patient"} - ${displayTime}`}
+      >
+        {displayTime} {appointment.patientInfo?.fullName || "Patient"}
+      </div>
+    );
+  };
+
+  // Render cell content with appointments
+  const dateCellRender = (date: Dayjs) => {
+    const dayAppointments = getAppointmentsForDate(date);
+    return (
+      <div className="space-y-0.5">
+        {dayAppointments.map((apt) => (
+          <AppointmentBlock key={apt.id} appointment={apt} />
+        ))}
+      </div>
+    );
+  };
+
+  const handleOpen = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    setAppointmentsForDay([appointment]);
     setDrawerOpen(true);
   };
 
@@ -72,7 +146,6 @@ export default function DoctorAppointmentsPage() {
       await updateStatus({ id, data: { status } });
       setDrawerOpen(false);
     } catch (err) {
-      // ignore here; mutation shows notification
       console.log(err);
     }
   };
@@ -84,91 +157,85 @@ export default function DoctorAppointmentsPage() {
   return (
     <div className={bgClass}>
       <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-2xl font-semibold mb-4">{t("title")}</h2>
+        <h2 className="text-2xl font-semibold mb-6">{t("title")}</h2>
 
-        <Row gutter={16}>
-          <Col xs={24} lg={8}>
-            <Card>
-              <Calendar
-                fullscreen={false}
-                value={selectedDate}
-                onSelect={onSelectDate}
-              />
-            </Card>
-          </Col>
+        {/* Stats Cards */}
+        {isLoading ? (
+          <Skeleton active paragraph={{ rows: 1 }} />
+        ) : (
+          <StatsCards
+            appointments={appointments}
+            selectedDate={selectedMonth}
+          />
+        )}
 
-          <Col xs={24} lg={16}>
-            <Card className="shadow-md">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Object.keys(groupedByDay).map((dayKey) => {
-                  const dayList = groupedByDay[dayKey];
-                  return (
-                    <div
-                      key={dayKey}
-                      className="p-2 border rounded border-[#1890ff] hover:shadow-lg hover:-translate-y-1 transition-transform transform duration-150"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="font-medium">
-                          {dayjs(dayKey).format("ddd, DD MMM")}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {t("count", { count: dayList.length })}
-                        </div>
-                      </div>
+        {/* Filter Bar */}
+        {isLoading ? (
+          <Skeleton active paragraph={{ rows: 1 }} />
+        ) : (
+          <DoctorFilterBar
+            selectedMonth={selectedMonth}
+            onMonthChange={setSelectedMonth}
+            statusFilter={statusFilter}
+            onStatusFilterChange={handleStatusFilterChange}
+            appointments={appointments}
+            isDark={isDark}
+          />
+        )}
 
-                      {dayList.length === 0 ? (
-                        <Empty description={false} />
-                      ) : (
-                        <List
-                          dataSource={dayList}
-                          renderItem={(item: Appointment) => (
-                            <List.Item
-                              onClick={() => handleOpen(item, dayKey)}
-                              className="cursor-pointer p-3 rounded "
-                            >
-                              <List.Item.Meta
-                                title={
-                                  <div className="flex items-center gap-3">
-                                    <Tag
-                                      color={
-                                        item.status === "pending"
-                                          ? "orange"
-                                          : item.status === "confirmed"
-                                            ? "green"
-                                            : "blue"
-                                      }
-                                    >
-                                      {item.timeSlot.start}
-                                    </Tag>
-                                    <span className="font-semibold">
-                                      {item.patientInfo?.fullName || "-"}
-                                    </span>
-                                  </div>
-                                }
-                                description={
-                                  <div className="text-sm text-gray-500">
-                                    {item.reason}
-                                  </div>
-                                }
-                              />
-                              <div className="text-sm text-gray-400">
-                                {formatCurrency(item.fee || 0, {
-                                  currency: locale?.toString().startsWith("vi")
-                                    ? "VND"
-                                    : "USD",
-                                })}
-                              </div>
-                            </List.Item>
-                          )}
-                        />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </Card>
-          </Col>
-        </Row>
+        {/* Calendar View */}
+        {isLoading ? (
+          <Card
+            className={`shadow-md border-2 mt-6 ${
+              isDark
+                ? "bg-slate-800 border-slate-700"
+                : "bg-white border-gray-200"
+            }`}
+            style={{
+              borderColor: isDark ? undefined : "var(--primary-color)",
+            }}
+          >
+            <div className="p-6">
+              <Skeleton active paragraph={{ rows: 8 }} />
+            </div>
+          </Card>
+        ) : appointments.length > 0 ? (
+          <Card
+            className={`shadow-md border-2 mt-6 ${
+              isDark
+                ? "bg-slate-800 border-slate-700"
+                : "bg-white border-gray-200"
+            }`}
+            style={{
+              borderColor: isDark ? undefined : "var(--primary-color)",
+            }}
+          >
+            <Calendar
+              fullscreen
+              value={selectedMonth}
+              onChange={setSelectedMonth}
+              cellRender={dateCellRender}
+            />
+          </Card>
+        ) : (
+          <Card
+            className={`shadow-md border-2 mt-6 ${
+              isDark
+                ? "bg-slate-800 border-slate-700"
+                : "bg-white border-gray-200"
+            }`}
+            style={{
+              borderColor: isDark ? undefined : "var(--primary-color)",
+            }}
+          >
+            <Empty
+              description={t("noData")}
+              style={{
+                color: isDark ? "#94a3b8" : "#6b7280",
+              }}
+            />
+          </Card>
+        )}
 
         <DoctorAppointmentDrawer
           open={drawerOpen}

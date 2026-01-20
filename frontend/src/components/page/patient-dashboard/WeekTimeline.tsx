@@ -1,13 +1,12 @@
 "use client";
 
 import React from "react";
-import { Card, Button } from "antd";
+import { Card, Button, Calendar } from "antd";
 import { PlusOutlined, CalendarOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/vi";
 import { useTranslations, useLocale } from "next-intl";
 import type { Appointment } from "@/types/appointment";
-import { DEFAULT_TIMES } from "@/utils/timeSlots";
 import { useRouter } from "next/navigation";
 
 dayjs.locale("vi");
@@ -20,13 +19,43 @@ interface WeekTimelineProps {
   isDark?: boolean;
 }
 
-const TIME_SLOTS = DEFAULT_TIMES;
-
 const STATUS_COLORS = {
-  pending: { bg: "#fff7e6", border: "#ffa940", text: "#d46b08" },
-  confirmed: { bg: "#f6ffed", border: "#95de64", text: "#389e0d" },
-  completed: { bg: "#e6f7ff", border: "#69c0ff", text: "#096dd9" },
-  cancelled: { bg: "#fff1f0", border: "#ff7875", text: "#cf1322" },
+  pending: {
+    bg: "#fff7e6",
+    border: "#ffa940",
+    text: "#d46b08",
+    color: "orange",
+  },
+  confirmed: {
+    bg: "#f6ffed",
+    border: "#95de64",
+    text: "#389e0d",
+    color: "green",
+  },
+  completed: {
+    bg: "#fffbe6",
+    border: "#ffd666",
+    text: "#ad6800",
+    color: "gold",
+  },
+  cancelled: {
+    bg: "#fff1f0",
+    border: "#ff7875",
+    text: "#cf1322",
+    color: "red",
+  },
+};
+
+// Helper: Normalize date (Firestore timestamp or ISO string to ISO string)
+const normalizeDate = (date: unknown): string | null => {
+  if (!date) return null;
+  if (typeof date === "object" && "_seconds" in date) {
+    return new Date(date._seconds * 1000).toISOString();
+  }
+  if (typeof date === "string") {
+    return date;
+  }
+  return null;
 };
 
 export default function WeekTimeline({
@@ -39,75 +68,48 @@ export default function WeekTimeline({
   const locale = useLocale();
   const router = useRouter();
 
-  // Debug log
-  React.useEffect(() => {
-    console.log("🔍 WeekTimeline - Appointments:", appointments);
-    console.log("📅 Selected week:", selectedWeek.format("YYYY-MM-DD"));
-    if (appointments.length > 0) {
-      console.log("First appointment details:", {
-        date: appointments[0].date,
-        timeSlot: appointments[0].timeSlot,
-        status: appointments[0].status,
-      });
-    }
-  }, [appointments, selectedWeek]);
-
-  const startOfWeek = selectedWeek.startOf("week").add(1, "day"); // Monday
-  const weekDays = Array.from({ length: 7 }, (_, i) =>
-    startOfWeek.add(i, "day"),
-  );
-
-  // Return all appointments for a given date and time slot (may be multiple)
-  const getAppointmentsForSlot = (date: Dayjs, time: string) => {
+  // Get appointments for a specific date
+  const getAppointmentsForDate = (date: Dayjs): Appointment[] => {
     return appointments.filter((apt) => {
-      const aptDate = dayjs(apt.date);
-      return (
-        aptDate.format("YYYY-MM-DD") === date.format("YYYY-MM-DD") &&
-        apt.timeSlot.start === time
-      );
+      const normalizedDate = normalizeDate(apt.date);
+      if (!normalizedDate) return false;
+      const dateStr = normalizedDate.split("T")[0];
+      const aptDate = dayjs(dateStr);
+      return aptDate.format("YYYY-MM-DD") === date.format("YYYY-MM-DD");
     });
   };
 
   const AppointmentBlock = ({ appointment }: { appointment: Appointment }) => {
     const color = STATUS_COLORS[appointment.status];
+    const normalizedDate = normalizeDate(appointment.date);
+    const displayTime = normalizedDate
+      ? dayjs(normalizedDate).format("HH:mm")
+      : "N/A";
 
     return (
       <div
         onClick={() => onAppointmentClick(appointment)}
-        className="cursor-pointer transition-all hover:scale-105 hover:shadow-md"
+        className="cursor-pointer text-xs p-1 rounded mb-1 truncate hover:shadow-md"
         style={{
           backgroundColor: color.bg,
-          border: `2px solid ${color.border}`,
-          borderRadius: "6px",
-          padding: "6px 8px",
-          minHeight: "60px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          border: `1px solid ${color.border}`,
+          color: color.text,
         }}
+        title={`${appointment.doctorInfo?.fullName || "Doctor"} - ${displayTime}`}
       >
-        <div
-          style={{
-            fontSize: "11px",
-            fontWeight: 600,
-            color: color.text,
-            marginBottom: "2px",
-          }}
-        >
-          {appointment.timeSlot.start}
-        </div>
-        <div
-          style={{
-            fontSize: "13px",
-            fontWeight: 500,
-            color: "#000",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {appointment.doctorInfo?.fullName || "Doctor"}
-        </div>
+        {displayTime} {appointment.doctorInfo?.fullName || "Doctor"}
+      </div>
+    );
+  };
+
+  // Render cell content with appointments
+  const dateCellRender = (date: Dayjs) => {
+    const dayAppointments = getAppointmentsForDate(date);
+    return (
+      <div className="space-y-0.5">
+        {dayAppointments.map((apt) => (
+          <AppointmentBlock key={apt.id} appointment={apt} />
+        ))}
       </div>
     );
   };
@@ -131,13 +133,6 @@ export default function WeekTimeline({
           >
             {t("noData")}
           </div>
-          <div
-            className={`text-sm mb-6 ${
-              isDark ? "text-slate-400" : "text-gray-500"
-            }`}
-          >
-            {startOfWeek.format("D")} - {weekDays[6].format("D MMMM, YYYY")}
-          </div>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -156,149 +151,16 @@ export default function WeekTimeline({
       className={`${
         isDark ? "bg-slate-800 border-slate-700" : "bg-white border-gray-200"
       }`}
-      styles={{ body: { padding: 0 } }}
     >
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[800px]">
-          <thead>
-            <tr
-              className={`${isDark ? "bg-slate-900" : "bg-gray-50"} border-b-2`}
-              style={{ borderColor: isDark ? "#334155" : "#e5e7eb" }}
-            >
-              <th
-                className={`py-3 px-2 text-center font-semibold text-sm ${
-                  isDark ? "text-slate-300" : "text-gray-700"
-                }`}
-                style={{ width: "80px" }}
-              >
-                Giờ
-              </th>
-              {weekDays.map((day) => (
-                <th
-                  key={day.format("YYYY-MM-DD")}
-                  className={`py-3 px-2 text-center ${
-                    isDark ? "text-slate-300" : "text-gray-700"
-                  }`}
-                >
-                  <div className="text-xs font-normal mb-1">
-                    {day.format("ddd")}
-                  </div>
-                  <div
-                    className={`text-sm font-semibold ${
-                      day.format("YYYY-MM-DD") === dayjs().format("YYYY-MM-DD")
-                        ? "text-blue-500"
-                        : ""
-                    }`}
-                  >
-                    {day.format("D")}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {/* Morning slots */}
-            {TIME_SLOTS.slice(0, 6).map((time) => (
-              <tr
-                key={time}
-                className={`border-b ${
-                  isDark ? "border-slate-700" : "border-gray-100"
-                }`}
-              >
-                <td
-                  className={`py-2 px-2 text-center text-xs font-medium ${
-                    isDark ? "text-slate-400" : "text-gray-600"
-                  }`}
-                  style={{
-                    backgroundColor: isDark ? "#1e293b" : "#f9fafb",
-                  }}
-                >
-                  {time}
-                </td>
-                {weekDays.map((day) => {
-                  const slotAppointments = getAppointmentsForSlot(day, time);
-                  return (
-                    <td
-                      key={`${day.format("YYYY-MM-DD")}-${time}`}
-                      className="p-1"
-                      style={{
-                        backgroundColor: isDark ? "#0f172a" : "#ffffff",
-                      }}
-                    >
-                      {slotAppointments.length > 0 ? (
-                        <div className="flex flex-col gap-1">
-                          {slotAppointments.map((a) => (
-                            <AppointmentBlock key={a.id} appointment={a} />
-                          ))}
-                        </div>
-                      ) : (
-                        <div style={{ minHeight: "60px" }} />
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-
-            {/* Lunch break */}
-            <tr>
-              <td
-                colSpan={8}
-                className={`py-3 text-center font-semibold text-sm ${
-                  isDark
-                    ? "bg-slate-900 text-slate-400"
-                    : "bg-gray-50 text-gray-600"
-                }`}
-              >
-                🍽️ Nghỉ trưa (11:00 - 14:00)
-              </td>
-            </tr>
-
-            {/* Afternoon slots */}
-            {TIME_SLOTS.slice(6).map((time) => (
-              <tr
-                key={time}
-                className={`border-b ${
-                  isDark ? "border-slate-700" : "border-gray-100"
-                }`}
-              >
-                <td
-                  className={`py-2 px-2 text-center text-xs font-medium ${
-                    isDark ? "text-slate-400" : "text-gray-600"
-                  }`}
-                  style={{
-                    backgroundColor: isDark ? "#1e293b" : "#f9fafb",
-                  }}
-                >
-                  {time}
-                </td>
-                {weekDays.map((day) => {
-                  const slotAppointments = getAppointmentsForSlot(day, time);
-                  return (
-                    <td
-                      key={`${day.format("YYYY-MM-DD")}-${time}`}
-                      className="p-1"
-                      style={{
-                        backgroundColor: isDark ? "#0f172a" : "#ffffff",
-                      }}
-                    >
-                      {slotAppointments.length > 0 ? (
-                        <div className="flex flex-col gap-1">
-                          {slotAppointments.map((a) => (
-                            <AppointmentBlock key={a.id} appointment={a} />
-                          ))}
-                        </div>
-                      ) : (
-                        <div style={{ minHeight: "60px" }} />
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Calendar
+        value={selectedWeek}
+        fullscreen
+        cellRender={dateCellRender}
+        style={{
+          backgroundColor: isDark ? "#1e293b" : "#ffffff",
+          color: isDark ? "#e2e8f0" : "#000000",
+        }}
+      />
     </Card>
   );
 }

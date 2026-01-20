@@ -1,13 +1,19 @@
 import { Request, Response, NextFunction } from "express";
 import { AppointmentService } from "../services/appointmentService";
 import eventBus from "../utils/eventBus";
+import {
+  emitNewAppointment,
+  emitAppointmentStatusUpdate,
+  emitAppointmentRescheduled,
+  emitAppointmentCancelled,
+} from "../socket/socketServer";
 
 const appointmentService = new AppointmentService();
 
 export const createAppointment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const appointmentData = {
@@ -21,6 +27,8 @@ export const createAppointment = async (
     // Emit realtime event for listeners (non-blocking)
     try {
       eventBus.emit("appointment", { action: "created", appointment });
+      // Emit Socket.io event - notify doctor of new appointment in real-time
+      emitNewAppointment(appointmentData.doctorId, appointment);
     } catch (err) {
       // ignore emit errors
     }
@@ -37,7 +45,7 @@ export const createAppointment = async (
 export const updateMyAppointment = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const appointmentId = req.params.id;
@@ -52,12 +60,10 @@ export const updateMyAppointment = async (
 
     if (action === "cancel") {
       if (existing.status === "completed") {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "Cannot cancel a completed appointment",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "Cannot cancel a completed appointment",
+        });
       }
 
       const updated = await appointmentService.cancelAppointment(appointmentId);
@@ -67,6 +73,13 @@ export const updateMyAppointment = async (
           action: "updated",
           appointment: updated,
         });
+        // Emit Socket.io event - notify both doctor and patient
+        emitAppointmentCancelled(
+          appointmentId,
+          existing.doctorId,
+          existing.patientId,
+          "Patient cancelled",
+        );
       } catch (err) {
         // ignore
       }
@@ -84,7 +97,7 @@ export const updateMyAppointment = async (
       const updated = await appointmentService.rescheduleAppointment(
         appointmentId,
         date,
-        timeSlot
+        timeSlot,
       );
 
       try {
@@ -92,6 +105,13 @@ export const updateMyAppointment = async (
           action: "updated",
           appointment: updated,
         });
+        // Emit Socket.io event - notify both doctor and patient
+        emitAppointmentRescheduled(
+          appointmentId,
+          existing.doctorId,
+          existing.patientId,
+          updated,
+        );
       } catch (err) {
         // ignore
       }
@@ -108,11 +128,11 @@ export const updateMyAppointment = async (
 export const getMyAppointments = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const appointments = await appointmentService.getAppointmentsByPatient(
-      req.user!.userId
+      req.user!.userId,
     );
 
     res.json({
@@ -128,14 +148,14 @@ export const getMyAppointments = async (
 export const getDoctorAppointments = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { status } = req.query;
 
     const appointments = await appointmentService.getAppointmentsByDoctor(
       req.user!.userId,
-      status as string
+      status as string,
     );
 
     res.json({
@@ -151,7 +171,7 @@ export const getDoctorAppointments = async (
 export const updateAppointmentStatus = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const { status, doctorNotes, rejectionReason } = req.body;
@@ -160,11 +180,18 @@ export const updateAppointmentStatus = async (
       req.params.id,
       status,
       doctorNotes,
-      rejectionReason
+      rejectionReason,
     );
 
     try {
       eventBus.emit("appointment", { action: "updated", appointment });
+      // Emit Socket.io event - notify both doctor and patient of status change
+      emitAppointmentStatusUpdate(
+        req.params.id,
+        appointment.doctorId,
+        appointment.patientId,
+        appointment,
+      );
     } catch (err) {
       // ignore
     }

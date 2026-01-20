@@ -2,11 +2,9 @@
 
 import React from "react";
 import { Space, Button, Tag, Typography } from "antd";
-import { LeftOutlined, RightOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/vi";
-import { useTranslations, useLocale } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 dayjs.locale("vi");
 
@@ -17,29 +15,26 @@ interface Appointment {
   status: string;
 }
 
-interface FilterBarProps {
-  selectedWeek: Dayjs;
-  onWeekChange: (week: Dayjs) => void;
+interface DoctorFilterBarProps {
+  selectedMonth: Dayjs;
+  onMonthChange: (month: Dayjs) => void;
   statusFilter: string[];
   onStatusFilterChange: (status: string) => void;
   appointments: Appointment[];
-  onNewAppointment?: () => void;
   isDark?: boolean;
 }
 
-export default function FilterBar({
-  selectedWeek,
-  onWeekChange,
+export default function DoctorFilterBar({
+  selectedMonth,
+  onMonthChange,
   statusFilter,
   onStatusFilterChange,
   appointments,
-  onNewAppointment,
   isDark = false,
-}: FilterBarProps) {
-  const t = useTranslations("patientDashboard.weekNavigation");
+}: DoctorFilterBarProps) {
+  const t = useTranslations("doctorAppointments");
   const tStatus = useTranslations("patientDashboard.status");
-  const router = useRouter();
-  const locale = useLocale();
+  const tWeekNav = useTranslations("patientDashboard.weekNavigation");
 
   // Calculate status counts
   const statusCounts = {
@@ -49,61 +44,46 @@ export default function FilterBar({
     cancelled: appointments.filter((a) => a.status === "cancelled").length,
   };
 
-  const startOfWeek = selectedWeek.startOf("week").add(1, "day"); // Monday
-  const endOfWeek = selectedWeek.endOf("week").add(1, "day"); // Sunday
-
   const isActive = (status: string) => statusFilter.includes(status);
 
   return (
     <div
-      className={`p-4 rounded-lg mb-4 ${
+      className={`p-4 rounded-lg mb-6 ${
         isDark
           ? "bg-slate-800 border border-slate-700"
           : "bg-white border border-gray-200 shadow-sm"
       }`}
     >
-      {/* Week Navigation */}
+      {/* Month Navigation */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
         <Space size="middle">
           <Button
-            icon={<LeftOutlined />}
-            onClick={() => onWeekChange(selectedWeek.subtract(1, "week"))}
+            onClick={() => onMonthChange(selectedMonth.subtract(1, "month"))}
             className={isDark ? "border-slate-600" : ""}
-          />
+          >
+            ←
+          </Button>
           <Text
             strong
             className={`text-base ${
               isDark ? "text-slate-200" : "text-gray-800"
             }`}
           >
-            {t("week")} {selectedWeek.week()}: {startOfWeek.format("D")} -{" "}
-            {endOfWeek.format("D MMMM, YYYY")}
+            {selectedMonth.format("MMMM YYYY")}
           </Text>
           <Button
-            icon={<RightOutlined />}
-            onClick={() => onWeekChange(selectedWeek.add(1, "week"))}
+            onClick={() => onMonthChange(selectedMonth.add(1, "month"))}
             className={isDark ? "border-slate-600" : ""}
-          />
+          >
+            →
+          </Button>
           <Button
-            onClick={() => onWeekChange(dayjs())}
+            onClick={() => onMonthChange(dayjs())}
             className={isDark ? "border-slate-600" : ""}
           >
             {t("today")}
           </Button>
         </Space>
-
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() =>
-            onNewAppointment
-              ? onNewAppointment()
-              : router.push(`/${locale}/doctors`)
-          }
-          style={{ backgroundColor: "#1890ff" }}
-        >
-          {t("newAppointment")}
-        </Button>
       </div>
 
       {/* Status Filters */}
@@ -194,14 +174,14 @@ export default function FilterBar({
           {tStatus("cancelled")} ({statusCounts.cancelled})
         </Tag>
 
-        {statusFilter.length > 0 && (
+        {statusFilter.length > 0 && statusFilter.length < 4 && (
           <Button
             type="link"
             size="small"
             onClick={() => onStatusFilterChange("")}
             className={isDark ? "text-blue-400" : ""}
           >
-            {t("clearFilters")}
+            {tWeekNav("clearFilters")}
           </Button>
         )}
       </div>

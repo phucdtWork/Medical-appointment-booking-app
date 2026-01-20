@@ -25,6 +25,20 @@ dayjs.locale("vi");
 
 import type { Appointment } from "@/types/appointment";
 
+// Helper: Convert Firestore timestamp or ISO string to ISO string
+const normalizeDate = (date: unknown): string | null => {
+  if (!date) return null;
+  // If it's Firestore timestamp object
+  if (typeof date === "object" && "_seconds" in date) {
+    return new Date(date._seconds * 1000).toISOString();
+  }
+  // If it's already ISO string
+  if (typeof date === "string") {
+    return date;
+  }
+  return null;
+};
+
 type PatientDashboardPropsPartial = {
   onReschedule?: (appointmentId: string) => void;
   onCancel?: (appointmentId: string) => void;
@@ -43,39 +57,32 @@ export default function PatientDashboard({
   // Fetch appointments from API
   const { data: apiData, isLoading } = useMyAppointments();
 
-  const appointments = useMemo(
-    () => (Array.isArray(apiData?.data) ? apiData.data : []),
-    [apiData],
-  );
+  const appointments = useMemo(() => {
+    if (!Array.isArray(apiData?.data)) return [];
+    // Normalize dates: convert Firestore timestamp to ISO string
+    return apiData.data.map((apt: Appointment) => ({
+      ...apt,
+      date: normalizeDate(apt.date),
+    }));
+  }, [apiData]);
 
   const [selectedWeek, setSelectedWeek] = useState<Dayjs>(dayjs());
-  const [statusFilter, setStatusFilter] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState<string[]>([
+    "pending",
+    "confirmed",
+    "completed",
+    "cancelled",
+  ]); // Default: show all statuses
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const filteredAppointments = useMemo(() => {
-    const appts = Array.isArray(appointments) ? appointments : [];
-
-    let filtered = [...appts];
-
-    if (statusFilter.length > 0) {
-      filtered = filtered.filter((apt) => statusFilter.includes(apt.status));
+    if (!statusFilter || statusFilter.length === 0) {
+      return [];
     }
-
-    const startOfWeek = selectedWeek.startOf("week");
-    const endOfWeek = selectedWeek.endOf("week");
-
-    filtered = filtered.filter((apt) => {
-      const aptDate = dayjs(apt.date);
-      return (
-        aptDate.isSameOrAfter(startOfWeek, "day") &&
-        aptDate.isSameOrBefore(endOfWeek, "day")
-      );
-    });
-
-    return filtered;
-  }, [appointments, statusFilter, selectedWeek]);
+    return appointments.filter((apt) => statusFilter.includes(apt.status));
+  }, [appointments, statusFilter]);
 
   const handleStatusFilterChange = (status: string) => {
     if (status === "") {
@@ -83,8 +90,11 @@ export default function PatientDashboard({
       return;
     }
 
-    setStatusFilter((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [status],
+    setStatusFilter(
+      (prev) =>
+        prev.includes(status)
+          ? prev.filter((s) => s !== status)
+          : [...prev, status], // Add to existing filters, not replace
     );
   };
 
@@ -141,7 +151,7 @@ export default function PatientDashboard({
               onWeekChange={setSelectedWeek}
               statusFilter={statusFilter}
               onStatusFilterChange={handleStatusFilterChange}
-              appointments={filteredAppointments}
+              appointments={appointments}
               isDark={isDark}
             />
           </div>
