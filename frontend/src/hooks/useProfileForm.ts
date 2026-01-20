@@ -128,7 +128,8 @@ export const useProfileForm = (user?: Record<string, unknown>) => {
 
     // Create preview
     const reader = new FileReader();
-    reconst preview = reader.result as string;
+    reader.onload = () => {
+      const preview = reader.result as string;
       setAvatarPreview(preview);
       form.setFieldsValue({ avatar: preview });
     };
