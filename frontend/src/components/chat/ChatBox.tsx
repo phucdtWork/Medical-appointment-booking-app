@@ -289,7 +289,7 @@ export default function ChatBoxDemo({ onClose }: ChatBoxProps) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to load features";
       console.error("Features error:", errorMessage);
-      messageApi?.error(errorMessage);
+      message.error(errorMessage);
     }
   };
 
