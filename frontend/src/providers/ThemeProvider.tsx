@@ -26,20 +26,23 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [isDark, setIsDark] = useState(false);
+  // Initialize state from localStorage without calling setState in effect
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("theme") === "dark";
+  });
   const pathname = usePathname();
   const router = useRouter();
   const currentLocale = useLocale() as "vi" | "en";
 
-  // ✅ Effect: Load theme preference from localStorage on mount
+  // Apply theme classes to DOM when isDark changes
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-
-    if (savedTheme === "dark") {
-      setIsDark(true);
+    if (isDark) {
       document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
     }
-  }, []);
+  }, [isDark]);
 
   const toggleTheme = useCallback(() => {
     setIsDark((prev) => {
