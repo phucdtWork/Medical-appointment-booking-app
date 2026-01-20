@@ -32,7 +32,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const currentLocale = useLocale();
-  const isInitialMount = useRef(true);
 
   // ✅ Effect 1: Load từ localStorage - Dùng callback để gộp updates
   useEffect(() => {
@@ -58,12 +57,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // ✅ Effect 2: Sync language state with URL locale on mount and when URL changes
   useEffect(() => {
-    // Always sync the language state with what's in the URL
-    if (currentLocale === "vi" || currentLocale === "en") {
+    // Only update if locale actually changed to avoid cascading renders
+    if ((currentLocale === "vi" || currentLocale === "en") && currentLocale !== language) {
       setLanguage(currentLocale);
       localStorage.setItem("language", currentLocale);
     }
-  }, [currentLocale]);
+  }, [currentLocale, language]);
 
   const toggleTheme = useCallback(() => {
     setIsDark((prev) => {
