@@ -1,24 +1,28 @@
 // src/middleware.ts
-import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
-const intlMiddleware = createMiddleware({
-  locales: ["vi", "en"],
-  defaultLocale: "en",
-  localePrefix: "always",
-});
-
 export default function middleware(request: NextRequest) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { pathname } = request.nextUrl as any;
+  const pathname = request.nextUrl.pathname;
 
-  // Redirect / đến /vi (default)
+  // Don't run middleware on API routes
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.next();
+  }
+
+  // Check if pathname has locale prefix
+  const pathnameHasLocale = /^\/(vi|en)/.test(pathname);
+
+  // If no locale prefix and not root, add default locale
+  if (!pathnameHasLocale && pathname !== "/") {
+    return NextResponse.next();
+  }
+
+  // Redirect / to /en
   if (pathname === "/") {
     return NextResponse.redirect(new URL("/en", request.url));
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return intlMiddleware(request as any);
+  return NextResponse.next();
 }
 
 export const config = {
