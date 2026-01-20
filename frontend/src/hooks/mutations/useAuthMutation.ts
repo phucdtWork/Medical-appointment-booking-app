@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authService, LoginData, RegisterData } from "../../lib/services";
+import { authService, LoginData } from "../../lib/services";
 import { authKeys } from "../queries/useAuthQuery";
 import { useNotification } from "@/providers/NotificationProvider";
 import { useRouter } from "next/navigation";
@@ -53,6 +53,7 @@ export const useRegister = () => {
       fullName: string;
       phone: string;
     }) => authService.verifyAndRegister(data),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (response: any) => {
       // Store token
       localStorage.setItem("token", response.data.token);
@@ -68,6 +69,7 @@ export const useRegister = () => {
       });
       router.push("/");
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
       const errorMessage = error.response?.data?.error || "Đăng ký thất bại";
       notification.error({

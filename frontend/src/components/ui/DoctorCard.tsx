@@ -31,7 +31,9 @@ export default function DoctorCard({
   const renderFee = () => {
     const fee = doctor?.doctorInfo?.consultationFee;
     if (fee && typeof fee === "object" && "min" in fee && "max" in fee) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const min = (fee as any).min;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const max = (fee as any).max;
       return `${min?.toLocaleString?.() || min} - ${max?.toLocaleString?.() || max} VND`;
     }

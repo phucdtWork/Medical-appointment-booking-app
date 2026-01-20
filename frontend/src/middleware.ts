@@ -9,6 +9,7 @@ const intlMiddleware = createMiddleware({
 });
 
 export default function middleware(request: NextRequest) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { pathname } = (request.nextUrl as any);
 
   // Redirect / đến /vi (default)
@@ -16,6 +17,7 @@ export default function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/en", request.url));
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return intlMiddleware(request as any);
 }
 

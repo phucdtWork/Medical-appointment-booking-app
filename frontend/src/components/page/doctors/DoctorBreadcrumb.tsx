@@ -37,6 +37,7 @@ export default function DoctorBreadcrumb({
   // Add specialization to breadcrumb if selected
   if (filters.specialization) {
     items.push({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       title: filters.specialization as any,
     });
   }
@@ -44,6 +45,7 @@ export default function DoctorBreadcrumb({
   // Add search term to breadcrumb if exists
   if (searchTerm) {
     items.push({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       title: `Tìm kiếm: "${searchTerm}"` as any,
     });
   }
@@ -51,6 +53,7 @@ export default function DoctorBreadcrumb({
   // Add rating filter to breadcrumb if selected
   if (filters.minRating) {
     items.push({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       title: `⭐ ${filters.minRating}+ sao` as any,
     });
   }

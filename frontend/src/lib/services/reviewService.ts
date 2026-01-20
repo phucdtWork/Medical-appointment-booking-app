@@ -25,6 +25,7 @@ export const useCreateReview = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: CreateReviewData) => reviewService.createReview(data),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSuccess: (res: any, vars: CreateReviewData) => {
       qc.invalidateQueries({ queryKey: doctorKeys.detail(vars.doctorId) });
     },

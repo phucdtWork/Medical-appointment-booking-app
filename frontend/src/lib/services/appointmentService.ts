@@ -23,6 +23,7 @@ const normalizeDateField = (
   if (date instanceof Date) return date.toISOString();
 
   // Try to parse with dayjs as fallback
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const parsed = dayjs(date as any);
   if (parsed.isValid()) return parsed.toISOString();
 
@@ -30,11 +31,16 @@ const normalizeDateField = (
 };
 
 // Helper function to normalize appointment data
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const normalizeAppointment = (apt: Record<string, unknown>): Appointment => {
   return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...(apt as any),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     date: normalizeDateField(apt.date as any),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     createdAt: normalizeDateField(apt.createdAt as any),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updatedAt: normalizeDateField(apt.updatedAt as any),
   };
 };

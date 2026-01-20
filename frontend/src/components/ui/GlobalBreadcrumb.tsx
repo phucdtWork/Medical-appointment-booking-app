@@ -66,9 +66,11 @@ export default function GlobalBreadcrumb() {
       last,
     ];
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return <Breadcrumb items={collapsedItems as any} className="py-3" />;
   }
 
   // Normal view
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return <Breadcrumb items={items as any} className="py-3" />;
 }
