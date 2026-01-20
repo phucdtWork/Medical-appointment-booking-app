@@ -2,18 +2,30 @@
 
 > A modern full-stack medical appointment booking system connecting patients and doctors seamlessly.
 
-![App Screenshot](./screenshots/dashboard.png)
+![App Screenshot](./screenshort.png)
 
 ---
 
 ## 📋 Quick Links
 
+- [Live Demo](#-live-demo)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
 - [Installation](#-installation)
 - [Environment Setup](#-environment-setup)
 - [Running the App](#-running-the-app)
 - [Project Structure](#-project-structure)
+
+---
+
+## 🌐 Live Demo
+
+| Component       | URL            |
+| --------------- | -------------- |
+| **Frontend**    | Coming soon... |
+| **Backend API** | Coming soon... |
+
+> Add your deployed links here after deployment
 
 ---
 
@@ -62,26 +74,6 @@
 **Database**
 
 - Firebase Realtime Database | Cloudinary Storage
-
----
-
-## 📸 Screenshots
-
-### Patient Dashboard
-
-![Patient Dashboard](./screenshots/patient-dashboard.png)
-
-### Doctor Schedule Management
-
-![Doctor Schedule](./screenshots/doctor-schedule.png)
-
-### Appointment Booking
-
-![Book Appointment](./screenshots/book-appointment.png)
-
-### Calendar View
-
-![Calendar](./screenshots/calendar.png)
 
 ---
 
