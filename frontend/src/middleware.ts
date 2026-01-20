@@ -15,17 +15,29 @@ export function middleware(request: NextRequest) {
   const localeMatch = pathname.split("/").filter(Boolean)[0];
 
   if (SUPPORTED_LOCALES.includes(localeMatch)) {
-    // Locale already in URL, let it through
-    return NextResponse.next();
+    // Locale already in URL, let it through and update cookie
+    const response = NextResponse.next();
+    response.cookies.set("NEXT_LOCALE", localeMatch, {
+      maxAge: 365 * 24 * 60 * 60, // 1 year
+      path: "/",
+    });
+    return response;
   }
 
-  // Redirect to default locale
+  // Check if there's a locale cookie
+  const localeCookie = request.cookies.get("NEXT_LOCALE")?.value || DEFAULT_LOCALE;
+
+  // Redirect to locale
   const response = NextResponse.redirect(
-    new URL(`/${DEFAULT_LOCALE}${pathname}`, request.url),
+    new URL(`/${localeCookie}${pathname}`, request.url),
   );
 
-  // Set locale cookie for server-side detection
-  response.cookies.set("NEXT_LOCALE", DEFAULT_LOCALE);
+  // Ensure cookie is set
+  response.cookies.set("NEXT_LOCALE", localeCookie, {
+    maxAge: 365 * 24 * 60 * 60, // 1 year
+    path: "/",
+  });
+  
   return response;
 }
 

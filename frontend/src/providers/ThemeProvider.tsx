@@ -66,8 +66,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const newPath = `/${newLang}${pathWithoutLocale}`;
       console.log("Changing language to:", newLang, "New path:", newPath);
 
-      // Push to new locale
+      // Set locale cookie for server-side detection
+      document.cookie = `NEXT_LOCALE=${newLang}; path=/; max-age=31536000`;
+
+      // Push to new locale - this will trigger server layout to re-run
       router.push(newPath);
+      
+      // Force page refresh to ensure layout re-renders with new locale
+      setTimeout(() => {
+        window.location.href = newPath;
+      }, 100);
     },
     [pathname, router],
   );
