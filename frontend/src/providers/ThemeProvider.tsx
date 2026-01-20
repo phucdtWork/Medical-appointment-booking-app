@@ -26,23 +26,39 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Initialize state from localStorage without calling setState in effect
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("theme") === "dark";
-  });
+  // Start with light theme on server, hydrate with actual theme from localStorage
+  const [isDark, setIsDark] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+  
   const pathname = usePathname();
   const router = useRouter();
   const currentLocale = useLocale() as "vi" | "en";
 
+  // Hydrate theme from localStorage on client-side only
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") === "dark";
+    setIsDark(savedTheme);
+    
+    // Apply theme class immediately
+    if (savedTheme) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    
+    setIsHydrated(true);
+  }, []);
+
   // Apply theme classes to DOM when isDark changes
   useEffect(() => {
+    if (!isHydrated) return; // Don't apply until after hydration
+    
     if (isDark) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
-  }, [isDark]);
+  }, [isDark, isHydrated]);
 
   const toggleTheme = useCallback(() => {
     setIsDark((prev) => {
@@ -71,7 +87,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
       // Push to new locale - this will trigger server layout to re-run
       router.push(newPath);
-      
+
       // Force page refresh to ensure layout re-renders with new locale
       setTimeout(() => {
         window.location.href = newPath;
@@ -129,19 +145,19 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // ✅ Memoize context value to prevent unnecessary re-renders of children
   const contextValue = useMemo(
     () => ({
-      isDark,
+      isDark: isHydrated ? isDark : false, // Use false until hydrated to match server render
       toggleTheme,
       locale: localeAntd,
       language: currentLocale,
       changeLanguage,
     }),
-    [isDark, toggleTheme, localeAntd, currentLocale, changeLanguage],
+    [isDark, toggleTheme, localeAntd, currentLocale, changeLanguage, isHydrated],
   );
 
   return (
     <ThemeContext.Provider value={contextValue}>
       <ConfigProvider locale={localeAntd} theme={themeConfig}>
-        <App>{children}</App>
+        <App suppressHydrationWarning>{children}</App>
       </ConfigProvider>
     </ThemeContext.Provider>
   );
