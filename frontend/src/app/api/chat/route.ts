@@ -2,6 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    // Check if OpenAI API key is configured
+    if (!process.env.OPENAI_API_KEY) {
+      return NextResponse.json(
+        {
+          error: "AI feature not configured",
+          details:
+            "The OpenAI API key is not configured. This feature is optional.",
+        },
+        { status: 503 },
+      );
+    }
+
     const userData = await req.json();
 
     // Weight loss plan generation - requires specific user data
