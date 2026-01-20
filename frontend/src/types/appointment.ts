@@ -29,7 +29,7 @@ export interface Appointment {
   id: string;
   patientId: string;
   doctorId: string;
-  date: string; // ISO date string
+  date: string | null; // ISO date string or null
   timeSlot: TimeSlot;
   status: AppointmentStatus;
   reason?: string;

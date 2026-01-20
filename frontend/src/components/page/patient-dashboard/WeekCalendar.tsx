@@ -15,7 +15,7 @@ dayjs.locale("vi");
 
 interface Appointment {
   id: string;
-  date: string | Date;
+  date: string | Date | null;
   status: "pending" | "confirmed" | "completed" | "cancelled" | "rejected";
   timeSlot: {
     start: string;
