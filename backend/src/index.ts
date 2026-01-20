@@ -7,11 +7,6 @@ import path from "path";
 import { createServer } from "http";
 import fs from "fs";
 
-import { initializeSocket } from "./socket/socketServer";
-import scheduleRoutes from "./routes/scheduleRoutes";
-import routes from "./routes";
-import { errorHandler } from "./middleware/errorHandler";
-
 // Load .env file only if it exists (for local development)
 const envPath = path.resolve(__dirname, "../../.env");
 if (fs.existsSync(envPath)) {
@@ -27,16 +22,8 @@ const HOST = "0.0.0.0";
 console.log(`[STARTUP] Starting backend on ${HOST}:${PORT}...`);
 console.log(`[STARTUP] NODE_ENV: ${process.env.NODE_ENV || "development"}`);
 
-// ✅ Tạo HTTP server cho Socket.IO
+// Create HTTP server for Socket.IO
 const server = createServer(app);
-
-// Initialize Socket.IO with error handling
-try {
-  initializeSocket(server);
-  console.log("[STARTUP] Socket.IO initialized");
-} catch (error) {
-  console.error("[STARTUP] Socket.IO initialization warning:", error);
-}
 
 // Middleware
 app.use(helmet());
@@ -70,7 +57,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-// ✅ THÊM HEALTH CHECK ENDPOINT (phải đặt TRƯỚC các routes khác)
+// Health check endpoint - Must work even if other services fail
 app.get("/api/health", (req, res) => {
   res.json({
     status: "OK",
@@ -80,24 +67,37 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// ✅ ROUTES - Đặt đúng thứ tự
-app.use("/api/schedules", scheduleRoutes); // Specific route trước
-app.use(routes); // General routes sau
-
-// ✅ ERROR HANDLER - PHẢI LÀ MIDDLEWARE CUỐI CÙNG
-app.use(errorHandler);
-
-// ✅ START SERVER
-server.listen(PORT, HOST, () => {
-  console.log(`✅ Server running on http://${HOST}:${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-  if (process.env.CORS_ORIGIN) {
-    console.log(`✅ CORS enabled for: ${process.env.CORS_ORIGIN}`);
+// START SERVER FIRST - Bind to port immediately
+const server_instance = server.listen(PORT, HOST, () => {
+  console.log(`✅ Server BOUND to http://${HOST}:${PORT}`);
+  
+  // Initialize Socket.IO AFTER server is bound
+  try {
+    const { initializeSocket } = require("./socket/socketServer");
+    initializeSocket(server);
+    console.log("[STARTUP] Socket.IO initialized");
+  } catch (error) {
+    console.error("[STARTUP] Socket.IO initialization warning:", error);
+  }
+  
+  // Initialize routes AFTER server is bound
+  try {
+    const scheduleRoutes = require("./routes/scheduleRoutes").default;
+    const routes = require("./routes").default;
+    const { errorHandler } = require("./middleware/errorHandler");
+    
+    app.use("/api/schedules", scheduleRoutes);
+    app.use(routes);
+    app.use(errorHandler);
+    
+    console.log("[STARTUP] Routes initialized");
+  } catch (error) {
+    console.error("[STARTUP] Routes initialization error:", error);
   }
 });
 
 // Handle server errors
-server.on("error", (error: NodeJS.ErrnoException) => {
+server_instance.on("error", (error: NodeJS.ErrnoException) => {
   if (error.code === "EADDRINUSE") {
     console.error(`❌ Port ${PORT} is already in use`);
   } else {
@@ -109,8 +109,14 @@ server.on("error", (error: NodeJS.ErrnoException) => {
 // Graceful shutdown
 process.on("SIGTERM", () => {
   console.log("SIGTERM received, shutting down gracefully...");
-  server.close(() => {
+  server_instance.close(() => {
     console.log("Server closed");
     process.exit(0);
   });
+});
+
+// Handle uncaught exceptions
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception:", error);
+  process.exit(1);
 });
