@@ -156,8 +156,7 @@ export const useGoogleLogin = () => {
       qc.invalidateQueries({ queryKey: ["me"] });
 
       notification.success({
-        message:
-          t?.("notifications.googleLoginSuccess") ?? "Google login successful!",
+        message: "Google login successful!",
       });
       router.push("/");
     },
@@ -183,9 +182,9 @@ export const useGoogleLogin = () => {
       const msg =
         errorMsg ||
         (error instanceof Error ? error.message : undefined) ||
-        (t?.("notifications.googleLoginFailure") ?? "Google login failed");
+        "Google login failed";
       notification.error({
-        message: t?.("notifications.error") ?? "Error",
+        message: "Error",
         description: msg,
       });
     },
