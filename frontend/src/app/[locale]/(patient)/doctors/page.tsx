@@ -44,6 +44,11 @@ export default function DoctorsPage() {
     setInputValue(searchTerm || "");
   }, [searchTerm]);
 
+  // Wrapper for updateFilter to match component signature
+  const handleFilterChange = (key: string, value: string | number | undefined) => {
+    updateFilter(key as keyof typeof filters, value);
+  };
+
   const filteredDoctors =
     data?.data.filter((doctor) =>
       doctor?.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -87,7 +92,7 @@ export default function DoctorsPage() {
           searchTerm={inputValue}
           filters={filters}
           onSearchChange={(v: string) => setInputValue(v)}
-          onFilterChange={updateFilter}
+          onFilterChange={handleFilterChange}
           onClearFilters={clearFilters}
         />
 
