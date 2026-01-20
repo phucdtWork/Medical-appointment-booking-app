@@ -9,7 +9,6 @@ import {
   useContext,
   useState,
   useEffect,
-  useRef,
   useCallback,
   useMemo,
 } from "react";
@@ -28,41 +27,19 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [isDark, setIsDark] = useState(false);
-  const [language, setLanguage] = useState<"vi" | "en">("vi");
   const pathname = usePathname();
   const router = useRouter();
-  const currentLocale = useLocale();
+  const currentLocale = useLocale() as "vi" | "en";
 
-  // ✅ Effect 1: Load từ localStorage - Dùng callback để gộp updates
+  // ✅ Effect: Load theme preference from localStorage on mount
   useEffect(() => {
-    // Đọc tất cả giá trị trước
     const savedTheme = localStorage.getItem("theme");
-    const savedLang = localStorage.getItem("language") as "vi" | "en" | null;
 
-    // Gộp tất cả updates vào React.startTransition hoặc batch updates
-    const updates = () => {
-      if (savedTheme === "dark") {
-        setIsDark(true);
-        document.documentElement.classList.add("dark");
-      }
-
-      if (savedLang) {
-        setLanguage(savedLang);
-      }
-    };
-
-    // Chạy updates
-    updates();
-  }, []);
-
-  // ✅ Effect 2: Sync language state with URL locale on mount and when URL changes
-  useEffect(() => {
-    // Only update if locale actually changed to avoid cascading renders
-    if ((currentLocale === "vi" || currentLocale === "en") && currentLocale !== language) {
-      setLanguage(currentLocale);
-      localStorage.setItem("language", currentLocale);
+    if (savedTheme === "dark") {
+      setIsDark(true);
+      document.documentElement.classList.add("dark");
     }
-  }, [currentLocale, language]);
+  }, []);
 
   const toggleTheme = useCallback(() => {
     setIsDark((prev) => {
@@ -81,20 +58,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const changeLanguage = useCallback(
     (newLang: "vi" | "en") => {
-      setLanguage(newLang);
-      localStorage.setItem("language", newLang);
-
       const pathWithoutLocale = pathname.replace(/^\/(vi|en)/, "") || "/";
       const newPath = `/${newLang}${pathWithoutLocale}`;
       console.log("Changing to path:", newPath);
 
-      // ✅ Dùng Next.js router.push thay vì window.location.href
+      // Use Next.js router to change URL, which will trigger locale update
       router.push(newPath);
     },
     [pathname, router],
   );
 
-  const localeAntd = language === "vi" ? viVN : enUS;
+  const localeAntd = currentLocale === "vi" ? viVN : enUS;
 
   // ✅ Memoize theme config để tránh re-render component con
   const themeConfig = useMemo(
@@ -140,16 +114,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     [isDark],
   );
 
-  // ✅ Memoize context value để tránh re-render
+  // ✅ Memoize context value to prevent unnecessary re-renders of children
   const contextValue = useMemo(
     () => ({
       isDark,
       toggleTheme,
       locale: localeAntd,
-      language,
+      language: currentLocale,
       changeLanguage,
     }),
-    [isDark, toggleTheme, localeAntd, language, changeLanguage],
+    [isDark, toggleTheme, localeAntd, currentLocale, changeLanguage],
   );
 
   return (
