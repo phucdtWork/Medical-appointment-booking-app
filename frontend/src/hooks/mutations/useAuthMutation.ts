@@ -32,7 +32,8 @@ export const useLogin = () => {
       // Don't redirect here - let the component handle it based on role
     },
     onError: (error: { response?: { data?: { error?: string } } }) => {
-      const errorMessage = error.response?.data?.error || t("notifications.loginFailure");
+      const errorMessage =
+        error.response?.data?.error || t("notifications.loginFailure");
       notification.error({
         message: t("notifications.error"),
         description: errorMessage,
@@ -74,7 +75,8 @@ export const useRegister = () => {
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
-      const errorMessage = error.response?.data?.error || t("notifications.registerFailure");
+      const errorMessage =
+        error.response?.data?.error || t("notifications.registerFailure");
       notification.error({
         message: t("notifications.error"),
         description: errorMessage,
