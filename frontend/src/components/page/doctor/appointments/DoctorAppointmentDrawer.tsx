@@ -348,7 +348,7 @@ export default function DoctorAppointmentDrawer({
             </Button>
           )}
 
-          {appointment.status === "completed" && (
+          {activeAppointment.status === "completed" && (
             <div className="flex-1 text-center py-3 bg-blue-50 rounded-lg">
               <span className="text-blue-600 font-medium">
                 ✓ {tStatus("completed")}
