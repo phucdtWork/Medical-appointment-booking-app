@@ -5,11 +5,13 @@ import { authService, LoginData } from "../../lib/services";
 import { authKeys } from "../queries/useAuthQuery";
 import { useNotification } from "@/providers/NotificationProvider";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 // Login mutation
 export const useLogin = () => {
   const queryClient = useQueryClient();
   const notification = useNotification();
+  const t = useTranslations("auth");
 
   return useMutation({
     mutationFn: (data: LoginData) => authService.login(data),
@@ -24,15 +26,15 @@ export const useLogin = () => {
       queryClient.invalidateQueries({ queryKey: authKeys.all });
 
       notification.success({
-        message: "Đăng nhập thành công!",
+        message: t("notifications.loginSuccess"),
       });
 
       // Don't redirect here - let the component handle it based on role
     },
     onError: (error: { response?: { data?: { error?: string } } }) => {
-      const errorMessage = error.response?.data?.error || "Đăng nhập thất bại";
+      const errorMessage = error.response?.data?.error || t("notifications.loginFailure");
       notification.error({
-        message: "Lỗi",
+        message: t("notifications.error"),
         description: errorMessage,
       });
     },
@@ -44,6 +46,7 @@ export const useRegister = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const notification = useNotification();
+  const t = useTranslations("auth");
 
   return useMutation({
     mutationFn: (data: {
@@ -65,15 +68,15 @@ export const useRegister = () => {
       queryClient.invalidateQueries({ queryKey: authKeys.all });
 
       notification.success({
-        message: "Đăng ký thành công!",
+        message: t("notifications.registerSuccess"),
       });
       router.push("/");
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
-      const errorMessage = error.response?.data?.error || "Đăng ký thất bại";
+      const errorMessage = error.response?.data?.error || t("notifications.registerFailure");
       notification.error({
-        message: "Lỗi",
+        message: t("notifications.error"),
         description: errorMessage,
       });
     },
@@ -83,17 +86,18 @@ export const useRegister = () => {
 export const useRequestOtp = () => {
   const notification = useNotification();
   const router = useRouter();
+  const t = useTranslations("auth");
   const mutation = useMutation({
     mutationFn: (email: string) => authService.requestOtp(email),
     onSuccess: () => {
       router.push("/verify-otp");
-      notification.success({ message: "OTP đã được gửi đến email của bạn" });
+      notification.success({ message: t("notifications.requestOtpSuccess") });
     },
     onError: (error: { response?: { data?: { error?: string } } }) => {
       const errorMessage =
-        error.response?.data?.error || "Yêu cầu OTP thất bại";
+        error.response?.data?.error || t("notifications.requestOtpFailure");
       notification.error({
-        message: "Lỗi",
+        message: t("notifications.error"),
         description: errorMessage,
       });
     },
@@ -105,6 +109,7 @@ export const useVerifyAndRegister = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const notification = useNotification();
+  const t = useTranslations("auth");
   return useMutation({
     mutationFn: (data: {
       email: string;
@@ -119,14 +124,14 @@ export const useVerifyAndRegister = () => {
       localStorage.setItem("user", JSON.stringify(response.data.user));
       // Update cache
       queryClient.setQueryData(authKeys.me(), response.data.user);
-      notification.success({ message: "Đăng ký thành công!" });
+      notification.success({ message: t("notifications.registerSuccess") });
       router.push("/");
     },
     onError: (error: { response?: { data?: { error?: string } } }) => {
       const errorMessage =
-        error.response?.data?.error || "Xác minh hoặc đăng ký thất bại";
+        error.response?.data?.error || t("notifications.verifyOtpFailure");
       notification.error({
-        message: "Lỗi",
+        message: t("notifications.error"),
         description: errorMessage,
       });
     },
@@ -135,18 +140,19 @@ export const useVerifyAndRegister = () => {
 
 export const useResendOtp = () => {
   const notification = useNotification();
+  const t = useTranslations("auth");
   const mutation = useMutation({
     mutationFn: (email: string) => authService.resendOtp(email),
     onSuccess: () => {
       notification.success({
-        message: "OTP đã được gửi lại đến email của bạn",
+        message: t("notifications.requestOtpSuccess"),
       });
     },
     onError: (error: { response?: { data?: { error?: string } } }) => {
       const errorMessage =
-        error.response?.data?.error || "Gửi lại OTP thất bại";
+        error.response?.data?.error || t("notifications.resendOtpFailure");
       notification.error({
-        message: "Lỗi",
+        message: t("notifications.error"),
         description: errorMessage,
       });
     },
@@ -158,6 +164,7 @@ export const useResendOtp = () => {
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
   const notification = useNotification();
+  const t = useTranslations("auth");
 
   return useMutation({
     mutationFn: (formData: FormData) => authService.updateProfile(formData),
@@ -169,8 +176,7 @@ export const useUpdateProfile = () => {
       localStorage.setItem("user", JSON.stringify(response.data));
 
       notification.success({
-        message: "Profile Updated",
-        description: "Your profile has been updated successfully.",
+        message: t("notifications.updateProfileSuccess"),
       });
     },
     onError: (error: {
@@ -179,9 +185,9 @@ export const useUpdateProfile = () => {
       const errorMessage =
         error.response?.data?.message ||
         error.response?.data?.error ||
-        "Cập nhật hồ sơ thất bại";
+        t("notifications.updateProfileFailure");
       notification.error({
-        message: "Lỗi",
+        message: t("notifications.error"),
         description: errorMessage,
       });
     },

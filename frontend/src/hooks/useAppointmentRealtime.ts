@@ -29,10 +29,10 @@ export function useAppointmentRealtime() {
     // Refetch doctor appointments
     queryClient.invalidateQueries({ queryKey: ["appointments", "doctor"] });
 
-    const patientName = (
+    const patientName =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      newAppointment.patientInfo as Record<string, any> | undefined
-    )?.fullName || "Patient";
+      (newAppointment.patientInfo as Record<string, any> | undefined)
+        ?.fullName || "Patient";
 
     // Show notification
     notification.success({
@@ -69,10 +69,9 @@ export function useAppointmentRealtime() {
       cancelled: "Appointment cancelled",
     };
 
-    const status = (
+    const status =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      statusUpdate.appointment as Record<string, any>
-    )?.status || "updated";
+      (statusUpdate.appointment as Record<string, any>)?.status || "updated";
     const message = statusMessages[status] || `Appointment ${status}`;
 
     notification.info({

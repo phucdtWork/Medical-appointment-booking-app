@@ -46,7 +46,7 @@ export interface TimeSlot {
 
 export const scheduleService = {
   upsertSchedule: async (
-    scheduleData: Partial<DoctorSchedule>
+    scheduleData: Partial<DoctorSchedule>,
   ): Promise<DoctorSchedule> => {
     const response = await api.post(`/schedules`, scheduleData);
     return response.data;
@@ -59,7 +59,7 @@ export const scheduleService = {
 
   getAvailableSlots: async (
     doctorId: string,
-    date: string
+    date: string,
   ): Promise<TimeSlot[]> => {
     const response = await api.get(`/schedules/doctor/${doctorId}/slots`, {
       params: { date },
@@ -70,11 +70,11 @@ export const scheduleService = {
   getAvailableSlotsRange: async (
     doctorId: string,
     startDate: string,
-    days: number = 7
+    days: number = 7,
   ): Promise<{ [date: string]: TimeSlot[] }> => {
     const response = await api.get(
       `/schedules/doctor/${doctorId}/slots/range`,
-      { params: { startDate, days } }
+      { params: { startDate, days } },
     );
     return response.data;
   },
@@ -92,7 +92,8 @@ export const useSchedule = (doctorId?: string | null) => {
 export const useUpsertSchedule = () => {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: Partial<DoctorSchedule>) => scheduleService.upsertSchedule(data),
+    mutationFn: (data: Partial<DoctorSchedule>) =>
+      scheduleService.upsertSchedule(data),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["schedule"] }),
   });
 };

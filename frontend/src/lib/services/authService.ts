@@ -141,6 +141,8 @@ export const useGoogleLogin = () => {
   const qc = useQueryClient();
   const router = useRouter();
   const notification = useNotification();
+  // @ts-ignore - useTranslations can only be used in client components
+  const t = useTranslations?.("auth") || null;
 
   return useMutation({
     mutationFn: (idToken: string) => authService.googleLogin(idToken),
@@ -155,7 +157,7 @@ export const useGoogleLogin = () => {
 
       qc.invalidateQueries({ queryKey: ["me"] });
 
-      notification.success({ message: "Đăng nhập bằng Google thành công!" });
+      notification.success({ message: t?.("notifications.googleLoginSuccess") ?? "Google login successful!" });
       router.push("/");
     },
     onError: (
@@ -180,8 +182,8 @@ export const useGoogleLogin = () => {
       const msg =
         errorMsg ||
         (error instanceof Error ? error.message : undefined) ||
-        "Đăng nhập bằng Google thất bại";
-      notification.error({ message: "Lỗi", description: msg });
+        (t?.("notifications.googleLoginFailure") ?? "Google login failed");
+      notification.error({ message: t?.("notifications.error") ?? "Error", description: msg });
     },
   });
 };

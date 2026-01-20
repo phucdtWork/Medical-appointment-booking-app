@@ -238,6 +238,23 @@
         "notReceived": "Không nhận được mã?",
         "resendAfter": "Gửi lại sau {countdown}s"
       }
+    },
+    "notifications": {
+      "loginSuccess": "Đăng nhập thành công!",
+      "loginFailure": "Đăng nhập thất bại",
+      "registerSuccess": "Đăng ký thành công!",
+      "registerFailure": "Đăng ký thất bại",
+      "googleLoginSuccess": "Đăng nhập bằng Google thành công!",
+      "googleLoginFailure": "Đăng nhập bằng Google thất bại",
+      "requestOtpSuccess": "OTP đã được gửi đến email của bạn",
+      "requestOtpFailure": "Yêu cầu OTP thất bại",
+      "verifyOtpSuccess": "Xác minh OTP thành công!",
+      "verifyOtpFailure": "Xác minh hoặc đăng ký thất bại",
+      "resendOtpFailure": "Gửi lại OTP thất bại",
+      "updateProfileSuccess": "Cập nhật hồ sơ thành công!",
+      "updateProfileFailure": "Cập nhật hồ sơ thất bại",
+      "logoutSuccess": "Đã đăng xuất",
+      "error": "Lỗi"
     }
   },
   "doctor": {

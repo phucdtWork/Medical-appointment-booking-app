@@ -57,7 +57,9 @@ export const useAuth = () => {
     queryClient.removeQueries({ queryKey: authKeys.all });
 
     // Show notification and redirect immediately
-    notification.success({ message: "Đã đăng xuất" });
+    // Note: Cannot use useTranslations here as this is not a React component
+    // Using English fallback for logout success message
+    notification.success({ message: "Logged out successfully" });
     router.push("/login");
   };
 

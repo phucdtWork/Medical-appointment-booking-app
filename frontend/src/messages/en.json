@@ -227,6 +227,23 @@
         "notReceived": "Didn't receive the code?",
         "resendAfter": "Resend after {countdown}s"
       }
+    },
+    "notifications": {
+      "loginSuccess": "Login successful!",
+      "loginFailure": "Login failed",
+      "registerSuccess": "Registration successful!",
+      "registerFailure": "Registration failed",
+      "googleLoginSuccess": "Google login successful!",
+      "googleLoginFailure": "Google login failed",
+      "requestOtpSuccess": "OTP has been sent to your email",
+      "requestOtpFailure": "Failed to request OTP",
+      "verifyOtpSuccess": "OTP verification successful!",
+      "verifyOtpFailure": "Verification or registration failed",
+      "resendOtpFailure": "Failed to resend OTP",
+      "updateProfileSuccess": "Profile updated successfully!",
+      "updateProfileFailure": "Failed to update profile",
+      "logoutSuccess": "Logged out successfully",
+      "error": "Error"
     }
   },
   "doctor": {

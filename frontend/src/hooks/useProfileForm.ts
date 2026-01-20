@@ -20,7 +20,10 @@ export const useProfileForm = (user?: Record<string, unknown>) => {
       if (user.dateOfBirth) {
         try {
           const dateValue = user.dateOfBirth;
-          values.dateOfBirth = typeof dateValue === "string" || typeof dateValue === "number" ? dayjs(dateValue) : dayjs();
+          values.dateOfBirth =
+            typeof dateValue === "string" || typeof dateValue === "number"
+              ? dayjs(dateValue)
+              : dayjs();
         } catch {
           values.dateOfBirth = dayjs();
         }
@@ -45,7 +48,10 @@ export const useProfileForm = (user?: Record<string, unknown>) => {
       if (user.dateOfBirth) {
         try {
           const dateValue = user.dateOfBirth;
-          values.dateOfBirth = typeof dateValue === "string" || typeof dateValue === "number" ? dayjs(dateValue) : dayjs();
+          values.dateOfBirth =
+            typeof dateValue === "string" || typeof dateValue === "number"
+              ? dayjs(dateValue)
+              : dayjs();
         } catch {
           values.dateOfBirth = dayjs();
         }

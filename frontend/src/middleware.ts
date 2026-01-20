@@ -10,7 +10,7 @@ const intlMiddleware = createMiddleware({
 
 export default function middleware(request: NextRequest) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { pathname } = (request.nextUrl as any);
+  const { pathname } = request.nextUrl as any;
 
   // Redirect / đến /vi (default)
   if (pathname === "/") {
