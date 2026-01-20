@@ -4,12 +4,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 const nextConfig = {
   images: {
     domains: ["i.pravatar.cc", "ui-avatars.com", "res.cloudinary.com"],
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**",
-      },
-    ],
+    unoptimized: true,
   },
   transpilePackages: ["antd"],
   experimental: {
