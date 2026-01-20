@@ -20,7 +20,7 @@ function UserDropdownComponent() {
         key: "appointments",
         label: <Link href="/appointments">{t("userMenu.appointments")}</Link>,
       },
-      { type: "divider" },
+      { type: "divider" as const },
       {
         key: "logout",
         label: t("userMenu.logout"),
