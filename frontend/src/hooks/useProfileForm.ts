@@ -141,8 +141,7 @@ export const useProfileForm = (user?: Record<string, unknown>) => {
     isEditing,
     setIsEditing,
     loading: isPending,
-    avatarPreview
-    loading: isPending,
+    avatarPreview,
     handleSave,
     handleAvatarChange,
     resetToUser,
