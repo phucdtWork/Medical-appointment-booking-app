@@ -45,13 +45,16 @@ export default function DoctorsPage() {
   }, [searchTerm]);
 
   // Wrapper for updateFilter to match component signature
-  const handleFilterChange = (key: string, value: string | number | undefined) => {
+  const handleFilterChange = (
+    key: string,
+    value: string | number | undefined,
+  ) => {
     updateFilter(key as keyof typeof filters, value);
   };
 
   const filteredDoctors =
     data?.data.filter((doctor) =>
-      doctor?.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
+      doctor?.fullName?.toLowerCase().includes(searchTerm.toLowerCase()),
     ) || [];
 
   const totalItems = filteredDoctors.length;
@@ -63,7 +66,7 @@ export default function DoctorsPage() {
     <div
       className={`min-h-screen py-8 ${useClassName(
         "bg-background",
-        "bg-background-dark"
+        "bg-background-dark",
       )}`}
     >
       <div className="max-w-7xl mx-auto px-4">
@@ -73,7 +76,7 @@ export default function DoctorsPage() {
           <h1
             className={`text-3xl mb-2.5 font-bold ${useClassName(
               "text-text-primary",
-              "text-text-primary-dark"
+              "text-text-primary-dark",
             )}`}
           >
             {t("page.title")}
@@ -81,7 +84,7 @@ export default function DoctorsPage() {
           <p
             className={`text-base ${useClassName(
               "text-text-secondary",
-              "text-text-secondary-dark"
+              "text-text-secondary-dark",
             )}`}
           >
             {t("page.subtitle")}

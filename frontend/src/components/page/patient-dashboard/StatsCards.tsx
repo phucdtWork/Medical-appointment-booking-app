@@ -93,10 +93,10 @@ export default function StatsCards({
   isDark = false,
 }: StatsCardsProps) {
   const t = useTranslations("patientDashboard.stats");
-  
+
   // Filter out appointments with null dates
   const validAppointments = appointments.filter((apt) => apt.date !== null);
-  
+
   // Calculate stats
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -123,7 +123,7 @@ export default function StatsCards({
     .join(", ");
 
   const pendingCount = appointments.filter(
-    (apt) => apt.status === "pending"
+    (apt) => apt.status === "pending",
   ).length;
 
   return (
