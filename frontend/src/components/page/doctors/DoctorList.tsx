@@ -1,17 +1,7 @@
 import { Row, Col, Card, Empty, Pagination, Skeleton } from "antd";
 import DoctorCard from "@/components/ui/DoctorCard";
 import { useTranslations } from "next-intl";
-
-interface Doctor {
-  id: string;
-  fullName: string;
-  avatar?: string;
-  doctorInfo: {
-    specialization: string;
-    rating: number;
-    totalReviews: number;
-  };
-}
+import type { Doctor } from "@/types/doctor";
 
 interface DoctorListProps {
   doctors: Doctor[];

@@ -45,11 +45,11 @@ export default function GlobalBreadcrumb() {
     const menuItems: MenuProps["items"] = middle.map((item, index) => ({
       key: index,
       label: item.href ? (
-        <Link href={item.href}>{item.title}</Link>
+        <Link href={item.href}>{item.title || "Page"}</Link>
       ) : (
-        <span>{item.title}</span>
+        <span>{item.title || "Page"}</span>
       ),
-      onClick: item.href ? () => router.push(item.href) : undefined,
+      onClick: item.href ? () => router.push(item.href as string) : undefined,
     }));
 
     const collapsedItems = [
@@ -66,9 +66,9 @@ export default function GlobalBreadcrumb() {
       last,
     ];
 
-    return <Breadcrumb items={collapsedItems} className="py-3" />;
+    return <Breadcrumb items={collapsedItems as any} className="py-3" />;
   }
 
   // Normal view
-  return <Breadcrumb items={items} className="py-3" />;
+  return <Breadcrumb items={items as any} className="py-3" />;
 }

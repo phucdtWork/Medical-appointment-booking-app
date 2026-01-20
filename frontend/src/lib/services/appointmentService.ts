@@ -15,7 +15,7 @@ const normalizeDateField = (
   if (typeof date === "string") return date;
 
   // If it's a Firestore timestamp object { _seconds, _nanoseconds }
-  if (date._seconds !== undefined) {
+  if (typeof date === "object" && "_seconds" in date) {
     return new Date((date._seconds as number) * 1000).toISOString();
   }
 
@@ -23,7 +23,7 @@ const normalizeDateField = (
   if (date instanceof Date) return date.toISOString();
 
   // Try to parse with dayjs as fallback
-  const parsed = dayjs(date);
+  const parsed = dayjs(date as any);
   if (parsed.isValid()) return parsed.toISOString();
 
   return new Date().toISOString();
@@ -32,10 +32,10 @@ const normalizeDateField = (
 // Helper function to normalize appointment data
 const normalizeAppointment = (apt: Record<string, unknown>): Appointment => {
   return {
-    ...apt,
-    date: normalizeDateField(apt.date),
-    createdAt: normalizeDateField(apt.createdAt),
-    updatedAt: normalizeDateField(apt.updatedAt),
+    ...(apt as any),
+    date: normalizeDateField(apt.date as any),
+    createdAt: normalizeDateField(apt.createdAt as any),
+    updatedAt: normalizeDateField(apt.updatedAt as any),
   };
 };
 

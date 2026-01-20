@@ -9,14 +9,14 @@ const intlMiddleware = createMiddleware({
 });
 
 export default function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname } = (request.nextUrl as any);
 
   // Redirect / đến /vi (default)
   if (pathname === "/") {
     return NextResponse.redirect(new URL("/en", request.url));
   }
 
-  return intlMiddleware(request);
+  return intlMiddleware(request as any);
 }
 
 export const config = {

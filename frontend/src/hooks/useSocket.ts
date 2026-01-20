@@ -195,7 +195,7 @@ export function useAppointmentUpdates(
       });
       setAppointmentUpdate({
         appointmentId: data.appointmentId,
-        appointment: null,
+        appointment: {} as Record<string, unknown>,
         timestamp: data.timestamp,
       });
     });

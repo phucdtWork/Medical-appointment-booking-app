@@ -5,39 +5,10 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { specializations } from "@/utils/specializations";
-
-interface DoctorInfo {
-  specialization: string;
-  rating: number;
-  totalReviews: number;
-  totalPatients?: number;
-  licenseNumber?: string;
-  yearsOfExperience?: number;
-  hospital?: string;
-  consultationFee: {
-    min: number;
-    max: number;
-  };
-  education?: Array<{
-    degree: string;
-    institution: string;
-    year: number;
-  }>;
-  bio?: string;
-}
-
-interface Doctor {
-  id: string;
-  fullName: string;
-  email?: string;
-  phone?: string;
-  avatar?: string;
-  role: "doctor" | "patient";
-  doctorInfo: DoctorInfo;
-}
+import type { Doctor } from "@/types/doctor";
 
 interface DoctorCardProps {
-  doctor: Doctor;
+  doctor: Partial<Doctor>;
   variant?: "vertical" | "horizontal";
 }
 
@@ -50,7 +21,8 @@ export default function DoctorCard({
   const router = useRouter();
 
   // Function to get translated specialization label
-  const getSpecializationLabel = (value: string) => {
+  const getSpecializationLabel = (value?: string) => {
+    if (!value) return "N/A";
     const spec = specializations.find((s) => s.value === value);
     return spec ? t(`components.ui.doctorCard.${spec.labelKey}`) : value;
   };
@@ -58,10 +30,12 @@ export default function DoctorCard({
   // Render phí khám
   const renderFee = () => {
     const fee = doctor?.doctorInfo?.consultationFee;
-    if (typeof fee === "object") {
-      return `${fee.min.toLocaleString()} - ${fee.max.toLocaleString()} VND`;
+    if (fee && typeof fee === "object" && "min" in fee && "max" in fee) {
+      const min = (fee as any).min;
+      const max = (fee as any).max;
+      return `${min?.toLocaleString?.() || min} - ${max?.toLocaleString?.() || max} VND`;
     }
-    return `${(fee || 0).toLocaleString()} VND`;
+    return "N/A";
   };
 
   // Render rating

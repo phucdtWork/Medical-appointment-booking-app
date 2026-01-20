@@ -5,13 +5,14 @@ import { useTranslations } from "next-intl";
 import DoctorCard from "@/components/ui/DoctorCard";
 import { useTheme } from "@/providers/ThemeProvider";
 import { useRouter } from "next/navigation";
+import type { Doctor } from "@/types/doctor";
 
 export default function FeaturedDoctorsSection() {
   const t = useTranslations("home");
   const router = useRouter();
   const { isDark } = useTheme();
   const { data: doctorsData } = useDoctors({});
-  const featuredDoctors = doctorsData?.data.slice(0, 4) || [];
+  const featuredDoctors = (doctorsData?.data as Doctor[])?.slice(0, 4) || [];
 
   return (
     <section

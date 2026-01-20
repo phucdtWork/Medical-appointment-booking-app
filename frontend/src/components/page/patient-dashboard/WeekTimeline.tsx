@@ -101,9 +101,9 @@ export default function WeekTimeline({
           border: `1px solid ${color.border}`,
           color: color.text,
         }}
-        title={`${appointment.doctorInfo?.fullName || "Doctor"} - ${displayTime}`}
+        title={`${appointment.doctorInfo?.specialization || "Doctor"} - ${displayTime}`}
       >
-        {displayTime} {appointment.doctorInfo?.fullName || "Doctor"}
+        {displayTime} {appointment.doctorInfo?.specialization || "Doctor"}
       </div>
     );
   };

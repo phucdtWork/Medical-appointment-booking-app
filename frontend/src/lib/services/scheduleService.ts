@@ -82,23 +82,19 @@ export const scheduleService = {
 
 // React Query hooks
 export const useSchedule = (doctorId?: string | null) => {
-  return useQuery(
-    ["schedule", doctorId],
-    () => scheduleService.getSchedule(doctorId as string),
-    {
-      enabled: !!doctorId,
-    }
-  );
+  return useQuery({
+    queryKey: ["schedule", doctorId],
+    queryFn: () => scheduleService.getSchedule(doctorId as string),
+    enabled: !!doctorId,
+  });
 };
 
 export const useUpsertSchedule = () => {
   const qc = useQueryClient();
-  return useMutation(
-    (data: Partial<DoctorSchedule>) => scheduleService.upsertSchedule(data),
-    {
-      onSuccess: () => qc.invalidateQueries(["schedule"]),
-    }
-  );
+  return useMutation({
+    mutationFn: (data: Partial<DoctorSchedule>) => scheduleService.upsertSchedule(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["schedule"] }),
+  });
 };
 
 export default scheduleService;

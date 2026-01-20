@@ -41,7 +41,7 @@ interface Props {
   onUpdateStatus?: (
     id: string,
     status: string,
-    extra?: unknown
+    extra?: unknown,
   ) => Promise<void> | void;
 }
 

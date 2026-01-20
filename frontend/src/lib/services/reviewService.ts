@@ -23,12 +23,10 @@ export const reviewService = {
 
 export const useCreateReview = () => {
   const qc = useQueryClient();
-  return useMutation(
-    (data: CreateReviewData) => reviewService.createReview(data),
-    {
-      onSuccess: (res, vars) => {
-        qc.invalidateQueries({ queryKey: doctorKeys.detail(vars.doctorId) });
-      },
-    }
-  );
+  return useMutation({
+    mutationFn: (data: CreateReviewData) => reviewService.createReview(data),
+    onSuccess: (res: any, vars: CreateReviewData) => {
+      qc.invalidateQueries({ queryKey: doctorKeys.detail(vars.doctorId) });
+    },
+  });
 };

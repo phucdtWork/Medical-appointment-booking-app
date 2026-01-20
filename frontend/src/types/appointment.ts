@@ -18,12 +18,8 @@ export interface PatientInfo {
   address?: string;
 }
 
-export interface DoctorInfo {
-  id: string;
-  fullName?: string;
-  specialization?: string;
-  hospital?: string;
-}
+// Use DoctorInfo from doctor.ts instead of defining here
+import type { DoctorInfo } from "./doctor";
 
 export interface Appointment {
   id: string;

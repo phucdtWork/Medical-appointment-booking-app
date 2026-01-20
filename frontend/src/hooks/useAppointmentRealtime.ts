@@ -29,10 +29,12 @@ export function useAppointmentRealtime() {
     // Refetch doctor appointments
     queryClient.invalidateQueries({ queryKey: ["appointments", "doctor"] });
 
+    const patientName = (newAppointment.patientInfo as Record<string, any> | undefined)?.fullName || "Patient";
+
     // Show notification
     notification.success({
       message: "New Appointment",
-      description: `${newAppointment.patientInfo?.fullName} booked an appointment`,
+      description: `${patientName} booked an appointment`,
       duration: 5,
     });
   }, [newAppointment, user?.role, queryClient, notification]);
@@ -64,7 +66,7 @@ export function useAppointmentRealtime() {
       cancelled: "Appointment cancelled",
     };
 
-    const status = statusUpdate.appointment?.status || "updated";
+    const status = (statusUpdate.appointment as Record<string, any>)?.status || "updated";
     const message = statusMessages[status] || `Appointment ${status}`;
 
     notification.info({

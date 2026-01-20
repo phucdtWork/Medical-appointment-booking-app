@@ -46,8 +46,14 @@ export const useRegister = () => {
   const notification = useNotification();
 
   return useMutation({
-    mutationFn: (data: RegisterData) => authService.register(data),
-    onSuccess: (response) => {
+    mutationFn: (data: {
+      email: string;
+      otp: string;
+      password: string;
+      fullName: string;
+      phone: string;
+    }) => authService.verifyAndRegister(data),
+    onSuccess: (response: any) => {
       // Store token
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -62,7 +68,7 @@ export const useRegister = () => {
       });
       router.push("/");
     },
-    onError: (error: { response?: { data?: { error?: string } } }) => {
+    onError: (error: any) => {
       const errorMessage = error.response?.data?.error || "Đăng ký thất bại";
       notification.error({
         message: "Lỗi",

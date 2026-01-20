@@ -315,10 +315,10 @@ export default function AppointmentDrawer({
           >
             <div>
               <div className="font-semibold mb-1">
-                {appointment.doctorInfo?.fullName || "Đang cập nhật"}
+                {appointment.doctorInfo?.specialization || "Đang cập nhật"}
               </div>
-              {appointment.doctorInfo?.specialization && (
-                <Tag color="blue">{appointment.doctorInfo.specialization}</Tag>
+              {appointment.doctorInfo?.hospital && (
+                <Tag color="blue">{appointment.doctorInfo.hospital}</Tag>
               )}
             </div>
           </Descriptions.Item>

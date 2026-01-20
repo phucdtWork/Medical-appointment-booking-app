@@ -19,9 +19,10 @@ export const useProfileForm = (user?: Record<string, unknown>) => {
       const values: Record<string, unknown> = { ...user };
       if (user.dateOfBirth) {
         try {
-          values.dateOfBirth = dayjs(user.dateOfBirth);
+          const dateValue = user.dateOfBirth;
+          values.dateOfBirth = typeof dateValue === "string" || typeof dateValue === "number" ? dayjs(dateValue) : dayjs();
         } catch {
-          values.dateOfBirth = user.dateOfBirth;
+          values.dateOfBirth = dayjs();
         }
       }
       // Ensure medicalHistory and allergies are arrays
@@ -43,9 +44,10 @@ export const useProfileForm = (user?: Record<string, unknown>) => {
       const values: Record<string, unknown> = { ...user };
       if (user.dateOfBirth) {
         try {
-          values.dateOfBirth = dayjs(user.dateOfBirth);
+          const dateValue = user.dateOfBirth;
+          values.dateOfBirth = typeof dateValue === "string" || typeof dateValue === "number" ? dayjs(dateValue) : dayjs();
         } catch {
-          values.dateOfBirth = user.dateOfBirth;
+          values.dateOfBirth = dayjs();
         }
       }
       // Ensure medicalHistory and allergies are arrays
