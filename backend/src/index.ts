@@ -70,7 +70,7 @@ app.get("/api/health", (req, res) => {
 // START SERVER FIRST - Bind to port immediately
 const server_instance = server.listen(PORT, HOST, () => {
   console.log(`✅ Server BOUND to http://${HOST}:${PORT}`);
-  
+
   // Initialize Socket.IO AFTER server is bound
   try {
     const { initializeSocket } = require("./socket/socketServer");
@@ -79,17 +79,17 @@ const server_instance = server.listen(PORT, HOST, () => {
   } catch (error) {
     console.error("[STARTUP] Socket.IO initialization warning:", error);
   }
-  
+
   // Initialize routes AFTER server is bound
   try {
     const scheduleRoutes = require("./routes/scheduleRoutes").default;
     const routes = require("./routes").default;
     const { errorHandler } = require("./middleware/errorHandler");
-    
+
     app.use("/api/schedules", scheduleRoutes);
     app.use(routes);
     app.use(errorHandler);
-    
+
     console.log("[STARTUP] Routes initialized");
   } catch (error) {
     console.error("[STARTUP] Routes initialization error:", error);
