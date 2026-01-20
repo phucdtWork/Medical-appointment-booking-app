@@ -26,6 +26,7 @@ const STATUS_COLORS = {
   confirmed: { bg: "#f6ffed", border: "#95de64", text: "#389e0d" },
   completed: { bg: "#fffbe6", border: "#ffd666", text: "#ad6800" },
   cancelled: { bg: "#fff1f0", border: "#ff7875", text: "#cf1322" },
+  rejected: { bg: "#fff1f0", border: "#ff7875", text: "#cf1322" },
 };
 
 // Helper: Normalize date (Firestore timestamp or ISO string to ISO string)
@@ -58,6 +59,7 @@ export default function DoctorAppointmentsPage() {
     "confirmed",
     "completed",
     "cancelled",
+    "rejected",
   ]); // Default: show all statuses
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
