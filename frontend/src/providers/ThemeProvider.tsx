@@ -29,7 +29,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Start with light theme on server, hydrate with actual theme from localStorage
   const [isDark, setIsDark] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
-  
+
   const pathname = usePathname();
   const router = useRouter();
   const currentLocale = useLocale() as "vi" | "en";
@@ -38,21 +38,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") === "dark";
     setIsDark(savedTheme);
-    
+
     // Apply theme class immediately
     if (savedTheme) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
-    
+
     setIsHydrated(true);
   }, []);
 
   // Apply theme classes to DOM when isDark changes
   useEffect(() => {
     if (!isHydrated) return; // Don't apply until after hydration
-    
+
     if (isDark) {
       document.documentElement.classList.add("dark");
     } else {
@@ -151,7 +151,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       language: currentLocale,
       changeLanguage,
     }),
-    [isDark, toggleTheme, localeAntd, currentLocale, changeLanguage, isHydrated],
+    [
+      isDark,
+      toggleTheme,
+      localeAntd,
+      currentLocale,
+      changeLanguage,
+      isHydrated,
+    ],
   );
 
   return (

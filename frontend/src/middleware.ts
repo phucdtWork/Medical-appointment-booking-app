@@ -25,7 +25,8 @@ export function middleware(request: NextRequest) {
   }
 
   // Check if there's a locale cookie
-  const localeCookie = request.cookies.get("NEXT_LOCALE")?.value || DEFAULT_LOCALE;
+  const localeCookie =
+    request.cookies.get("NEXT_LOCALE")?.value || DEFAULT_LOCALE;
 
   // Redirect to locale
   const response = NextResponse.redirect(
@@ -37,7 +38,7 @@ export function middleware(request: NextRequest) {
     maxAge: 365 * 24 * 60 * 60, // 1 year
     path: "/",
   });
-  
+
   return response;
 }
 
