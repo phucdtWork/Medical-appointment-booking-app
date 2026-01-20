@@ -11,7 +11,7 @@ import { useTranslations } from "next-intl";
 
 interface Appointment {
   id: string;
-  date: string | Date;
+  date: string | Date | null;
   status: string;
   timeSlot: {
     start: string;
@@ -93,6 +93,10 @@ export default function StatsCards({
   isDark = false,
 }: StatsCardsProps) {
   const t = useTranslations("patientDashboard.stats");
+  
+  // Filter out appointments with null dates
+  const validAppointments = appointments.filter((apt) => apt.date !== null);
+  
   // Calculate stats
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -101,13 +105,13 @@ export default function StatsCards({
   nextWeek.setDate(nextWeek.getDate() + 7);
   nextWeek.setHours(23, 59, 59, 999);
 
-  const upcomingCount = appointments.filter((apt) => {
-    const aptDate = new Date(apt.date);
+  const upcomingCount = validAppointments.filter((apt) => {
+    const aptDate = new Date(apt.date!);
     return aptDate >= today && aptDate <= nextWeek;
   }).length;
 
-  const todayAppointments = appointments.filter((apt) => {
-    const aptDate = new Date(apt.date);
+  const todayAppointments = validAppointments.filter((apt) => {
+    const aptDate = new Date(apt.date!);
     aptDate.setHours(0, 0, 0, 0);
     return aptDate.getTime() === today.getTime();
   });
