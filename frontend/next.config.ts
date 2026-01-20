@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["antd", "@ant-design/icons"],
   },
-  async headers() {
+  async headers(): Promise<any[]> {
     return [
       {
         source: "/(.*)",
