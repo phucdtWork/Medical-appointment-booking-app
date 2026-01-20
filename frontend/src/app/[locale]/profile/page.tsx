@@ -23,6 +23,7 @@ export default function ProfilePage() {
     handleAvatarChange,
     resetToUser,
     loading,
+    avatarPreview,
   } = useProfileForm(user);
 
   if (!isAuthenticated) {
@@ -42,6 +43,7 @@ export default function ProfilePage() {
                 user={user}
                 isEditing={isEditing}
                 isLoading={loading}
+                avatarPreview={avatarPreview}
                 onEdit={() => setIsEditing((s) => !s)}
                 onSave={() => handleSave()}
                 onCancel={() => {

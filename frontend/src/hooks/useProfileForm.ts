@@ -10,6 +10,7 @@ export const useProfileForm = (user?: Record<string, unknown>) => {
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const { mutate: updateProfile, isPending } = useUpdateProfile();
   const { refetch } = useAuth();
 
@@ -43,6 +44,7 @@ export const useProfileForm = (user?: Record<string, unknown>) => {
   const resetToUser = () => {
     form.resetFields();
     setAvatarFile(null);
+    setAvatarPreview(null);
     if (user) {
       const values: Record<string, unknown> = { ...user };
       if (user.dateOfBirth) {
@@ -108,6 +110,7 @@ export const useProfileForm = (user?: Record<string, unknown>) => {
       updateProfile(formData, {
         onSuccess: () => {
           setIsEditing(false);
+          setAvatarPreview(null);
           setAvatarFile(null);
           refetch();
         },
@@ -125,8 +128,9 @@ export const useProfileForm = (user?: Record<string, unknown>) => {
 
     // Create preview
     const reader = new FileReader();
-    reader.onload = () => {
-      form.setFieldsValue({ avatar: reader.result });
+    reconst preview = reader.result as string;
+      setAvatarPreview(preview);
+      form.setFieldsValue({ avatar: preview });
     };
     reader.readAsDataURL(file);
   };
@@ -135,6 +139,8 @@ export const useProfileForm = (user?: Record<string, unknown>) => {
     form,
     isEditing,
     setIsEditing,
+    loading: isPending,
+    avatarPreview
     loading: isPending,
     handleSave,
     handleAvatarChange,

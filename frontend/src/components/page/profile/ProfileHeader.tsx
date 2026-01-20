@@ -25,6 +25,8 @@ type Props = {
   isEditing: boolean;
   /** Whether update is loading */
   isLoading?: boolean;
+  /** Avatar preview (local) - shows immediately after upload */
+  avatarPreview?: string | null;
   /** Callback when edit button is clicked */
   onEdit: () => void;
   /** Callback when save button is clicked */
@@ -39,6 +41,7 @@ export default function ProfileHeader({
   user,
   isEditing,
   isLoading = false,
+  avatarPreview,
   onEdit,
   onSave,
   onCancel,
@@ -99,9 +102,9 @@ export default function ProfileHeader({
                       : "border-white dark:border-gray-700"
                   } transition-all duration-300 group-hover:border-blue-400`}
                 >
-                  {user?.avatar && !imageError ? (
+                  {(avatarPreview || user?.avatar) && !imageError ? (
                     <Image
-                      src={user.avatar}
+                      src={avatarPreview || user?.avatar || ""}
                       alt={user?.fullName || "User avatar"}
                       width={140}
                       height={140}
