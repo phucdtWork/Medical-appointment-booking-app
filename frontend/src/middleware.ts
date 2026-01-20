@@ -6,6 +6,11 @@ const SUPPORTED_LOCALES = ["en", "vi"];
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
+  // Don't redirect API routes or static files
+  if (pathname.startsWith("/api") || pathname.includes(".")) {
+    return NextResponse.next();
+  }
+
   // Check if locale is already in the pathname
   const localeMatch = pathname.split("/").filter(Boolean)[0];
 
@@ -26,9 +31,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Match everything except:
+    // Match everything except _next and static files
     "/((?!_next|.*\\..*|api).*)",
-    // But include api routes that aren't _next or static files
-    "/(api|trpc)(.*)",
   ],
 };
