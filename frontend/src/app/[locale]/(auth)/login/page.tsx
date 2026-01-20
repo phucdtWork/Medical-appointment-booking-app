@@ -185,7 +185,7 @@ export default function LoginPage() {
         {/* Google Login */}
         <Button
           onClick={handleGoogle}
-          loading={googleMutation?.isLoading}
+          loading={googleMutation?.isPending}
           block
           size="large"
           className="mb-6 h-12 text-base font-medium flex items-center justify-center gap-2 bg-white border-2 border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-800"
