@@ -305,15 +305,15 @@ NODE_ENV=development
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 
 # Firebase Admin SDK Configuration
-FIREBASE_PROJECT_ID=medical-appointment-app-1c985
-FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
-FIREBASE_CLIENT_EMAIL=firebase-adminsdk-fbsvc@medical-appointment-app-1c985.iam.gserviceaccount.com
+FIREBASE_PROJECT_ID=your_firebase_project_id
+FIREBASE_PRIVATE_KEY=your_firebase_private_key
+FIREBASE_CLIENT_EMAIL=your_firebase_client_email
 
 # Firebase Client Configuration (shared with frontend)
-NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyACFbyWXuGH2Xn3mMXDiNdD78-Xqo7I9fo
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=medical-appointment-app-1c985.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=medical-appointment-app-1c985
-NEXT_PUBLIC_FIREBASE_APP_ID=1:415116181363:web:51a95374d7737b2fe00f06
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
 
 # JWT Configuration
 JWT_SECRET=your_jwt_secret_key_here
@@ -336,17 +336,17 @@ EMAIL_APP_PASSWORD=your_app_specific_password
 EMAIL_FROM_NAME=Medibook Support
 
 # Google OAuth (Optional for backend verification)
-FIREBASE_CLIENT_ID=415116181363-ntp6iq98m82htknumopd39usk5a7m3ee.apps.googleusercontent.com
+FIREBASE_CLIENT_ID=your_google_client_id
 ```
 
 ### Frontend (.env.local)
 
 ```env
 # Firebase Client Configuration
-NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyACFbyWXuGH2Xn3mMXDiNdD78-Xqo7I9fo
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=medical-appointment-app-1c985.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=medical-appointment-app-1c985
-NEXT_PUBLIC_FIREBASE_APP_ID=1:415116181363:web:51a95374d7737b2fe00f06
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
 
 # Backend API URL
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
