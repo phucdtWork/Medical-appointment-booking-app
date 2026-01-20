@@ -39,18 +39,7 @@ const normalizeDate = (date: unknown): string | null => {
   return null;
 };
 
-type PatientDashboardPropsPartial = {
-  onReschedule?: (appointmentId: string) => void;
-  onCancel?: (appointmentId: string) => void;
-  onViewDoctor?: (doctorId: string) => void;
-  isDark?: boolean;
-};
-
-export default function PatientDashboard({
-  onReschedule,
-  onCancel,
-  onViewDoctor,
-}: PatientDashboardPropsPartial) {
+export default function PatientDashboard() {
   const { isDark } = useTheme();
   const t = useTranslations("patientDashboard");
 
