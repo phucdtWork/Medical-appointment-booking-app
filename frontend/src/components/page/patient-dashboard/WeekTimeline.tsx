@@ -50,7 +50,7 @@ const STATUS_COLORS = {
 const normalizeDate = (date: unknown): string | null => {
   if (!date) return null;
   if (typeof date === "object" && "_seconds" in date) {
-    return new Date(date._seconds * 1000).toISOString();
+    return new Date((date._seconds as number) * 1000).toISOString();
   }
   if (typeof date === "string") {
     return date;

@@ -16,7 +16,7 @@ const normalizeDateField = (
 
   // If it's a Firestore timestamp object { _seconds, _nanoseconds }
   if (date._seconds !== undefined) {
-    return new Date(date._seconds * 1000).toISOString();
+    return new Date((date._seconds as number) * 1000).toISOString();
   }
 
   // If it's already a Date object

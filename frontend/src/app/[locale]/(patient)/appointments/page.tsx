@@ -30,7 +30,7 @@ const normalizeDate = (date: unknown): string | null => {
   if (!date) return null;
   // If it's Firestore timestamp object
   if (typeof date === "object" && "_seconds" in date) {
-    return new Date(date._seconds * 1000).toISOString();
+    return new Date((date._seconds as number) * 1000).toISOString();
   }
   // If it's already ISO string
   if (typeof date === "string") {
