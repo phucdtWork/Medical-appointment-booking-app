@@ -164,7 +164,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   return (
     <ThemeContext.Provider value={contextValue}>
       <ConfigProvider locale={localeAntd} theme={themeConfig}>
-        <App suppressHydrationWarning>{children}</App>
+        <App>{children}</App>
       </ConfigProvider>
     </ThemeContext.Provider>
   );
