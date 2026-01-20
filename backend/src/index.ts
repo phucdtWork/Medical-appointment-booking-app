@@ -4,10 +4,10 @@ import helmet from "helmet";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import path from "path";
+import { createServer } from "http";
 
 import { initializeSocket } from "./socket/socketServer";
 import scheduleRoutes from "./routes/scheduleRoutes";
-
 import routes from "./routes";
 import { errorHandler } from "./middleware/errorHandler";
 
@@ -16,10 +16,13 @@ dotenv.config({
 });
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT || "5000", 10);
+const HOST = "0.0.0.0";
 
-const server = require("http").createServer(app);
+// ✅ Tạo HTTP server cho Socket.IO
+const server = createServer(app);
 
+// Initialize Socket.IO
 initializeSocket(server);
 
 // Middleware
@@ -31,7 +34,6 @@ const corsOptions = {
     origin: string | undefined,
     callback: (err: Error | null, allow?: boolean) => void,
   ) => {
-    // List of allowed origins
     const allowedOrigins = [
       "http://localhost:3000",
       "http://localhost:5000",
@@ -40,10 +42,8 @@ const corsOptions = {
     ].filter(Boolean);
 
     if (process.env.NODE_ENV === "development") {
-      // Allow all origins in development
       callback(null, true);
     } else if (!origin || allowedOrigins.includes(origin)) {
-      // In production, check against allowed origins
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
@@ -57,16 +57,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-// Routes
-app.use(routes);
+// ✅ THÊM HEALTH CHECK ENDPOINT (phải đặt TRƯỚC các routes khác)
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "OK",
+    message: "Server is running!",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "development",
+  });
+});
 
-// Error handler (must be last)
+// ✅ ROUTES - Đặt đúng thứ tự
+app.use("/api/schedules", scheduleRoutes); // Specific route trước
+app.use(routes); // General routes sau
+
+// ✅ ERROR HANDLER - PHẢI LÀ MIDDLEWARE CUỐI CÙNG
 app.use(errorHandler);
 
-app.use("/api/schedules", scheduleRoutes);
-
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Server running on port ${PORT}`);
+// ✅ START SERVER
+server.listen(PORT, HOST, () => {
+  console.log(`✅ Server running on http://${HOST}:${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
   if (process.env.CORS_ORIGIN) {
     console.log(`✅ CORS enabled for: ${process.env.CORS_ORIGIN}`);
