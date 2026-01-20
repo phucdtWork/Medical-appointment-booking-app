@@ -13,7 +13,7 @@ export const doctorService = {
     try {
       const response = await api.get("/doctors", { params: filters });
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching doctors:", error);
       throw error;
     }
@@ -24,7 +24,7 @@ export const doctorService = {
     try {
       const response = await api.get(`/doctors/${id}`);
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error fetching doctor:", error);
       throw error;
     }
@@ -37,7 +37,7 @@ export const doctorService = {
         params: { q: query },
       });
       return response.data;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error searching doctors:", error);
       throw error;
     }

@@ -3,8 +3,6 @@
 import { useAuth } from "@/hooks";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { Spin } from "antd";
-import { useTranslations } from "next-intl";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -17,42 +15,35 @@ export default function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { user, isLoading, isAuthenticated } = useAuth();
   const router = useRouter();
-  const t = useTranslations("auth");
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (isLoading) return;
+
+    if (!isAuthenticated) {
       router.push("/login");
+      return;
     }
 
-    // If role is null or undefined, redirect to home
-    if (!isLoading && isAuthenticated && !user?.role) {
+    if (!user?.role) {
       router.push("/");
+      return;
     }
 
-    // If requireRole is specified and role doesn't match, redirect to unauthorized
-    if (!isLoading && requireRole && user?.role && user.role !== requireRole) {
+    if (requireRole && user.role !== requireRole) {
       router.push("/unauthorized");
+      return;
     }
-  }, [isLoading, isAuthenticated, user, requireRole, router]);
+  }, [isLoading, isAuthenticated, user?.role, requireRole, router]);
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="flex flex-col items-center gap-3">
-          <Spin size="large" />
-          <span className="text-sm text-gray-500">{t("loading")}</span>
-        </div>
-      </div>
-    );
+  // Show children if authenticated and has correct role
+  if (
+    isAuthenticated &&
+    user?.role &&
+    (!requireRole || user.role === requireRole)
+  ) {
+    return <>{children}</>;
   }
 
-  if (!isAuthenticated) {
-    return null;
-  }
-
-  if (requireRole && user?.role !== requireRole) {
-    return null;
-  }
-
-  return <>{children}</>;
+  // Show nothing while loading or redirecting
+  return null;
 }

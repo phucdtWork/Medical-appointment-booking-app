@@ -1,31 +1,35 @@
-import React from "react";
+import React, { memo, useMemo } from "react";
 import { Dropdown, Button, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useAuth } from "@/hooks/queries/useAuthQuery";
 import { useTranslations } from "next-intl";
 
-export default function UserDropdown() {
+function UserDropdownComponent() {
   const { user, logout } = useAuth();
   const t = useTranslations("components.layout.Header");
 
-  const items = [
-    {
-      key: "profile",
-      label: <Link href="/profile">{t("userMenu.profile")}</Link>,
-    },
-    {
-      key: "appointments",
-      label: <Link href="/appointments">{t("userMenu.appointments")}</Link>,
-    },
-    { type: "divider" },
-    {
-      key: "logout",
-      label: t("userMenu.logout"),
-      onClick: logout,
-      danger: true,
-    },
-  ];
+  // ✅ Memoize dropdown items
+  const items = useMemo(
+    () => [
+      {
+        key: "profile",
+        label: <Link href="/profile">{t("userMenu.profile")}</Link>,
+      },
+      {
+        key: "appointments",
+        label: <Link href="/appointments">{t("userMenu.appointments")}</Link>,
+      },
+      { type: "divider" },
+      {
+        key: "logout",
+        label: t("userMenu.logout"),
+        onClick: logout,
+        danger: true,
+      },
+    ],
+    [t, logout],
+  );
 
   if (!user) return null;
 
@@ -40,3 +44,7 @@ export default function UserDropdown() {
     </Dropdown>
   );
 }
+
+// ✅ Memoize component để tránh re-render không cần thiết
+const UserDropdown = memo(UserDropdownComponent);
+export default UserDropdown;

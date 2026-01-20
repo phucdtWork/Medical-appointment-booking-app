@@ -28,7 +28,7 @@ export const useCreateAppointment = () => {
           "Đặt lịch thành công, chờ bác sĩ xác nhận.",
       });
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { error?: string } } }) => {
       const errorMessage = error.response?.data?.error || t("error") || "Lỗi";
       notification.error({
         message: t("error") || "Lỗi",
@@ -67,7 +67,7 @@ export const useUpdateAppointmentStatus = () => {
         message: successMessage,
       });
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { error?: string } } }) => {
       const errorMessage = error.response?.data?.error || t("error") || "Lỗi";
       notification.error({
         message: t("error") || "Lỗi",
@@ -92,7 +92,7 @@ export const useCancelAppointment = () => {
         message: t("cancelled") || "Đã hủy lịch hẹn",
       });
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { error?: string } } }) => {
       const errorMessage = error.response?.data?.error || t("error") || "Lỗi";
       notification.error({
         message: t("error") || "Lỗi",
@@ -122,7 +122,7 @@ export const useRescheduleAppointment = () => {
         message: t("rescheduled") || "Đã dời lịch hẹn",
       });
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { error?: string } } }) => {
       const errorMessage = error.response?.data?.error || t("error") || "Lỗi";
       notification.error({
         message: t("error") || "Lỗi",

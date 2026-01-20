@@ -1,7 +1,16 @@
 "use client";
 
 import React from "react";
-import { Card, Form, Input, InputNumber, Button, Divider, Empty } from "antd";
+import {
+  Card,
+  Form,
+  Input,
+  InputNumber,
+  Button,
+  Divider,
+  Empty,
+  Select,
+} from "antd";
 import {
   SafetyCertificateOutlined,
   IdcardOutlined,
@@ -13,10 +22,16 @@ import {
 } from "@ant-design/icons";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
+import { FormInstance } from "antd";
+import { specializations } from "@/utils/specializations";
 
-type Props = { form: any; isEditing: boolean };
+type Props = { form: FormInstance; isEditing: boolean; isLoading?: boolean };
 
-export default function ProfessionalProfileCard({ form, isEditing }: Props) {
+export default function ProfessionalProfileCard({
+  form,
+  isEditing,
+  isLoading,
+}: Props) {
   const t = useTranslations("profile");
   const { isDark } = useTheme();
 
@@ -36,7 +51,7 @@ export default function ProfessionalProfileCard({ form, isEditing }: Props) {
         transition-all duration-300
         hover:shadow-md hover:border-primary
       `}
-      variant="plain"
+      loading={isLoading}
     >
       {/* Card Header */}
       <div className="flex items-center gap-3 mb-6">
@@ -44,10 +59,10 @@ export default function ProfessionalProfileCard({ form, isEditing }: Props) {
           <SafetyCertificateOutlined className="text-xl text-primary" />
         </div>
         <div>
-          <h3 className={`text-lg font-semibold ${textPrimary}`}>
+          <h3 className={`text-xl font-semibold ${textPrimary}`}>
             {t("professionalProfile")}
           </h3>
-          <p className={`text-xs ${textSecondary}`}>
+          <p className={`text-sm ${textSecondary}`}>
             {t("professionalProfileDescription")}
           </p>
         </div>
@@ -57,7 +72,7 @@ export default function ProfessionalProfileCard({ form, isEditing }: Props) {
         {/* Professional Information Section */}
         <div className="mb-4">
           <h4
-            className={`text-sm font-semibold ${textPrimary} mb-4 flex items-center gap-2`}
+            className={`text-lg font-semibold ${textPrimary} mb-4 flex items-center gap-2`}
           >
             <IdcardOutlined className="text-primary" />
             {t("professionalInfo")}
@@ -73,11 +88,13 @@ export default function ProfessionalProfileCard({ form, isEditing }: Props) {
                 </span>
               }
             >
-              <Input
+              <Select
                 disabled={!isEditing}
-                prefix={<SafetyCertificateOutlined className="text-gray-400" />}
                 placeholder={t("specializationPlaceholder")}
-                className="h-10"
+                options={specializations.map((spec) => ({
+                  value: spec.value,
+                  label: t(spec.labelKey),
+                }))}
               />
             </Form.Item>
 
@@ -168,7 +185,10 @@ export default function ProfessionalProfileCard({ form, isEditing }: Props) {
                     formatter={(value) =>
                       `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                     }
-                    parser={(value) => value!.replace(/\₫\s?|(,*)/g, "")}
+                    parser={(value: string | undefined) =>
+                      parseInt(value?.replace(/\₫\s?|(,*)/g, "") || "0", 10) ||
+                      0
+                    }
                     placeholder={t("minFeePlaceholder")}
                   />
                 </Form.Item>
@@ -192,7 +212,10 @@ export default function ProfessionalProfileCard({ form, isEditing }: Props) {
                     formatter={(value) =>
                       `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                     }
-                    parser={(value) => value!.replace(/\₫\s?|(,*)/g, "")}
+                    parser={(value: string | undefined) =>
+                      parseInt(value?.replace(/\₫\s?|(,*)/g, "") || "0", 10) ||
+                      0
+                    }
                     placeholder={t("maxFeePlaceholder")}
                   />
                 </Form.Item>

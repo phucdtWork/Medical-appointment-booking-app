@@ -1,5 +1,6 @@
 "use client";
 import { Header, Footer } from "@/components/layout";
+import { ChatFloatingButton } from "@/components/chat";
 
 import {
   CTASection,
@@ -21,6 +22,7 @@ export default function HomePage() {
       <StatsSection />
       <CTASection />
       <Footer />
+      <ChatFloatingButton />
     </div>
   );
 }

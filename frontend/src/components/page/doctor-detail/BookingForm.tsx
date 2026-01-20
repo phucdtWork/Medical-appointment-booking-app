@@ -1,6 +1,15 @@
 "use client";
 
-import { Card, Form, DatePicker, Select, Input, Button, Drawer } from "antd";
+import {
+  Card,
+  Form,
+  DatePicker,
+  Select,
+  Input,
+  Button,
+  Drawer,
+  App,
+} from "antd";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
@@ -15,6 +24,8 @@ import { useState } from "react";
 import { useTheme } from "@/providers/ThemeProvider";
 import type { Doctor } from "@/types/doctor";
 import { CreateAppointmentData } from "@/lib/services";
+import { scheduleService } from "@/lib/services/scheduleService";
+import type { TimeSlot } from "@/lib/services/scheduleService";
 import { DEFAULT_RANGE_SLOTS } from "@/utils/timeSlots";
 
 const { TextArea } = Input;
@@ -31,17 +42,23 @@ export default function BookingForm({
   isMobile = false,
 }: BookingFormProps) {
   const t = useTranslations("doctorDetail.booking");
+  const tNotify = useTranslations("patientDashboard.notifications");
   const { isDark } = useTheme();
   const router = useRouter();
   const locale = useLocale();
+  const { message } = App.useApp();
   const createAppointmentMutation = useCreateAppointment();
   const [form] = Form.useForm();
   const [drawerVisible, setDrawerVisible] = useState(false);
-
-  const timeSlots = DEFAULT_RANGE_SLOTS;
+  const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
 
   const onFinish = (values: CreateAppointmentData) => {
-    const [start, end] = values.timeSlot.split("-");
+    const timeSlot = values.timeSlot as Record<string, string> | string;
+    const start =
+      typeof timeSlot === "string" ? timeSlot.split("-")[0] : timeSlot.start;
+    const end =
+      typeof timeSlot === "string" ? timeSlot.split("-")[1] : timeSlot.end;
 
     createAppointmentMutation.mutate(
       {
@@ -55,13 +72,64 @@ export default function BookingForm({
       {
         onSuccess: () => {
           form.resetFields();
+          setAvailableSlots([]);
           if (isMobile) {
             setDrawerVisible(false);
           }
           router.push(locale ? `/${locale}/appointments` : "/appointments");
         },
-      }
+      },
     );
+  };
+
+  const handleDateChange = async (date: dayjs.Dayjs | null) => {
+    if (!date) {
+      setAvailableSlots([]);
+      return;
+    }
+
+    setSlotsLoading(true);
+    try {
+      const dateStr = date.format("YYYY-MM-DD");
+      const slots = await scheduleService.getAvailableSlots(doctorId, dateStr);
+
+      // If no slots from API, use default range slots
+      if (!slots || slots.length === 0) {
+        // Convert DEFAULT_RANGE_SLOTS strings to TimeSlot objects
+        const defaultSlots: TimeSlot[] = DEFAULT_RANGE_SLOTS.map((slotStr) => {
+          const [start, end] = slotStr.split("-");
+          return {
+            doctorId,
+            date: dateStr,
+            start,
+            end,
+            isAvailable: true,
+            isBooked: false,
+          };
+        });
+        setAvailableSlots(defaultSlots);
+      } else {
+        setAvailableSlots(slots);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_err) {
+      // On error, also use default range slots
+      const defaultSlots: TimeSlot[] = DEFAULT_RANGE_SLOTS.map((slotStr) => {
+        const [start, end] = slotStr.split("-");
+        return {
+          doctorId,
+          date: date.format("YYYY-MM-DD"),
+          start,
+          end,
+          isAvailable: true,
+          isBooked: false,
+        };
+      });
+      setAvailableSlots(defaultSlots);
+      message.warning(tNotify("defaultSlots"));
+    } finally {
+      setSlotsLoading(false);
+    }
   };
 
   // Render form fields - OPTIMIZED VERSION
@@ -91,6 +159,7 @@ export default function BookingForm({
           disabledDate={(current) => {
             return current && current < dayjs().startOf("day");
           }}
+          onChange={handleDateChange}
           placeholder={t("selectDatePlaceholder")}
           className={isDark ? "dark-datepicker" : ""}
         />
@@ -115,10 +184,15 @@ export default function BookingForm({
           placeholder={t("selectTimePlaceholder")}
           className={isDark ? "dark-select" : ""}
           style={{ borderColor: "var(--primary-color)" }}
+          loading={slotsLoading}
+          disabled={availableSlots.length === 0 || slotsLoading}
         >
-          {timeSlots.map((slot) => (
-            <Select.Option key={slot} value={slot}>
-              {slot}
+          {availableSlots.map((slot) => (
+            <Select.Option
+              key={`${slot.start}-${slot.end}`}
+              value={`${slot.start}-${slot.end}`}
+            >
+              {slot.start} - {slot.end}
             </Select.Option>
           ))}
         </Select>
@@ -290,9 +364,11 @@ export default function BookingForm({
           open={drawerVisible}
           height="auto"
           className={isDark ? "dark-drawer" : ""}
-          headerStyle={{
-            borderColor: "var(--primary-color)",
-            borderBottomWidth: "2px",
+          styles={{
+            header: {
+              borderColor: "var(--primary-color)",
+              borderBottomWidth: "2px",
+            },
           }}
         >
           <Form form={form} layout="vertical" onFinish={onFinish} size="large">

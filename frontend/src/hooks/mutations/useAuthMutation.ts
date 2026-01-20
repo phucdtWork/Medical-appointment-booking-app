@@ -18,8 +18,10 @@ export const useLogin = () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      // Update cache
+      // Update cache immediately
       queryClient.setQueryData(authKeys.me(), response.data.user);
+      // Invalidate other queries that might depend on auth state
+      queryClient.invalidateQueries({ queryKey: authKeys.all });
 
       notification.success({
         message: "Đăng nhập thành công!",
@@ -27,7 +29,7 @@ export const useLogin = () => {
 
       // Don't redirect here - let the component handle it based on role
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { error?: string } } }) => {
       const errorMessage = error.response?.data?.error || "Đăng nhập thất bại";
       notification.error({
         message: "Lỗi",
@@ -50,15 +52,17 @@ export const useRegister = () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      // Update cache
+      // Update cache immediately
       queryClient.setQueryData(authKeys.me(), response.data.user);
+      // Invalidate other queries that might depend on auth state
+      queryClient.invalidateQueries({ queryKey: authKeys.all });
 
       notification.success({
         message: "Đăng ký thành công!",
       });
       router.push("/");
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { error?: string } } }) => {
       const errorMessage = error.response?.data?.error || "Đăng ký thất bại";
       notification.error({
         message: "Lỗi",
@@ -77,7 +81,7 @@ export const useRequestOtp = () => {
       router.push("/verify-otp");
       notification.success({ message: "OTP đã được gửi đến email của bạn" });
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { error?: string } } }) => {
       const errorMessage =
         error.response?.data?.error || "Yêu cầu OTP thất bại";
       notification.error({
@@ -110,8 +114,7 @@ export const useVerifyAndRegister = () => {
       notification.success({ message: "Đăng ký thành công!" });
       router.push("/");
     },
-    onError: (error: any) => {
-      console.log(error);
+    onError: (error: { response?: { data?: { error?: string } } }) => {
       const errorMessage =
         error.response?.data?.error || "Xác minh hoặc đăng ký thất bại";
       notification.error({
@@ -131,7 +134,7 @@ export const useResendOtp = () => {
         message: "OTP đã được gửi lại đến email của bạn",
       });
     },
-    onError: (error: any) => {
+    onError: (error: { response?: { data?: { error?: string } } }) => {
       const errorMessage =
         error.response?.data?.error || "Gửi lại OTP thất bại";
       notification.error({
@@ -158,10 +161,13 @@ export const useUpdateProfile = () => {
       localStorage.setItem("user", JSON.stringify(response.data));
 
       notification.success({
-        message: "Cập nhật hồ sơ thành công!",
+        message: "Profile Updated",
+        description: "Your profile has been updated successfully.",
       });
     },
-    onError: (error: any) => {
+    onError: (error: {
+      response?: { data?: { message?: string; error?: string } };
+    }) => {
       const errorMessage =
         error.response?.data?.message ||
         error.response?.data?.error ||

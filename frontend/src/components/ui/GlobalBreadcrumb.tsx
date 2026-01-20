@@ -13,15 +13,18 @@ export default function GlobalBreadcrumb() {
   const { customItems } = useBreadcrumb();
   const autoItems = useAutoBreadcrumb();
   const router = useRouter();
-  const [windowWidth, setWindowWidth] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth;
+    }
+    return 0;
+  });
 
   // Use custom items if provided, otherwise use auto-generated
   const items = customItems && customItems.length > 0 ? customItems : autoItems;
 
   // Track window width
   useEffect(() => {
-    setWindowWidth(window.innerWidth);
-
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);

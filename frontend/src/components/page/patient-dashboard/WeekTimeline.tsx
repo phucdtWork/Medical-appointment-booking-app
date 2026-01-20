@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Card, Button, Empty } from "antd";
+import { Card, Button } from "antd";
 import { PlusOutlined, CalendarOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/vi";
@@ -33,15 +33,28 @@ export default function WeekTimeline({
   selectedWeek,
   appointments,
   onAppointmentClick,
-  onNewAppointment,
   isDark = false,
 }: WeekTimelineProps) {
   const t = useTranslations("patientDashboard");
   const locale = useLocale();
   const router = useRouter();
+
+  // Debug log
+  React.useEffect(() => {
+    console.log("🔍 WeekTimeline - Appointments:", appointments);
+    console.log("📅 Selected week:", selectedWeek.format("YYYY-MM-DD"));
+    if (appointments.length > 0) {
+      console.log("First appointment details:", {
+        date: appointments[0].date,
+        timeSlot: appointments[0].timeSlot,
+        status: appointments[0].status,
+      });
+    }
+  }, [appointments, selectedWeek]);
+
   const startOfWeek = selectedWeek.startOf("week").add(1, "day"); // Monday
   const weekDays = Array.from({ length: 7 }, (_, i) =>
-    startOfWeek.add(i, "day")
+    startOfWeek.add(i, "day"),
   );
 
   // Return all appointments for a given date and time slot (may be multiple)

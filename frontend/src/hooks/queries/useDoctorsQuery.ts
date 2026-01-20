@@ -19,7 +19,6 @@ export const useDoctors = (filters?: DoctorFilters) => {
     queryFn: async () => {
       try {
         const response = await doctorService.getDoctors(filters);
-        console.log("useDoctors response:", response);
         return response;
       } catch (error) {
         console.error("useDoctors error:", error);

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Spin } from "antd";
-import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
 
 const ScheduleManager = dynamic(

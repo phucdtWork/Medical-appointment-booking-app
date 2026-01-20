@@ -1,13 +1,14 @@
 import { Button, Row, Col, Card } from "antd";
 import { RightOutlined } from "@ant-design/icons";
-import Link from "next/link";
 import { useDoctors } from "@/hooks";
 import { useTranslations } from "next-intl";
 import DoctorCard from "@/components/ui/DoctorCard";
 import { useTheme } from "@/providers/ThemeProvider";
+import { useRouter } from "next/navigation";
 
 export default function FeaturedDoctorsSection() {
   const t = useTranslations("home");
+  const router = useRouter();
   const { isDark } = useTheme();
   const { data: doctorsData } = useDoctors({});
   const featuredDoctors = doctorsData?.data.slice(0, 4) || [];
@@ -70,21 +71,20 @@ export default function FeaturedDoctorsSection() {
         </Row>
 
         <div className="text-center mt-12">
-          <Link href="/doctors">
-            <Button
-              type="primary"
-              size="large"
-              icon={<RightOutlined />}
-              iconPosition="end"
-              className={`h-12 px-8 font-medium transition-all hover:shadow-lg ${
-                isDark
-                  ? "bg-primary-color hover:bg-blue-600 border-primary-color"
-                  : ""
-              }`}
-            >
-              {t("doctors.viewAll")}
-            </Button>
-          </Link>
+          <Button
+            type="primary"
+            size="large"
+            icon={<RightOutlined />}
+            iconPosition="end"
+            className={`h-12 px-8 font-medium transition-all hover:shadow-lg ${
+              isDark
+                ? "bg-primary-color hover:bg-blue-600 border-primary-color"
+                : ""
+            }`}
+            onClick={() => router.push("/doctors")}
+          >
+            {t("doctors.viewAll")}
+          </Button>
         </div>
       </div>
     </section>

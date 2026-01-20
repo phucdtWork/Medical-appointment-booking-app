@@ -14,7 +14,6 @@ import {
   Modal,
   DatePicker,
   Select,
-  message,
 } from "antd";
 import {
   CloseOutlined,
@@ -36,6 +35,7 @@ import {
   useCancelAppointment,
   useRescheduleAppointment,
 } from "@/hooks/mutations/useAppointmentMutation";
+import { DEFAULT_RANGE_SLOTS } from "@/utils/timeSlots";
 
 dayjs.locale("vi");
 
@@ -77,6 +77,8 @@ export default function AppointmentDrawer({
 }: AppointmentDrawerProps) {
   const t = useTranslations("patientDashboard.appointmentDrawer");
   const tStatus = useTranslations("patientDashboard.status");
+  const tNotify = useTranslations("patientDashboard.notifications");
+  const { message } = App.useApp();
   const [showReview, setShowReview] = useState(false);
   const [rescheduleVisible, setRescheduleVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
@@ -131,22 +133,54 @@ export default function AppointmentDrawer({
                       setSelectedDate(d);
                       setSelectedDateStr(d.format("YYYY-MM-DD"));
                       setSelectedSlot(
-                        `${appointment.timeSlot.start}-${appointment.timeSlot.end}`
+                        `${appointment.timeSlot.start}-${appointment.timeSlot.end}`,
                       );
                       // preload slots for the selected date
                       (async () => {
                         setSlotsLoading(true);
                         try {
+                          const dateStr = d.format("YYYY-MM-DD");
                           const slots = await scheduleService.getAvailableSlots(
                             appointment.doctorId,
-                            d.format("YYYY-MM-DD")
+                            dateStr,
                           );
-                          setAvailableSlots(slots || []);
-                        } catch (err) {
-                          setAvailableSlots([]);
-                          message.error(
-                            "Failed to load available slots: " + err
-                          );
+
+                          // If no slots from API, use default range slots
+                          if (!slots || slots.length === 0) {
+                            const defaultSlots: TimeSlot[] =
+                              DEFAULT_RANGE_SLOTS.map((slotStr) => {
+                                const [start, end] = slotStr.split("-");
+                                return {
+                                  doctorId: appointment.doctorId,
+                                  date: dateStr,
+                                  start,
+                                  end,
+                                  isAvailable: true,
+                                  isBooked: false,
+                                };
+                              });
+                            setAvailableSlots(defaultSlots);
+                          } else {
+                            setAvailableSlots(slots);
+                          }
+                          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                        } catch (_err) {
+                          // On error, use default range slots
+                          const dateStr = d.format("YYYY-MM-DD");
+                          const defaultSlots: TimeSlot[] =
+                            DEFAULT_RANGE_SLOTS.map((slotStr) => {
+                              const [start, end] = slotStr.split("-");
+                              return {
+                                doctorId: appointment.doctorId,
+                                date: dateStr,
+                                start,
+                                end,
+                                isAvailable: true,
+                                isBooked: false,
+                              };
+                            });
+                          setAvailableSlots(defaultSlots);
+                          message.warning(tNotify("defaultSlots"));
                         } finally {
                           setSlotsLoading(false);
                         }
@@ -172,9 +206,10 @@ export default function AppointmentDrawer({
                           await cancelMutation.mutateAsync(appointment.id);
                           onCancel?.(appointment.id);
                           onClose();
-                        } catch (e) {
+                          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                        } catch (_e) {
                           // errors handled by mutation
-                          message.error("Failed to cancel appointment: " + e);
+                          message.error(tNotify("failedCancel"));
                         }
                       },
                     });
@@ -215,7 +250,7 @@ export default function AppointmentDrawer({
                 | "confirmed"
                 | "completed"
                 | "cancelled"
-                | "rejected"
+                | "rejected",
             )}
           </Tag>
 
@@ -387,9 +422,10 @@ export default function AppointmentDrawer({
               setRescheduleVisible(false);
               onReschedule?.(appointment.id);
               onClose();
-            } catch (e) {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (_e) {
               // mutation displays error notifications
-              message.error("Failed to reschedule appointment: " + e);
+              message.error(tNotify("failedReschedule"));
             }
           }}
         >
@@ -411,12 +447,48 @@ export default function AppointmentDrawer({
                   try {
                     const slots = await scheduleService.getAvailableSlots(
                       appointment.doctorId,
-                      str
+                      str,
                     );
-                    setAvailableSlots(slots || []);
-                  } catch (err) {
-                    setAvailableSlots([]);
-                    message.error("Failed to load available slots: " + err);
+
+                    // If no slots from API, use default range slots
+                    if (!slots || slots.length === 0) {
+                      const defaultSlots: TimeSlot[] = DEFAULT_RANGE_SLOTS.map(
+                        (slotStr) => {
+                          const [start, end] = slotStr.split("-");
+                          return {
+                            doctorId: appointment.doctorId,
+                            date: str,
+                            start,
+                            end,
+                            isAvailable: true,
+                            isBooked: false,
+                          };
+                        },
+                      );
+                      setAvailableSlots(defaultSlots);
+                    } else {
+                      setAvailableSlots(slots);
+                    }
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  } catch (_err) {
+                    // On error, use default range slots
+                    const defaultSlots: TimeSlot[] = DEFAULT_RANGE_SLOTS.map(
+                      (slotStr) => {
+                        const [start, end] = slotStr.split("-");
+                        return {
+                          doctorId: appointment.doctorId,
+                          date: str,
+                          start,
+                          end,
+                          isAvailable: true,
+                          isBooked: false,
+                        };
+                      },
+                    );
+                    setAvailableSlots(defaultSlots);
+                    message.warning(
+                      "Sử dụng khung giờ mặc định do không thể tải lịch của bác sĩ",
+                    );
                   } finally {
                     setSlotsLoading(false);
                   }

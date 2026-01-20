@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Tabs, Button, message, Spin, Modal, Tag } from "antd";
+import { Card, Tabs, Button, message, Spin, Tag } from "antd";
 import {
   CalendarOutlined,
   ClockCircleOutlined,
@@ -28,17 +28,23 @@ const ScheduleManager: React.FC<ScheduleManagerProps> = ({ doctorId }) => {
   const { isDark } = useTheme();
 
   // Load existing schedule
-  useEffect(() => {
-    loadSchedule();
-  }, [doctorId]);
-
   const loadSchedule = async () => {
     try {
       setLoading(true);
       const data = await scheduleService.getSchedule(doctorId);
       setSchedule(data);
-    } catch (error: any) {
-      if (error.response?.status === 404) {
+    } catch (error: { response?: { status: number } } | unknown) {
+      if (
+        error instanceof Object &&
+        "response" in error &&
+        (error as Record<string, unknown>).response &&
+        ((error as Record<string, unknown>).response as Record<
+          string,
+          unknown
+        >) &&
+        ((error as Record<string, unknown>).response as Record<string, unknown>)
+          .status === 404
+      ) {
         // No schedule yet, create default
         setSchedule({
           doctorId,
@@ -65,6 +71,11 @@ const ScheduleManager: React.FC<ScheduleManagerProps> = ({ doctorId }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadSchedule();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [doctorId, messageApi, t]);
 
   const handleSave = async () => {
     if (!schedule) return;

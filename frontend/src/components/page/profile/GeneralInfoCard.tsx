@@ -25,9 +25,10 @@ import { useTheme } from "@/providers/ThemeProvider";
 type Props = {
   form: FormInstance;
   isEditing: boolean;
+  isLoading?: boolean;
 };
 
-export default function GeneralInfoCard({ form, isEditing }: Props) {
+export default function GeneralInfoCard({ form, isEditing, isLoading }: Props) {
   const t = useTranslations("profile");
   const { isDark } = useTheme();
 
@@ -47,6 +48,7 @@ export default function GeneralInfoCard({ form, isEditing }: Props) {
         transition-all duration-300
         hover:shadow-md hover:border-primary
       `}
+      loading={isLoading}
     >
       {/* Card Header */}
       <div className="flex items-center gap-3 mb-6">
@@ -54,10 +56,10 @@ export default function GeneralInfoCard({ form, isEditing }: Props) {
           <IdcardOutlined className="text-xl text-primary" />
         </div>
         <div>
-          <h3 className={`text-lg font-semibold ${textPrimary}`}>
+          <h3 className={`text-xl font-semibold ${textPrimary}`}>
             {t("generalInfo")}
           </h3>
-          <p className={`text-xs ${textSecondary}`}>
+          <p className={`text-sm ${textSecondary}`}>
             {t("generalInfoDescription")}
           </p>
         </div>
@@ -67,7 +69,7 @@ export default function GeneralInfoCard({ form, isEditing }: Props) {
         {/* Personal Information Section */}
         <div className="mb-4">
           <h4
-            className={`text-sm font-semibold ${textPrimary} mb-4 flex items-center gap-2`}
+            className={`text-lg font-semibold ${textPrimary} mb-4 flex items-center gap-2`}
           >
             <UserOutlined className="text-primary" />
             {t("personalInfo")}

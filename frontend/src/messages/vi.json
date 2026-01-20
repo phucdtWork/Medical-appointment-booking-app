@@ -7,6 +7,8 @@
     "search": "Tìm kiếm",
     "bookNow": "Đặt lịch ngay",
     "viewProfile": "Xem hồ sơ",
+    "patient": "Bệnh nhân",
+    "doctor": "Bác sĩ",
     "currency": "đ",
     "specializations": {
       "cardiology": "Tim mạch",
@@ -161,6 +163,9 @@
     "welcomeBack": "Chào mừng trở lại",
     "email": "Email",
     "loading": "Đang tải...",
+    "verifyingAccess": "Xác Minh Truy Cập",
+    "checkingPermissions": "Đang kiểm tra quyền của bạn...",
+    "redirecting": "Đang chuyển hướng...",
     "password": "Mật khẩu",
     "emailRequired": "Vui lòng nhập email",
     "emailInvalid": "Email không hợp lệ",
@@ -258,7 +263,8 @@
         "surgery": "Ngoại khoa",
         "neurology": "Thần kinh",
         "ophthalmology": "Mắt",
-        "ent": "Tai Mũi Họng"
+        "ent": "Tai Mũi Họng",
+        "orthopedics": "Chỉnh hình"
       },
       "stats": {
         "totalPatients": "Tổng bệnh nhân",
@@ -378,7 +384,8 @@
           "surgery": "Ngoại khoa",
           "neurology": "Thần kinh",
           "ophthalmology": "Mắt",
-          "ent": "Tai Mũi Họng"
+          "ent": "Tai Mũi Họng",
+          "orthopedics": "Chỉnh hình"
         }
       }
     }
@@ -389,6 +396,8 @@
     "editProfile": "Chỉnh sửa hồ sơ",
     "saveChanges": "Lưu thay đổi",
     "cancel": "Hủy",
+    "patient": "Bệnh nhân",
+    "doctor": "Bác sĩ",
 
     "personalInfo": "Thông tin cá nhân",
     "generalInfo": "Thông tin chung",
@@ -465,6 +474,19 @@
     "minFee": "Phí tối thiểu",
     "maxFee": "Phí tối đa",
 
+    "specializations": {
+      "cardiology": "Tim mạch",
+      "dermatology": "Da liễu",
+      "internal": "Nội khoa",
+      "pediatrics": "Nhi khoa",
+      "obstetrics": "Sản phụ khoa",
+      "surgery": "Ngoại khoa",
+      "neurology": "Thần kinh",
+      "ophthalmology": "Mắt",
+      "ent": "Tai Mũi Họng",
+      "orthopedics": "Chỉnh hình"
+    },
+
     "updateSuccess": "Cập nhật hồ sơ thành công",
     "updateError": "Cập nhật hồ sơ thất bại",
     "uploadSuccess": "Tải avatar thành công",
@@ -503,7 +525,8 @@
       "surgery": "Ngoại khoa",
       "neurology": "Thần kinh",
       "ophthalmology": "Mắt",
-      "ent": "Tai Mũi Họng"
+      "ent": "Tai Mũi Họng",
+      "orthopedics": "Chỉnh hình"
     },
     "ratings": {
       "rating_4_5": "4.5 trở lên",
@@ -598,7 +621,10 @@
       "createdDescription": "Lịch hẹn của bạn đã được tạo và đang chờ bác sĩ xác nhận.",
       "rescheduled": "Đã dời lịch hẹn",
       "reviewSubmitted": "Cảm ơn bạn đã đánh giá",
-      "error": "Có lỗi xảy ra"
+      "error": "Có lỗi xảy ra",
+      "failedCancel": "Hủy lịch hẹn thất bại",
+      "failedReschedule": "Dời lịch hẹn thất bại",
+      "defaultSlots": "Sử dụng khung giờ mặc định do không thể tải lịch của bác sĩ"
     }
   },
   "scheduleManager": {
@@ -643,5 +669,83 @@
     "title": "Không đủ quyền truy cập",
     "message": "Bạn không có quyền truy cập trang này.",
     "backHome": "Trở về trang chủ"
+  },
+  "chat": {
+    "reset": "Lộ trình mới",
+    "reload": "Trang chat",
+    "placeholder": "Nhập tin nhắn...",
+    "welcome": "Xin chào!",
+    "titleTooltip": "Xin chào! Tôi là MediBook AI",
+    "subtitle": "Tôi ở đây để trả lời về các tính năng của MediBook và giúp bạn tạo lộ trình giảm cân cá nhân hóa.",
+    "features": "Hỏi tính năng",
+    "weightLoss": "Lộ trình giảm cân",
+    "copy": "Sao chép",
+    "download": "Xuất Lộ Trình",
+    "downloadSuccess": "Lộ trình đã tải xuống thành công",
+    "inputPlaceholder": "Nhập tin nhắn của bạn...",
+    "error": "Lỗi",
+    "headerTitle": "MediBook AI",
+    "headerStatus": "Trực tuyến"
+  },
+  "weightLoss": {
+    "alertMessage": "Nhập thông tin của bạn để tôi tạo lộ trình giảm cân cá nhân hóa",
+    "name": "Tên của bạn",
+    "nameRequired": "Vui lòng nhập tên",
+    "namePlaceholder": "Ví dụ: Nguyễn Văn A",
+    "age": "Tuổi (năm)",
+    "ageRequired": "Vui lòng nhập tuổi",
+    "ageRange": "Tuổi phải từ 13-100",
+    "agePlaceholder": "Ví dụ: 25",
+    "height": "Chiều cao (cm)",
+    "heightRequired": "Vui lòng nhập chiều cao",
+    "heightRange": "Chiều cao phải từ 100-250 cm",
+    "heightPlaceholder": "Ví dụ: 175",
+    "weight": "Cân nặng hiện tại (kg)",
+    "weightRequired": "Vui lòng nhập cân nặng",
+    "weightRange": "Cân nặng phải từ 30-200 kg",
+    "weightPlaceholder": "Ví dụ: 80",
+    "goalWeight": "Cân nặng mục tiêu (kg)",
+    "goalWeightRequired": "Vui lòng nhập cân nặng mục tiêu",
+    "goalWeightRange": "Cân nặng mục tiêu phải từ 30-200 kg",
+    "goalWeightPlaceholder": "Ví dụ: 70",
+    "exerciseTime": "Thời gian tập luyện/ngày (phút)",
+    "exerciseTimeRequired": "Vui lòng chọn thời gian tập luyện",
+    "exerciseTimeRange": "Thời gian phải từ 0-240 phút",
+    "exerciseTimePlaceholder": "Chọn thời gian tập luyện",
+    "exerciseOption0": "Không tập (0 phút)",
+    "exerciseOption15": "Ít (15 phút/ngày)",
+    "exerciseOption30": "Vừa phải (30 phút/ngày)",
+    "exerciseOption60": "Nhiều (60 phút/ngày)",
+    "exerciseOption90": "Rất nhiều (90 phút/ngày)",
+    "exerciseOption120": "Siêu nhiều (120 phút/ngày)",
+    "creating": "Đang tạo lộ trình...",
+    "createButton": "Tạo Lộ Trình",
+    "reset": "Đặt lại biểu mẫu",
+    "cancel": "Quay lại chat",
+    "goalWeightMustBeLessThanCurrent": "Cân nặng mục tiêu phải nhỏ hơn cân nặng hiện tại",
+    "missingFields": "Thiếu các trường bắt buộc"
+  },
+  "pdfExport": {
+    "weightLossPlan": "Lộ Trình Giảm Cân",
+    "personalizedFor": "Được cá nhân hóa cho",
+    "yourPlan": "Lộ Trình Của Bạn",
+    "healthMetrics": "Chỉ Số Sức Khỏe",
+    "currentBMI": "BMI Hiện Tại",
+    "category": "Phân Loại",
+    "weeksToGoal": "Tuần",
+    "nutrition": "Dinh Dưỡng",
+    "dailyCalories": "Calo Hàng Ngày",
+    "calories": "Calo",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fat": "Chất Béo",
+    "percentage": "% lượng nạp hàng ngày",
+    "exercise": "Lịch Tập Luyện",
+    "day": "Ngày",
+    "activity": "Hoạt Động",
+    "duration": "Thời Lượng (phút)",
+    "totalExerciseCalories": "Tổng Calo",
+    "totalDuration": "Tổng Thời Lượng",
+    "generatedBy": "Được tạo bởi Health AI Assistant"
   }
 }

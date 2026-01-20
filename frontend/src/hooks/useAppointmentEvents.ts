@@ -21,7 +21,7 @@ export default function useAppointmentEvents() {
 
     const onAppointment = (e: MessageEvent) => {
       try {
-        const payload = JSON.parse(e.data);
+        JSON.parse(e.data);
         // For simplicity, invalidate both patient and doctor lists so UI updates
         qc.invalidateQueries({ queryKey: appointmentKeys.myList() });
         qc.invalidateQueries({ queryKey: appointmentKeys.doctorList() });

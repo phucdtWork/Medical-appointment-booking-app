@@ -2,15 +2,16 @@
 
 import { Button, Row, Col, Avatar, Statistic } from "antd";
 import { RightOutlined, StarFilled } from "@ant-design/icons";
-import Link from "next/link";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
 import { useAuth } from "@/hooks";
+import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
   const t = useTranslations("home");
   const { isDark } = useTheme();
-
+  const router = useRouter();
   const { isAuthenticated } = useAuth();
 
   const bgGradient = isDark
@@ -56,26 +57,24 @@ export default function HeroSection() {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 {!isAuthenticated && (
-                  <Link href="/register">
-                    <Button
-                      type="primary"
-                      size="large"
-                      className="h-14 px-8 text-lg font-medium"
-                    >
-                      {t("hero.startNow")} <RightOutlined />
-                    </Button>
-                  </Link>
-                )}
-                <Link href="/doctors">
                   <Button
+                    type="primary"
                     size="large"
-                    className="h-14 px-8 text-lg"
-                    color="primary"
-                    variant="outlined"
+                    className="h-14 px-8 text-lg font-medium"
+                    onClick={() => router.push("/register")}
                   >
-                    {t("hero.findDoctor")}
+                    {t("hero.startNow")} <RightOutlined />
                   </Button>
-                </Link>
+                )}
+                <Button
+                  size="large"
+                  className="h-14 px-8 text-lg"
+                  color="primary"
+                  variant="outlined"
+                  onClick={() => router.push("/doctors")}
+                >
+                  {t("hero.findDoctor")}
+                </Button>
               </div>
 
               <div className="flex flex-wrap gap-8 mt-12 justify-center lg:justify-start">
@@ -164,9 +163,11 @@ export default function HeroSection() {
 
               {/* Doctor Image */}
               <div className="relative top-[-20%] z-10 flex items-end justify-center h-full">
-                <img
+                <Image
                   src="/images/doctor_main.png"
                   alt="Bác sĩ chuyên nghiệp"
+                  width={400}
+                  height={550}
                   className="h-[550px] w-auto object-cover object-top"
                   style={{
                     filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.15))",

@@ -72,16 +72,13 @@ export default function DoctorDetailPage() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4">
-        {/* Doctor Header with Stats */}
         <DoctorHeader doctor={doctor} />
 
         <Row gutter={[24, 24]}>
-          {/* Left Column - Info Tabs */}
           <Col xs={24} lg={14}>
             <DoctorTabs doctor={doctor} />
           </Col>
 
-          {/* Right Column - Booking Form (Desktop only) */}
           {!isMobile && (
             <Col xs={24} lg={10}>
               <BookingForm doctorId={doctorId} doctor={doctor} />

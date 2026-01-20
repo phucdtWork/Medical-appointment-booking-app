@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Layout, Menu } from "antd";
 import {
   HomeOutlined,
@@ -13,7 +13,7 @@ import { useTheme } from "@/providers/ThemeProvider";
 
 const { Sider } = Layout;
 
-export default function PatientSidebar() {
+function PatientSidebarComponent() {
   const pathname = usePathname() || "/";
   const t = useTranslations("breadcrumb");
   const { isDark } = useTheme();
@@ -62,8 +62,12 @@ export default function PatientSidebar() {
         mode="inline"
         theme={isDark ? "dark" : "light"}
         selectedKeys={[selectedKey]}
-        items={items as any}
+        items={items}
       />
     </Sider>
   );
 }
+
+// ✅ Memoize component để tránh re-render không cần thiết
+const PatientSidebar = memo(PatientSidebarComponent);
+export default PatientSidebar;

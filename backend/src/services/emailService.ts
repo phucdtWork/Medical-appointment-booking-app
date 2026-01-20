@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({
-  path: path.resolve(__dirname, "../../../.env"),
+  path: path.resolve(__dirname, "../../.env"),
 });
 
 export class EmailService {
@@ -203,7 +203,7 @@ export class EmailService {
     email: string,
     patientName: string,
     doctorName: string,
-    appointmentDate: string
+    appointmentDate: string,
   ): Promise<void> {
     const mailOptions = {
       from: {

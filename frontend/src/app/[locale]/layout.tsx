@@ -9,6 +9,7 @@ import "../globals.css";
 import { notFound } from "next/navigation";
 import { BreadcrumbProvider } from "@/providers/BreadcrumbProvider";
 import { NotificationProvider } from "@/providers/NotificationProvider";
+import { AuthProvider } from "@/providers/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,9 @@ export async function generateMetadata({
   return {
     title: t("title"),
     description: t("description"),
+    icons: {
+      icon: "/favicon.svg",
+    },
   };
 }
 
@@ -48,15 +52,17 @@ export default async function LocaleLayout({
     <html lang={locale} suppressHydrationWarning>
       <body className={inter.className}>
         <NextIntlClientProvider messages={messages}>
-          <QueryProvider>
-            <AntdRegistry>
-              <BreadcrumbProvider>
-                <ThemeProvider>
-                  <NotificationProvider>{children}</NotificationProvider>
-                </ThemeProvider>
-              </BreadcrumbProvider>
-            </AntdRegistry>
-          </QueryProvider>
+          <NotificationProvider>
+            <QueryProvider>
+              <AntdRegistry>
+                <AuthProvider>
+                  <BreadcrumbProvider>
+                    <ThemeProvider>{children}</ThemeProvider>
+                  </BreadcrumbProvider>
+                </AuthProvider>
+              </AntdRegistry>
+            </QueryProvider>
+          </NotificationProvider>
         </NextIntlClientProvider>
       </body>
     </html>

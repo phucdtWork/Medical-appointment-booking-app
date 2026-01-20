@@ -10,8 +10,9 @@ import {
 } from "@ant-design/icons";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
+import { FormInstance } from "antd";
 
-type Props = { form: any; isEditing: boolean };
+type Props = { form: FormInstance; isEditing: boolean };
 
 export default function ContactInfoCard({ form, isEditing }: Props) {
   const t = useTranslations("profile");
@@ -36,7 +37,6 @@ export default function ContactInfoCard({ form, isEditing }: Props) {
       `}
     >
       {/* Card Header with Icon - GREEN THEME */}
-      {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
       <div className="flex items-center gap-4 mb-8 pb-6 border-b-2 border-gradient-to-r from-green-500 to-blue-500">
         <div className="relative">
           <div className="absolute inset-0 bg-linear-to-br from-green-500 to-blue-500 rounded-2xl blur opacity-50"></div>

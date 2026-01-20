@@ -27,7 +27,6 @@ export const useCreateReview = () => {
     (data: CreateReviewData) => reviewService.createReview(data),
     {
       onSuccess: (res, vars) => {
-        // invalidate single doctor detail so rating/count refreshes
         qc.invalidateQueries({ queryKey: doctorKeys.detail(vars.doctorId) });
       },
     }

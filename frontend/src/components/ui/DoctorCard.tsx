@@ -1,11 +1,43 @@
-import { Button, Card, Rate } from "antd";
-import Link from "next/link";
+import { Button, Card, Rate, Avatar } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { specializations } from "@/utils/specializations";
 
+interface DoctorInfo {
+  specialization: string;
+  rating: number;
+  totalReviews: number;
+  totalPatients?: number;
+  licenseNumber?: string;
+  yearsOfExperience?: number;
+  hospital?: string;
+  consultationFee: {
+    min: number;
+    max: number;
+  };
+  education?: Array<{
+    degree: string;
+    institution: string;
+    year: number;
+  }>;
+  bio?: string;
+}
+
+interface Doctor {
+  id: string;
+  fullName: string;
+  email?: string;
+  phone?: string;
+  avatar?: string;
+  role: "doctor" | "patient";
+  doctorInfo: DoctorInfo;
+}
+
 interface DoctorCardProps {
-  doctor: any;
+  doctor: Doctor;
   variant?: "vertical" | "horizontal";
 }
 
@@ -14,6 +46,8 @@ export default function DoctorCard({
   variant = "vertical",
 }: DoctorCardProps) {
   const t = useTranslations();
+  const [imageError, setImageError] = useState(false);
+  const router = useRouter();
 
   // Function to get translated specialization label
   const getSpecializationLabel = (value: string) => {
@@ -52,17 +86,17 @@ export default function DoctorCard({
         hoverable
         className="text-center h-full shadow-sm hover:shadow-xl transition-all"
         cover={
-          <div className="relative h-48 bg-linear-to-br from-blue-100 to-purple-100">
-            <Image
-              src={
-                doctor?.avatar ||
-                "https://via.placeholder.com/300x200?text=No+Image"
-              }
-              alt={`${t("components.ui.doctorCard.job")} ${doctor?.fullName || "Doctor"}`}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover"
-            />
+          <div className="relative h-48 bg-linear-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+            {!imageError && doctor?.avatar ? (
+              <Image
+                src={doctor.avatar}
+                alt={`${t("components.ui.doctorCard.job")} ${doctor?.fullName || "Doctor"}`}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover"
+                onError={() => setImageError(true)}
+              />
+            ) : null}
           </div>
         }
       >
@@ -77,11 +111,13 @@ export default function DoctorCard({
           {renderRating()}
         </div>
         <p className="text-blue-600 font-bold mb-4">{renderFee()}</p>
-        <Link href={`/doctors/${doctor?.id}`}>
-          <Button type="primary" size="medium" block>
-            {t("components.ui.doctorCard.bookNow")}
-          </Button>
-        </Link>
+        <Button
+          type="primary"
+          block
+          onClick={() => router.push(`/doctors/${doctor?.id}`)}
+        >
+          {t("components.ui.doctorCard.bookNow")}
+        </Button>
       </Card>
     );
   }
@@ -94,17 +130,26 @@ export default function DoctorCard({
         className="h-full shadow-sm hover:shadow-xl transition-all"
       >
         <div className="flex gap-4">
-          <div className="relative w-40 h-40 shrink-0 rounded-lg overflow-hidden bg-linear-to-br from-blue-100 to-purple-100">
-            <Image
-              src={
-                doctor?.avatar ||
-                "https://via.placeholder.com/300x200?text=No+Image"
-              }
-              alt={doctor?.fullName || "Doctor"}
-              fill
-              sizes="160px"
-              className="object-cover"
-            />
+          <div className="relative w-40 h-40 shrink-0 rounded-lg overflow-hidden bg-linear-to-br from-blue-100 to-purple-100 flex items-center justify-center">
+            {!imageError && doctor?.avatar ? (
+              <Image
+                src={doctor.avatar}
+                alt={doctor?.fullName || "Doctor"}
+                fill
+                sizes="160px"
+                className="object-cover"
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <Avatar
+                size={120}
+                icon={<UserOutlined className="text-3xl" />}
+                style={{
+                  backgroundColor: "var(--primary-color)",
+                  fontSize: "32px",
+                }}
+              />
+            )}
           </div>
           <div className="flex-1 flex flex-col">
             <h3 className="text-lg font-bold mb-1">{doctor?.fullName}</h3>
@@ -114,11 +159,13 @@ export default function DoctorCard({
             {renderRating()}
             <p className="text-blue-600 font-bold mt-2">{renderFee()}</p>
             <div className="mt-auto pt-3">
-              <Link href={`/doctors/${doctor?.id}`}>
-                <Button type="primary" size="medium">
-                  {t("components.ui.doctorCard.bookNow")}
-                </Button>
-              </Link>
+              <Button
+                type="primary"
+                block
+                onClick={() => router.push(`/doctors/${doctor?.id}`)}
+              >
+                {t("components.ui.doctorCard.bookNow")}
+              </Button>
             </div>
           </div>
         </div>

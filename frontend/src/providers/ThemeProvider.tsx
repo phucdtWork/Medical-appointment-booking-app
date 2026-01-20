@@ -11,8 +11,9 @@ import {
   useEffect,
   useRef,
   useCallback,
+  useMemo,
 } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 
 interface ThemeContextType {
@@ -29,6 +30,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [isDark, setIsDark] = useState(false);
   const [language, setLanguage] = useState<"vi" | "en">("vi");
   const pathname = usePathname();
+  const router = useRouter();
   const currentLocale = useLocale();
   const isInitialMount = useRef(true);
 
@@ -54,16 +56,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     updates();
   }, []);
 
-  // ✅ Effect 2: Sync với currentLocale
+  // ✅ Effect 2: Sync với currentLocale chỉ khi có sự thay đổi đặc biệt
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
       return;
     }
 
+    // Chỉ cập nhật language nếu currentLocale thực sự khác và có giá trị
     if (currentLocale && currentLocale !== language) {
-      setLanguage(currentLocale as "vi" | "en");
-      localStorage.setItem("language", currentLocale);
+      // Kiểm tra xem currentLocale có phải là giá trị hợp lệ không
+      if (currentLocale === "vi" || currentLocale === "en") {
+        setLanguage(currentLocale as "vi" | "en");
+        localStorage.setItem("language", currentLocale);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLocale]);
@@ -92,65 +98,73 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const newPath = `/${newLang}${pathWithoutLocale}`;
       console.log("Changing to path:", newPath);
 
-      window.location.href = newPath;
+      // ✅ Dùng Next.js router.push thay vì window.location.href
+      router.push(newPath);
     },
-    [pathname]
+    [pathname, router],
   );
 
   const localeAntd = language === "vi" ? viVN : enUS;
 
+  // ✅ Memoize theme config để tránh re-render component con
+  const themeConfig = useMemo(
+    () => ({
+      algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      token: {
+        colorPrimary: "#1890ff",
+        borderRadius: 8,
+        colorBgContainer: isDark ? "#001529" : "#ffffff",
+        colorText: isDark ? "#ffffff" : "#000000",
+        colorBorder: isDark ? "#424242" : "#d9d9d9",
+        colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
+      },
+      components: {
+        Drawer: {
+          colorBgElevated: isDark ? "#001529" : "#ffffff",
+          colorIcon: isDark ? "#ffffff" : "#000000",
+        },
+        Dropdown: {
+          colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
+        },
+        Segmented: {
+          colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
+          trackBg: isDark ? "var(--foreground)" : "#f5f5f5",
+        },
+        Button: {
+          controlHeight: 40,
+          controlHeightLG: 56,
+          controlHeightSM: 28,
+          paddingContentHorizontal: 24,
+          paddingContentHorizontalLG: 36,
+          paddingContentHorizontalSM: 16,
+          fontSize: 15,
+          fontSizeLG: 18,
+          fontSizeSM: 13,
+          primaryShadow: "0 0 30px rgba(59, 130, 246, 0.4)",
+        },
+        Form: {
+          itemMarginBottom: 14,
+        },
+      },
+    }),
+    [isDark],
+  );
+
+  // ✅ Memoize context value để tránh re-render
+  const contextValue = useMemo(
+    () => ({
+      isDark,
+      toggleTheme,
+      locale: localeAntd,
+      language,
+      changeLanguage,
+    }),
+    [isDark, toggleTheme, localeAntd, language, changeLanguage],
+  );
+
   return (
-    <ThemeContext.Provider
-      value={{
-        isDark,
-        toggleTheme,
-        locale: localeAntd,
-        language,
-        changeLanguage,
-      }}
-    >
-      <ConfigProvider
-        locale={localeAntd}
-        theme={{
-          algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-          token: {
-            colorPrimary: "#1890ff",
-            borderRadius: 8,
-            colorBgContainer: isDark ? "#001529" : "#ffffff",
-            colorText: isDark ? "#ffffff" : "#000000",
-            colorBorder: isDark ? "#424242" : "#d9d9d9",
-            colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
-          },
-          components: {
-            Drawer: {
-              colorBgElevated: isDark ? "#001529" : "#ffffff",
-              colorIcon: isDark ? "#ffffff" : "#000000",
-            },
-            Dropdown: {
-              colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
-            },
-            Segmented: {
-              colorBgElevated: isDark ? "var(--background-dark)" : "#ffffff",
-              trackBg: isDark ? "var(--foreground)" : "#f5f5f5",
-            },
-            Button: {
-              controlHeight: 40,
-              controlHeightLG: 56,
-              controlHeightSM: 28,
-              paddingContentHorizontal: 24,
-              paddingContentHorizontalLG: 36,
-              paddingContentHorizontalSM: 16,
-              fontSize: 15,
-              fontSizeLG: 18,
-              fontSizeSM: 13,
-              primaryShadow: "0 0 30px rgba(59, 130, 246, 0.4)",
-            },
-            Form: {
-              itemMarginBottom: 14,
-            },
-          },
-        }}
-      >
+    <ThemeContext.Provider value={contextValue}>
+      <ConfigProvider locale={localeAntd} theme={themeConfig}>
         <App>{children}</App>
       </ConfigProvider>
     </ThemeContext.Provider>

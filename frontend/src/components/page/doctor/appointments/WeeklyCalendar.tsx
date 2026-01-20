@@ -108,14 +108,6 @@ export default function WeeklyCalendar({
                 const dayKey = day.format("YYYY-MM-DD");
                 const dayAppointments = appointmentsByDay[dayKey] || [];
 
-                // Find appointments that overlap with this hour
-                const hourStart = parseInt(hour.split(":")[0]);
-                const relevantAppointments = dayAppointments.filter((apt) => {
-                  const aptStart = parseInt(apt.timeSlot.start.split(":")[0]);
-                  const aptEnd = parseInt(apt.timeSlot.end.split(":")[0]);
-                  return aptStart <= hourStart && aptEnd > hourStart;
-                });
-
                 return (
                   <div
                     key={dayIndex}

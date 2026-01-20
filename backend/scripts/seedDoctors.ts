@@ -8,7 +8,8 @@ const seedDoctors = async () => {
       fullName: "Dr. Nguyen Van A",
       phone: "0987654321",
       role: "doctor",
-      avatar: "https://via.placeholder.com/500x500?text=Dr+A",
+      avatar:
+        "https://ui-avatars.com/api/?name=Dr+Nguyen+Van+A&background=0D8ABC&color=fff",
       address: "123 Main Street, Ho Chi Minh City",
       doctorInfo: {
         specialization: "Cardiology",
@@ -35,7 +36,8 @@ const seedDoctors = async () => {
       fullName: "Dr. Tran Thi B",
       phone: "0912345678",
       role: "doctor",
-      avatar: "https://via.placeholder.com/500x500?text=Dr+B",
+      avatar:
+        "https://ui-avatars.com/api/?name=Dr+Tran+Thi+B&background=0D8ABC&color=fff",
       address: "456 Oak Avenue, Ha Noi",
       doctorInfo: {
         specialization: "Pediatrics",
@@ -62,7 +64,8 @@ const seedDoctors = async () => {
       fullName: "Dr. Pham Van C",
       phone: "0901234567",
       role: "doctor",
-      avatar: "https://via.placeholder.com/500x500?text=Dr+C",
+      avatar:
+        "https://ui-avatars.com/api/?name=Dr+Pham+Van+C&background=0D8ABC&color=fff",
       address: "789 Pine Road, Da Nang",
       doctorInfo: {
         specialization: "Orthopedics",
@@ -89,7 +92,8 @@ const seedDoctors = async () => {
       fullName: "Dr. Le Thi D",
       phone: "0923456789",
       role: "doctor",
-      avatar: "https://via.placeholder.com/500x500?text=Dr+D",
+      avatar:
+        "https://ui-avatars.com/api/?name=Dr+Le+Thi+D&background=0D8ABC&color=fff",
       address: "321 Elm Street, Can Tho",
       doctorInfo: {
         specialization: "Dermatology",
@@ -116,7 +120,8 @@ const seedDoctors = async () => {
       fullName: "Dr. Hoang Van E",
       phone: "0934567890",
       role: "doctor",
-      avatar: "https://via.placeholder.com/500x500?text=Dr+E",
+      avatar:
+        "https://ui-avatars.com/api/?name=Dr+Hoang+Van+E&background=0D8ABC&color=fff",
       address: "654 Maple Drive, Hai Phong",
       doctorInfo: {
         specialization: "Neurology",
@@ -154,9 +159,9 @@ const seedDoctors = async () => {
     });
 
     await batch.commit();
-    console.log(`✅ Successfully seeded ${doctorsData.length} doctors`);
+    console.log(`Successfully seeded ${doctorsData.length} doctors`);
   } catch (error) {
-    console.error("❌ Error seeding doctors:", error);
+    console.error("Error seeding doctors:", error);
   }
 };
 

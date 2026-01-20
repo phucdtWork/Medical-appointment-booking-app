@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { Button, Dropdown, Segmented, Space, Drawer } from "antd";
-import UserDropdown from "./UserDropdown";
 import {
   MoonOutlined,
   SunOutlined,
@@ -17,100 +16,109 @@ import type { MenuProps } from "antd";
 import { useTranslations } from "next-intl";
 import { Logo } from "../ui";
 
-export default function Header() {
+function HeaderComponent() {
   const { isDark, toggleTheme, language, changeLanguage } = useTheme();
   const { user, logout, isAuthenticated } = useAuth();
   const t = useTranslations("components.layout.Header");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const bgClass = isDark ? "bg-gray-900 shadow-md" : "bg-white shadow-sm";
 
-  const toggleLanguage = () => {
+  const toggleLanguage = useCallback(() => {
     const newLang = language === "vi" ? "en" : "vi";
     changeLanguage(newLang);
-  };
+  }, [language, changeLanguage]);
 
-  // Handle theme change from Segmented
-  const handleThemeChange = (value: string | number) => {
-    const shouldBeDark = value === "dark";
-    if (isDark !== shouldBeDark) {
-      toggleTheme();
-    }
-  };
-
-  // Language dropdown menu
-  const languageMenu: MenuProps["items"] = [
-    {
-      key: "vi",
-      label: (
-        <div className="flex items-center gap-2">
-          <span>🇻🇳</span>
-          <span>{t("language.vietnamese")}</span>
-        </div>
-      ),
-      onClick: () => language === "en" && toggleLanguage(),
+  // ✅ Handle theme change from Segmented
+  const handleThemeChange = useCallback(
+    (value: string | number) => {
+      const shouldBeDark = value === "dark";
+      if (isDark !== shouldBeDark) {
+        toggleTheme();
+      }
     },
-    {
-      key: "en",
-      label: (
-        <div className="flex items-center gap-2">
-          <span>🇬🇧</span>
-          <span>{t("language.english")}</span>
-        </div>
-      ),
-      onClick: () => language === "vi" && toggleLanguage(),
-    },
-  ];
+    [isDark, toggleTheme],
+  );
 
-  // User menu (when logged in)
-  const patientNav = [
-    { key: "profile", label: t("nav.profile"), href: "/patient/profile" },
-    {
-      key: "appointments",
-      label: t("nav.appointments"),
-      href: "/appointments",
-    },
-  ];
+  // ✅ Memoize language dropdown menu
+  const languageMenu: MenuProps["items"] = useMemo(
+    () => [
+      {
+        key: "vi",
+        label: (
+          <div className="flex items-center gap-2">
+            <span>🇻🇳</span>
+            <span>{t("language.vietnamese")}</span>
+          </div>
+        ),
+        onClick: () => language === "en" && toggleLanguage(),
+      },
+      {
+        key: "en",
+        label: (
+          <div className="flex items-center gap-2">
+            <span>🇬🇧</span>
+            <span>{t("language.english")}</span>
+          </div>
+        ),
+        onClick: () => language === "vi" && toggleLanguage(),
+      },
+    ],
+    [language, toggleLanguage, t],
+  );
 
-  const doctorNav = [
-    { key: "profile", label: t("nav.profile"), href: "/doctor/profile" },
-    { key: "schedule", label: t("nav.schedule"), href: "/schedule" },
-    {
-      key: "doctorAppointments",
-      label: t("nav.appointments"),
-      href: "/doctor/appointments",
-    },
-  ];
+  // ✅ Memoize user menu
+  const userMenu: MenuProps["items"] = useMemo(() => {
+    const patientNav = [
+      { key: "profile", label: t("nav.profile"), href: "/profile" },
+      {
+        key: "appointments",
+        label: t("nav.appointments"),
+        href: "/appointments",
+      },
+    ];
 
-  const roleNav = user?.role === "doctor" ? doctorNav : patientNav;
+    const doctorNav = [
+      { key: "profile", label: t("nav.profile"), href: "/profile" },
+      { key: "schedule", label: t("nav.schedule"), href: "/schedule" },
+      {
+        key: "doctorAppointments",
+        label: t("nav.appointments"),
+        href: "/appointments",
+      },
+    ];
 
-  const userMenu: MenuProps["items"] = [
-    ...roleNav.map((r) => ({
-      key: r.key,
-      label: <Link href={r.href}>{r.label}</Link>,
-    })),
-    { type: "divider" },
-    {
-      key: "logout",
-      label: t("userMenu.logout"),
-      onClick: logout,
-      danger: true,
-    },
-  ];
+    const roleNav = user?.role === "doctor" ? doctorNav : patientNav;
 
-  // Navigation items per role
-  const publicNav = [
-    { key: "features", label: t("nav.features"), href: "#features" },
-    { key: "doctors", label: t("nav.doctors"), href: "/doctors" },
-    { key: "howItWorks", label: t("nav.howItWorks"), href: "#how-it-works" },
-    { key: "contact", label: t("nav.contact"), href: "#contact" },
-  ];
+    return [
+      ...roleNav.map((r) => ({
+        key: r.key,
+        label: <Link href={r.href}>{r.label}</Link>,
+      })),
+      { type: "divider" },
+      {
+        key: "logout",
+        label: t("userMenu.logout"),
+        onClick: logout,
+        danger: true,
+      },
+    ];
+  }, [user?.role, t, logout]);
+
+  // ✅ Memoize public navigation
+  const publicNav = useMemo(
+    () => [
+      { key: "features", label: t("nav.features"), href: "#features" },
+      { key: "doctors", label: t("nav.doctors"), href: "/doctors" },
+      { key: "howItWorks", label: t("nav.howItWorks"), href: "#how-it-works" },
+    ],
+    [t],
+  );
 
   return (
     <>
       <header className={`sticky top-0 z-50 transition-colors ${bgClass}`}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            {/* Logo */}
             <Logo size="medium" showText={true} />
 
             <nav className="hidden lg:flex items-center gap-6">
@@ -279,3 +287,7 @@ export default function Header() {
     </>
   );
 }
+
+// ✅ Memoize Header component để tránh re-render không cần thiết
+const Header = memo(HeaderComponent);
+export default Header;

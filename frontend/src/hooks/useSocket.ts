@@ -6,6 +6,7 @@ const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 export function useSocket() {
   const socketRef = useRef<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
     socketRef.current = io(SOCKET_URL, {
@@ -23,6 +24,9 @@ export function useSocket() {
       setIsConnected(false);
     });
 
+    // Set the socket in state after it's initialized
+    setSocket(socketRef.current);
+
     // Cleanup on unmount
     return () => {
       if (socketRef.current) {
@@ -32,15 +36,21 @@ export function useSocket() {
   }, []);
 
   return {
-    socket: socketRef.current,
+    socket,
     isConnected,
   };
 }
 
 // Hook để watch doctor slots real-time
+interface SlotUpdate {
+  docId: string;
+  availableSlots: unknown[];
+  timestamp: number;
+}
+
 export function useWatchDoctorSlots(doctorId: string | null) {
   const { socket, isConnected } = useSocket();
-  const [slotUpdates, setSlotUpdates] = useState<any>(null);
+  const [slotUpdates, setSlotUpdates] = useState<SlotUpdate | null>(null);
 
   useEffect(() => {
     if (!socket || !doctorId || !isConnected) return;

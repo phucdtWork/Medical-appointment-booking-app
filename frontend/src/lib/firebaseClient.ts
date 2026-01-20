@@ -10,7 +10,12 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-function validateConfig(cfg: any) {
+function validateConfig(cfg: {
+  apiKey?: string;
+  authDomain?: string;
+  projectId?: string;
+  appId?: string;
+}) {
   if (!cfg.apiKey) return "NEXT_PUBLIC_FIREBASE_API_KEY";
   if (!cfg.authDomain) return "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN";
   if (!cfg.projectId) return "NEXT_PUBLIC_FIREBASE_PROJECT_ID";
@@ -27,7 +32,7 @@ export function initFirebase() {
   }
 
   if (!getApps().length) {
-    initializeApp(firebaseConfig as any);
+    initializeApp(firebaseConfig);
   }
   return getAuth();
 }

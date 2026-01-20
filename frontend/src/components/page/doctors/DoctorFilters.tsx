@@ -12,7 +12,7 @@ interface DoctorFiltersProps {
     minRating?: number;
   };
   onSearchChange: (value: string) => void;
-  onFilterChange: (key: string, value: any) => void;
+  onFilterChange: (key: string, value: string | number | undefined) => void;
   onClearFilters: () => void;
 }
 
@@ -70,17 +70,50 @@ export default function DoctorFilters({
             value={filters.minRating || undefined}
             onChange={(value) => onFilterChange("minRating", value)}
             allowClear
+            optionLabelProp="label"
           >
-            <Option value={4.5}>
+            <Option
+              value={4.5}
+              label={
+                <>
+                  <StarFilled style={{ color: "gold" }} />{" "}
+                  {t("ratings.rating_4_5")}
+                </>
+              }
+            >
               <StarFilled style={{ color: "gold" }} /> {t("ratings.rating_4_5")}
             </Option>
-            <Option value={4.0}>
+            <Option
+              value={4.0}
+              label={
+                <>
+                  <StarFilled style={{ color: "gold" }} />{" "}
+                  {t("ratings.rating_4_0")}
+                </>
+              }
+            >
               <StarFilled style={{ color: "gold" }} /> {t("ratings.rating_4_0")}
             </Option>
-            <Option value={3.5}>
+            <Option
+              value={3.5}
+              label={
+                <>
+                  <StarFilled style={{ color: "gold" }} />{" "}
+                  {t("ratings.rating_3_5")}
+                </>
+              }
+            >
               <StarFilled style={{ color: "gold" }} /> {t("ratings.rating_3_5")}
             </Option>
-            <Option value={3.0}>
+            <Option
+              value={3.0}
+              label={
+                <>
+                  <StarFilled style={{ color: "gold" }} />{" "}
+                  {t("ratings.rating_3_0")}
+                </>
+              }
+            >
               <StarFilled style={{ color: "gold" }} /> {t("ratings.rating_3_0")}
             </Option>
           </Select>

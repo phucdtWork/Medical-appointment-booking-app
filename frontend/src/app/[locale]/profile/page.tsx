@@ -22,6 +22,7 @@ export default function ProfilePage() {
     handleSave,
     handleAvatarChange,
     resetToUser,
+    loading,
   } = useProfileForm(user);
 
   if (!isAuthenticated) {
@@ -32,35 +33,56 @@ export default function ProfilePage() {
 
   return (
     <div className={`min-h-screen ${pageBg}`}>
-      {/* Profile Header */}
-      <ProfileHeader
-        user={user}
-        isEditing={isEditing}
-        onEdit={() => setIsEditing((s) => !s)}
-        onSave={() => handleSave()}
-        onCancel={() => {
-          resetToUser();
-          setIsEditing(false);
-        }}
-        onAvatarChange={handleAvatarChange}
-      />
+      <div className="">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 px-4 py-8">
+          {/* Profile Header - Left Side (Fixed on Desktop, Normal on Mobile) */}
+          <div className="lg:col-span-2">
+            <div className="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)]">
+              <ProfileHeader
+                user={user}
+                isEditing={isEditing}
+                isLoading={loading}
+                onEdit={() => setIsEditing((s) => !s)}
+                onSave={() => handleSave()}
+                onCancel={() => {
+                  resetToUser();
+                  setIsEditing(false);
+                }}
+                onAvatarChange={handleAvatarChange}
+              />
+            </div>
+          </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="space-y-6">
-          {/* General Information - Combined Personal + Contact */}
-          <GeneralInfoCard form={form} isEditing={isEditing} />
+          {/* Main Content - Right Side */}
+          <div className="lg:col-span-3">
+            <div className="space-y-6">
+              {/* General Information - Combined Personal + Contact */}
+              <GeneralInfoCard
+                form={form}
+                isEditing={isEditing}
+                isLoading={loading}
+              />
 
-          {/* Medical Information - For Patients */}
-          {user?.role === "patient" && (
-            <MedicalInfoCard form={form} isEditing={isEditing} />
-          )}
+              {/* Medical Information - For Patients */}
+              {user?.role === "patient" && (
+                <MedicalInfoCard
+                  form={form}
+                  isEditing={isEditing}
+                  isLoading={loading}
+                />
+              )}
 
-          {user?.role === "doctor" && (
-            <>
-              <ProfessionalProfileCard form={form} isEditing={isEditing} />
-            </>
-          )}
+              {user?.role === "doctor" && (
+                <>
+                  <ProfessionalProfileCard
+                    form={form}
+                    isEditing={isEditing}
+                    isLoading={loading}
+                  />
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

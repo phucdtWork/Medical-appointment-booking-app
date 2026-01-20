@@ -67,7 +67,18 @@ export const authService = {
   // Get current user
   getMe: async () => {
     const response = await api.get("/auth/me");
-    return response.data;
+    const data = response.data;
+
+    // Parse doctorInfo if it's a string
+    if (data.data?.doctorInfo && typeof data.data.doctorInfo === "string") {
+      try {
+        data.data.doctorInfo = JSON.parse(data.data.doctorInfo);
+      } catch (e) {
+        console.error("Failed to parse doctorInfo:", e);
+      }
+    }
+
+    return data;
   },
 
   // Update user profile (for both patient and doctor)
@@ -77,7 +88,18 @@ export const authService = {
         "Content-Type": "multipart/form-data",
       },
     });
-    return response.data;
+    const data = response.data;
+
+    // Parse doctorInfo if it's a string
+    if (data.data?.doctorInfo && typeof data.data.doctorInfo === "string") {
+      try {
+        data.data.doctorInfo = JSON.parse(data.data.doctorInfo);
+      } catch (e) {
+        console.error("Failed to parse doctorInfo:", e);
+      }
+    }
+
+    return data;
   },
 
   // Logout (client-side)
@@ -89,25 +111,30 @@ export const authService = {
 
 // React Query hooks
 export const useMe = () => {
-  return useQuery(["me"], () => authService.getMe(), {
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: () => authService.getMe(),
     enabled: !!localStorage.getItem("token"),
   });
 };
 
 export const useLogin = () => {
   const qc = useQueryClient();
-  return useMutation(
-    (data: { email: string; password: string }) => authService.login(data),
-    {
-      onSuccess: (res: any) => {
-        const token = res.data.token;
-        const user = res.data.user;
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
-        qc.invalidateQueries(["me"]);
-      },
-    }
-  );
+  return useMutation({
+    mutationFn: (data: { email: string; password: string }) =>
+      authService.login(data),
+    onSuccess: (res: { data: { token: string; user: unknown } }) => {
+      const token = res.data.token;
+      const user = res.data.user;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // Dispatch custom event for same-tab listeners
+      window.dispatchEvent(new Event("auth:token-set"));
+
+      qc.invalidateQueries({ queryKey: ["me"] });
+    },
+  });
 };
 
 export const useGoogleLogin = () => {
@@ -117,23 +144,44 @@ export const useGoogleLogin = () => {
 
   return useMutation({
     mutationFn: (idToken: string) => authService.googleLogin(idToken),
-    onSuccess: (res: any) => {
+    onSuccess: (res: { data: { token: string; user: unknown } }) => {
       const token = res.data.token;
       const user = res.data.user;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-      qc.invalidateQueries(["me"]);
+
+      // Dispatch custom event for same-tab listeners
+      window.dispatchEvent(new Event("auth:token-set"));
+
+      qc.invalidateQueries({ queryKey: ["me"] });
 
       notification.success({ message: "Đăng nhập bằng Google thành công!" });
       router.push("/");
     },
-    onError: (error: any) => {
+    onError: (
+      error:
+        | { response?: { data?: { error?: string } }; message?: string }
+        | unknown,
+    ) => {
       console.error("Google login failed:", error);
-      const message =
-        error?.response?.data?.error ||
-        error?.message ||
+      let errorMsg: string | undefined;
+      if (
+        error instanceof Object &&
+        "response" in error &&
+        typeof (error as Record<string, unknown>).response === "object" &&
+        (error as Record<string, unknown>).response !== null &&
+        "data" in ((error as Record<string, unknown>).response as object)
+      ) {
+        const data = (
+          (error as Record<string, unknown>).response as Record<string, unknown>
+        )?.data as Record<string, unknown> | undefined;
+        errorMsg = (data?.error as string) || undefined;
+      }
+      const msg =
+        errorMsg ||
+        (error instanceof Error ? error.message : undefined) ||
         "Đăng nhập bằng Google thất bại";
-      notification.error({ message: "Lỗi", description: message });
+      notification.error({ message: "Lỗi", description: msg });
     },
   });
 };

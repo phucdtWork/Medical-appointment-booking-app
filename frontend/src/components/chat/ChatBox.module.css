@@ -1,0 +1,25 @@
+.bounce0 {
+  animation: bounce 1s infinite;
+}
+
+.bounce150 {
+  animation: bounce 1s infinite;
+  animation-delay: 150ms;
+}
+
+.bounce300 {
+  animation: bounce 1s infinite;
+  animation-delay: 300ms;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateY(-0.5rem);
+  }
+}

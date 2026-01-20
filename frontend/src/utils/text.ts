@@ -6,12 +6,12 @@
  * @returns Chuỗi đã được cắt
  */
 export function truncateText(
-  text: string,
+  text: string | undefined | null,
   maxLength: number,
-  suffix: string = "..."
+  suffix: string = "...",
 ): string {
   if (!text || text.length <= maxLength) {
-    return text;
+    return text || "";
   }
   return text.substring(0, maxLength - suffix.length) + suffix;
 }
@@ -23,17 +23,18 @@ export function truncateText(
  * @returns Hàm trả về text đã cắt theo breakpoint
  */
 export function truncateByBreakpoint(
-  text: string,
+  text: string | undefined | null,
   breakpoints: {
     mobile?: number;
     tablet?: number;
     desktop?: number;
-  } = {}
+  } = {},
 ): {
   mobile: string;
   tablet: string;
   desktop: string;
 } {
+  const safeText = text || "";
   const defaults = {
     mobile: 15,
     tablet: 25,
@@ -42,9 +43,9 @@ export function truncateByBreakpoint(
   };
 
   return {
-    mobile: truncateText(text, defaults.mobile),
-    tablet: truncateText(text, defaults.tablet),
-    desktop: truncateText(text, defaults.desktop),
+    mobile: truncateText(safeText, defaults.mobile),
+    tablet: truncateText(safeText, defaults.tablet),
+    desktop: truncateText(safeText, defaults.desktop),
   };
 }
 
@@ -54,13 +55,17 @@ export function truncateByBreakpoint(
  * @param maxLength - Độ dài tối đa
  * @returns Object với text đã cắt và full text
  */
-export function getTextWithTooltip(text: string, maxLength: number) {
-  const truncated = truncateText(text, maxLength);
-  const shouldShowTooltip = text.length > maxLength;
+export function getTextWithTooltip(
+  text: string | undefined | null,
+  maxLength: number,
+) {
+  const safeText = text || "";
+  const truncated = truncateText(safeText, maxLength);
+  const shouldShowTooltip = safeText.length > maxLength;
 
   return {
     display: truncated,
-    tooltip: text,
+    tooltip: safeText,
     shouldShowTooltip,
   };
 }

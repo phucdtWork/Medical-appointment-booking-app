@@ -6,7 +6,9 @@
     "logout": "Logout",
     "search": "Search",
     "bookNow": "Book Now",
-    "viewProfile": "View Profile"
+    "viewProfile": "View Profile",
+    "patient": "Patient",
+    "doctor": "Doctor"
   },
   "breadcrumb": {
     "home": "Home",
@@ -149,6 +151,9 @@
     "welcomeBack": "Welcome back",
     "loading": "Loading...",
     "loadingAuth": "Loading...",
+    "verifyingAccess": "Verifying Access",
+    "checkingPermissions": "Checking your permissions...",
+    "redirecting": "Redirecting...",
     "email": "Email",
     "password": "Password",
     "emailRequired": "Please enter email",
@@ -243,7 +248,8 @@
         "surgery": "Surgery",
         "neurology": "Neurology",
         "ophthalmology": "Ophthalmology",
-        "ent": "ENT"
+        "ent": "ENT",
+        "orthopedics": "Orthopedics"
       },
       "stats": {
         "totalPatients": "Total Patients",
@@ -358,7 +364,8 @@
           "surgery": "Surgery",
           "neurology": "Neurology",
           "ophthalmology": "Ophthalmology",
-          "ent": "ENT"
+          "ent": "ENT",
+          "orthopedics": "Orthopedics"
         }
       }
     }
@@ -369,6 +376,8 @@
     "editProfile": "Edit Profile",
     "saveChanges": "Save Changes",
     "cancel": "Cancel",
+    "patient": "Patient",
+    "doctor": "Doctor",
 
     "personalInfo": "Personal Information",
     "generalInfo": "General Information",
@@ -445,6 +454,19 @@
     "minFee": "Min Fee",
     "maxFee": "Max Fee",
 
+    "specializations": {
+      "cardiology": "Cardiology",
+      "dermatology": "Dermatology",
+      "internal": "Internal Medicine",
+      "pediatrics": "Pediatrics",
+      "obstetrics": "Obstetrics",
+      "surgery": "Surgery",
+      "neurology": "Neurology",
+      "ophthalmology": "Ophthalmology",
+      "ent": "ENT",
+      "orthopedics": "Orthopedics"
+    },
+
     "updateSuccess": "Profile updated successfully",
     "updateError": "Failed to update profile",
     "uploadSuccess": "Avatar uploaded successfully",
@@ -484,7 +506,8 @@
       "surgery": "Surgery",
       "neurology": "Neurology",
       "ophthalmology": "Ophthalmology",
-      "ent": "ENT"
+      "ent": "ENT",
+      "orthopedics": "Orthopedics"
     },
     "ratings": {
       "rating_4_5": "4.5 and above",
@@ -579,7 +602,10 @@
       "createdDescription": "Your appointment has been created and is awaiting doctor confirmation.",
       "rescheduled": "Appointment rescheduled",
       "reviewSubmitted": "Thank you for your review",
-      "error": "An error occurred"
+      "error": "An error occurred",
+      "failedCancel": "Failed to cancel appointment",
+      "failedReschedule": "Failed to reschedule appointment",
+      "defaultSlots": "Using default time slots as the doctor's schedule could not be loaded"
     }
   },
   "scheduleManager": {
@@ -624,5 +650,83 @@
     "title": "Access Denied",
     "message": "You do not have permission to view this page.",
     "backHome": "Back to Home"
+  },
+  "chat": {
+    "reset": "New Plan",
+    "reload": "Chat View",
+    "placeholder": "Type a message...",
+    "welcome": "Hello!",
+    "titleTooltip": "Hello! I'm MediBook AI",
+    "subtitle": "I'm here to help you with app features and personalized weight loss plans.",
+    "features": "Ask Features",
+    "weightLoss": "Weight Loss Plan",
+    "copy": "Copy",
+    "download": "Export Plan",
+    "downloadSuccess": "Plan downloaded successfully",
+    "inputPlaceholder": "Type your message...",
+    "error": "Error",
+    "headerTitle": "MediBook AI",
+    "headerStatus": "Online"
+  },
+  "weightLoss": {
+    "alertMessage": "Enter your information so I can create a personalized weight loss plan",
+    "name": "Your name",
+    "nameRequired": "Please enter your name",
+    "namePlaceholder": "Example: John Doe",
+    "age": "Age (years)",
+    "ageRequired": "Please enter your age",
+    "ageRange": "Age must be between 13-100",
+    "agePlaceholder": "Example: 25",
+    "height": "Height (cm)",
+    "heightRequired": "Please enter your height",
+    "heightRange": "Height must be between 100-250 cm",
+    "heightPlaceholder": "Example: 175",
+    "weight": "Current weight (kg)",
+    "weightRequired": "Please enter your weight",
+    "weightRange": "Weight must be between 30-200 kg",
+    "weightPlaceholder": "Example: 80",
+    "goalWeight": "Goal weight (kg)",
+    "goalWeightRequired": "Please enter your goal weight",
+    "goalWeightRange": "Goal weight must be between 30-200 kg",
+    "goalWeightPlaceholder": "Example: 70",
+    "exerciseTime": "Exercise time per day (minutes)",
+    "exerciseTimeRequired": "Please select exercise time",
+    "exerciseTimeRange": "Time must be between 0-240 minutes",
+    "exerciseTimePlaceholder": "Select exercise time",
+    "exerciseOption0": "No exercise (0 minutes)",
+    "exerciseOption15": "Low (15 minutes/day)",
+    "exerciseOption30": "Moderate (30 minutes/day)",
+    "exerciseOption60": "High (60 minutes/day)",
+    "exerciseOption90": "Very high (90 minutes/day)",
+    "exerciseOption120": "Very very high (120 minutes/day)",
+    "creating": "Creating plan...",
+    "createButton": "Create Weight Loss Plan",
+    "reset": "Reset Form",
+    "cancel": "Back to Chat",
+    "goalWeightMustBeLessThanCurrent": "Goal weight must be less than current weight",
+    "missingFields": "Missing required fields"
+  },
+  "pdfExport": {
+    "weightLossPlan": "Weight Loss Plan",
+    "personalizedFor": "Personalized for",
+    "yourPlan": "Your Plan",
+    "healthMetrics": "Health Metrics",
+    "currentBMI": "Current BMI",
+    "category": "Category",
+    "weeksToGoal": "Weeks to Goal",
+    "nutrition": "Nutrition",
+    "dailyCalories": "Daily Calories",
+    "calories": "Calories",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fat": "Fat",
+    "percentage": "% of daily intake",
+    "exercise": "Exercise Schedule",
+    "day": "Day",
+    "activity": "Activity",
+    "duration": "Duration (min)",
+    "totalExerciseCalories": "Total Calories",
+    "totalDuration": "Total Duration",
+    "generatedBy": "Generated by Health AI Assistant"
   }
 }

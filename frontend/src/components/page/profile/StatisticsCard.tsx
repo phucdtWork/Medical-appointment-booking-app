@@ -11,7 +11,17 @@ import {
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
 
-export default function StatisticsCard({ user }: { user: any }) {
+interface DoctorInfo {
+  rating: number;
+  totalReviews: number;
+  totalPatients: number;
+}
+
+interface User {
+  doctorInfo?: DoctorInfo;
+}
+
+export default function StatisticsCard({ user }: { user: User | undefined }) {
   const t = useTranslations("profile");
   const { isDark } = useTheme();
 
@@ -35,7 +45,6 @@ export default function StatisticsCard({ user }: { user: any }) {
         transition-all duration-300
         hover:shadow-md hover:border-primary
       `}
-      variant="plain"
     >
       {/* Card Header */}
       <div className="flex items-center gap-3 mb-6">

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+    <defs>
+        <style>
+            .favicon-bg {
+                fill: #1890ff;
+            }
+
+            .favicon-text {
+                font-family: 'Arial', sans-serif;
+                font-size: 80px;
+                font-weight: bold;
+                fill: white;
+                text-anchor: middle;
+                dominant-baseline: central;
+            }
+        </style>
+    </defs>
+    <!-- Background rounded square -->
+    <rect class="favicon-bg" x="0" y="0" width="128" height="128" rx="20" ry="20" />
+    <!-- Letter M -->
+    <text class="favicon-text" x="64" y="64">M</text>
+</svg>

@@ -10,10 +10,11 @@ import {
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
 import { medicalDataService } from "@/lib/services/medicalDataService";
+import { FormInstance } from "antd";
 
-type Props = { form: any; isEditing: boolean };
+type Props = { form: FormInstance; isEditing: boolean; isLoading?: boolean };
 
-export default function MedicalInfoCard({ form, isEditing }: Props) {
+export default function MedicalInfoCard({ form, isEditing, isLoading }: Props) {
   const t = useTranslations("profile");
   const { isDark } = useTheme();
   const [conditions, setConditions] = useState<string[]>([]);
@@ -81,8 +82,9 @@ export default function MedicalInfoCard({ form, isEditing }: Props) {
         border ${borderColor}
         shadow-sm rounded-lg
         transition-all duration-300
-        hover:shadow-md hover:border-primary
+        hover:shadow-md hover:border-primary pt-3
       `}
+      loading={isLoading}
     >
       {/* Card Header */}
       <div className="flex items-center gap-3 mb-6">
@@ -90,10 +92,10 @@ export default function MedicalInfoCard({ form, isEditing }: Props) {
           <MedicineBoxOutlined className="text-xl text-primary" />
         </div>
         <div>
-          <h3 className={`text-lg font-semibold ${textPrimary}`}>
+          <h3 className={`text-xl font-semibold ${textPrimary}`}>
             {t("medicalInfo")}
           </h3>
-          <p className={`text-xs ${textSecondary}`}>
+          <p className={`text-sm ${textSecondary}`}>
             {t("medicalInfoDescription")}
           </p>
         </div>
@@ -112,6 +114,7 @@ export default function MedicalInfoCard({ form, isEditing }: Props) {
                 {t("medicalHistory")}
               </span>
             }
+            normalize={(value) => (Array.isArray(value) ? value : [])}
             help={
               isEditing ? (
                 <span className={`text-xs ${textSecondary}`}>
@@ -168,6 +171,7 @@ export default function MedicalInfoCard({ form, isEditing }: Props) {
                 {t("allergies")}
               </span>
             }
+            normalize={(value) => (Array.isArray(value) ? value : [])}
             help={
               isEditing ? (
                 <span className={`text-xs ${textSecondary}`}>

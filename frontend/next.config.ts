@@ -3,7 +3,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["i.pravatar.cc", "via.placeholder.com", "res.cloudinary.com"],
+    domains: ["i.pravatar.cc", "ui-avatars.com", "res.cloudinary.com"],
     remotePatterns: [
       {
         protocol: "https",
@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: ["antd"],
   experimental: {
-    esmExternals: "loose",
+    optimizePackageImports: ["antd", "@ant-design/icons"],
   },
   async headers() {
     return [

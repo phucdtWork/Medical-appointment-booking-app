@@ -28,62 +28,66 @@ export function useAutoBreadcrumb(): BreadcrumbItem[] {
 
     const segments = pathWithoutLocale.split("/").filter(Boolean);
 
-    if (segments.some((seg) => excludedRoutes.includes(seg))) {
-      setItems([]);
-      return;
+    // Skip breadcrumbs for excluded routes - build empty or full breadcrumbs
+    const shouldExclude = segments.some((seg) => excludedRoutes.includes(seg));
+
+    let breadcrumbs: BreadcrumbItem[] = [];
+
+    if (!shouldExclude) {
+      breadcrumbs = [
+        {
+          title: (
+            <span className="flex items-center gap-1">
+              <HomeOutlined />
+              <span>{t("home")}</span>
+            </span>
+          ),
+          href: `/${locale}`,
+        },
+      ];
+
+      let currentPath = `/${locale}`;
+
+      segments.forEach((segment, index) => {
+        currentPath += `/${segment}`;
+        const isLast = index === segments.length - 1;
+
+        const isDynamicId =
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+            segment
+          ) || /^\d+$/.test(segment);
+
+        if (isDynamicId) {
+          return;
+        }
+
+        const config = breadcrumbConfig[segment];
+        let label = segment;
+
+        if (config) {
+          if (config.translationKey) {
+            label = t(config.translationKey);
+          } else if (config.label) {
+            label = config.label;
+          }
+        } else {
+          label =
+            segment.charAt(0).toUpperCase() +
+            segment.slice(1).replace(/-/g, " ");
+        }
+
+        if (isLast) {
+          breadcrumbs.push({ title: label });
+        } else {
+          breadcrumbs.push({
+            title: label,
+            href: currentPath,
+          });
+        }
+      });
     }
 
-    const breadcrumbs: BreadcrumbItem[] = [
-      {
-        title: (
-          <span className="flex items-center gap-1">
-            <HomeOutlined />
-            <span>{t("home")}</span>
-          </span>
-        ),
-        href: `/${locale}`,
-      },
-    ];
-
-    let currentPath = `/${locale}`;
-
-    segments.forEach((segment, index) => {
-      currentPath += `/${segment}`;
-      const isLast = index === segments.length - 1;
-
-      const isDynamicId =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-          segment
-        ) || /^\d+$/.test(segment);
-
-      if (isDynamicId) {
-        return;
-      }
-
-      const config = breadcrumbConfig[segment];
-      let label = segment;
-
-      if (config) {
-        if (config.translationKey) {
-          label = t(config.translationKey as any);
-        } else if (config.label) {
-          label = config.label;
-        }
-      } else {
-        label =
-          segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
-      }
-
-      if (isLast) {
-        breadcrumbs.push({ title: label });
-      } else {
-        breadcrumbs.push({
-          title: label,
-          href: currentPath,
-        });
-      }
-    });
-
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setItems(breadcrumbs);
   }, [pathname, locale, t]);
 

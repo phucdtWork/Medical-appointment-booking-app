@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Modal, Rate, Input, Button, message } from "antd";
 import api from "@/lib/api/axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { doctorKeys } from "@/hooks/queries/useDoctorsQuery";
 import { useTranslations } from "next-intl";
 
@@ -33,7 +33,7 @@ export default function ReviewModal({
     if (!doctorId) return;
     setSubmitting(true);
     try {
-      const res = await api.post("/reviews", {
+      await api.post("/reviews", {
         doctorId,
         appointmentId,
         rating,
@@ -45,9 +45,11 @@ export default function ReviewModal({
       onClose();
       setComment("");
       setRating(5);
-    } catch (err: any) {
+    } catch (err: { message?: string } | unknown) {
       console.error(err);
-      message.error(err?.message || t("notifications.error"));
+      const errorMessage =
+        err instanceof Error ? err.message : t("notifications.error");
+      message.error(errorMessage || t("notifications.error"));
     } finally {
       setSubmitting(false);
     }

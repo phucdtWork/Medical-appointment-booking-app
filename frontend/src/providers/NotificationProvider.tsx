@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useContext, useMemo, memo } from "react";
 import { notification } from "antd";
 import type { NotificationInstance } from "antd/es/notification/interface";
 
@@ -9,7 +9,7 @@ interface NotificationContextType {
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const useNotification = () => {
@@ -24,9 +24,9 @@ interface NotificationProviderProps {
   children: React.ReactNode;
 }
 
-export const NotificationProvider: React.FC<NotificationProviderProps> = ({
+function NotificationProviderComponent({
   children,
-}) => {
+}: NotificationProviderProps) {
   const [api, contextHolder] = notification.useNotification({
     // Global config
     placement: "topRight",
@@ -36,6 +36,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     rtl: false,
   });
 
+  // ✅ Memoize context value để tránh re-render
   const contextValue = useMemo(() => ({ api }), [api]);
 
   return (
@@ -44,4 +45,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
       {children}
     </NotificationContext.Provider>
   );
-};
+}
+
+// ✅ Memoize component
+export const NotificationProvider = memo(NotificationProviderComponent);

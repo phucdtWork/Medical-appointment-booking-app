@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import admin from "firebase-admin";
 import { db } from "../config/firebase";
 import {
   DoctorSchedule,
@@ -114,8 +115,9 @@ export class ScheduleController {
         .limit(1)
         .get();
 
+      // If no schedule found, return empty slots instead of 404
       if (scheduleSnapshot.empty) {
-        return res.status(404).json({ message: "Doctor schedule not found" });
+        return res.json({ slots: [] });
       }
 
       const schedule = {
@@ -124,23 +126,46 @@ export class ScheduleController {
       } as DoctorSchedule;
 
       // Get existing appointments for this date
+      // Need to handle different date formats (ISO string vs Firestore timestamp)
       const appointmentsSnapshot = await db
         .collection("appointments")
         .where("doctorId", "==", doctorId)
-        .where("date", "==", date)
         .get();
 
-      const appointments = appointmentsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as any[];
+      // Convert input date to start and end of day (UTC)
+      const dateStart = new Date(`${date}T00:00:00Z`);
+      const dateEnd = new Date(`${date}T23:59:59Z`);
+
+      // Filter appointments by date range
+      const appointments = appointmentsSnapshot.docs
+        .map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .filter((apt: any) => {
+          let appointmentDate: Date;
+
+          // Handle different date formats
+          if (apt.date instanceof admin.firestore.Timestamp) {
+            appointmentDate = apt.date.toDate();
+          } else if (apt.date?._seconds !== undefined) {
+            // Firestore timestamp object { _seconds, _nanoseconds }
+            appointmentDate = new Date(apt.date._seconds * 1000);
+          } else if (typeof apt.date === "string") {
+            appointmentDate = new Date(apt.date);
+          } else {
+            return false;
+          }
+
+          return appointmentDate >= dateStart && appointmentDate < dateEnd;
+        }) as any[];
 
       // Generate available slots
       const slots = await SlotGeneratorService.generateSlotsForDate(
         doctorId,
         date,
         schedule,
-        appointments
+        appointments,
       );
 
       return res.json({ slots });
@@ -167,7 +192,18 @@ export class ScheduleController {
 
       const schedule = await ScheduleController.getDoctorSchedule(doctorId);
       if (!schedule) {
-        return res.status(404).json({ message: "Doctor schedule not found" });
+        // Return empty result for all days if no schedule found
+        const result: { [date: string]: any[] } = {};
+        const start = new Date(startDateRaw);
+        const days = Number(daysRaw);
+
+        for (let i = 0; i < days; i++) {
+          const currentDate = addDays(start, i);
+          const dateStr = format(currentDate, "yyyy-MM-dd");
+          result[dateStr] = [];
+        }
+
+        return res.json(result);
       }
 
       const result: { [date: string]: any[] } = {};
@@ -180,13 +216,13 @@ export class ScheduleController {
 
         const appointments = await ScheduleController.getAppointmentsForDate(
           doctorId,
-          dateStr
+          dateStr,
         );
         const slots = await SlotGeneratorService.generateSlotsForDate(
           doctorId,
           dateStr,
           schedule,
-          appointments
+          appointments,
         );
 
         result[dateStr] = slots;
@@ -203,7 +239,7 @@ export class ScheduleController {
    * Helper: Get doctor schedule
    */
   private static async getDoctorSchedule(
-    doctorId: string
+    doctorId: string,
   ): Promise<DoctorSchedule | null> {
     const snapshot = await db
       .collection(DOCTOR_SCHEDULES_COLLECTION)
@@ -226,12 +262,34 @@ export class ScheduleController {
     const snapshot = await db
       .collection("appointments")
       .where("doctorId", "==", doctorId)
-      .where("date", "==", date)
       .get();
 
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as any[];
+    // Convert input date to start and end of day (UTC)
+    const dateStart = new Date(`${date}T00:00:00Z`);
+    const dateEnd = new Date(`${date}T23:59:59Z`);
+
+    // Filter appointments by date range to handle different date formats
+    return snapshot.docs
+      .map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }))
+      .filter((apt: any) => {
+        let appointmentDate: Date;
+
+        // Handle different date formats
+        if (apt.date instanceof admin.firestore.Timestamp) {
+          appointmentDate = apt.date.toDate();
+        } else if (apt.date?._seconds !== undefined) {
+          // Firestore timestamp object { _seconds, _nanoseconds }
+          appointmentDate = new Date(apt.date._seconds * 1000);
+        } else if (typeof apt.date === "string") {
+          appointmentDate = new Date(apt.date);
+        } else {
+          return false;
+        }
+
+        return appointmentDate >= dateStart && appointmentDate < dateEnd;
+      }) as any[];
   }
 }

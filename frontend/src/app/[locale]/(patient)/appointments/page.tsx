@@ -45,7 +45,7 @@ export default function PatientDashboard({
 
   const appointments = useMemo(
     () => (Array.isArray(apiData?.data) ? apiData.data : []),
-    [apiData]
+    [apiData],
   );
 
   const [selectedWeek, setSelectedWeek] = useState<Dayjs>(dayjs());
@@ -84,7 +84,7 @@ export default function PatientDashboard({
     }
 
     setStatusFilter((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [status]
+      prev.includes(status) ? prev.filter((s) => s !== status) : [status],
     );
   };
 

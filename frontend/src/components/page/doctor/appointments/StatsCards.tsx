@@ -91,7 +91,6 @@ export default function StatsCards({
             hover:shadow-lg transition-all duration-300
             hover:scale-105
           `}
-          variant="plain"
         >
           <div className="flex items-center justify-between">
             <div>

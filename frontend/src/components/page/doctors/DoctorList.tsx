@@ -2,10 +2,21 @@ import { Row, Col, Card, Empty, Pagination, Skeleton } from "antd";
 import DoctorCard from "@/components/ui/DoctorCard";
 import { useTranslations } from "next-intl";
 
+interface Doctor {
+  id: string;
+  fullName: string;
+  avatar?: string;
+  doctorInfo: {
+    specialization: string;
+    rating: number;
+    totalReviews: number;
+  };
+}
+
 interface DoctorListProps {
-  doctors: any[];
+  doctors: Doctor[];
   isLoading: boolean;
-  error: any;
+  error: Error | null;
   viewMode: "grid" | "list";
   currentPage: number;
   pageSize: number;

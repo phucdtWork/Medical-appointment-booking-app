@@ -27,22 +27,25 @@ interface LogoProps {
 export default function Logo({
   size = "medium",
   showText = true,
-  href = "/",
+  href,
   className = "",
   variant = "auto",
 }: LogoProps) {
   const config = sizeConfig[size];
-  const { isDark } = useTheme();
+  const { isDark, language } = useTheme();
+
+  // Use language-aware home URL if href is not provided or is root
+  const finalHref = href === "/" || !href ? `/${language}` : href;
 
   // Logic chọn màu dựa trên variant
   const textPrimaryClass =
     variant === "light"
       ? "text-white"
       : variant === "dark"
-      ? "text-gray-800"
-      : isDark
-      ? "text-white"
-      : "text-gray-800"; // auto
+        ? "text-gray-800"
+        : isDark
+          ? "text-white"
+          : "text-gray-800"; // auto
 
   const logoElement = (
     <div className={`flex items-center gap-2 ${textPrimaryClass} ${className}`}>
@@ -59,8 +62,8 @@ export default function Logo({
     </div>
   );
 
-  if (href) {
-    return <Link href={href}>{logoElement}</Link>;
+  if (finalHref) {
+    return <Link href={finalHref}>{logoElement}</Link>;
   }
 
   return logoElement;

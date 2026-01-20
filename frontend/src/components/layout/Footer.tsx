@@ -1,9 +1,10 @@
 import { Row, Col } from "antd";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { memo } from "react";
 import { Logo } from "../ui";
 
-export default function FooterSection() {
+function FooterSectionComponent() {
   const t = useTranslations("home");
 
   return (
@@ -127,3 +128,7 @@ export default function FooterSection() {
     </footer>
   );
 }
+
+// ✅ Memoize component để tránh re-render không cần thiết
+const FooterSection = memo(FooterSectionComponent);
+export default FooterSection;

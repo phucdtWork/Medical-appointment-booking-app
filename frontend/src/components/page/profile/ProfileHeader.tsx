@@ -1,11 +1,15 @@
-import React from "react";
-import { Avatar, Button, Row, Col, Upload, Badge } from "antd";
+import React, { useState } from "react";
+import { Avatar, Button, Upload, Badge } from "antd";
+import Image from "next/image";
 import {
   UserOutlined,
   EditOutlined,
   SaveOutlined,
   CameraOutlined,
   StarFilled,
+  MedicineBoxOutlined,
+  TeamOutlined,
+  TrophyOutlined,
 } from "@ant-design/icons";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -19,6 +23,8 @@ type Props = {
   user: UserProfile | null;
   /** Whether the profile is in editing mode */
   isEditing: boolean;
+  /** Whether update is loading */
+  isLoading?: boolean;
   /** Callback when edit button is clicked */
   onEdit: () => void;
   /** Callback when save button is clicked */
@@ -32,6 +38,7 @@ type Props = {
 export default function ProfileHeader({
   user,
   isEditing,
+  isLoading = false,
   onEdit,
   onSave,
   onCancel,
@@ -39,174 +46,246 @@ export default function ProfileHeader({
 }: Props) {
   const t = useTranslations("profile");
   const { isDark } = useTheme();
+  const [imageError, setImageError] = useState(false);
 
-  const bgColor = isDark ? "bg-background-dark" : "bg-white";
-  const textPrimary = isDark ? "text-text-primary-dark" : "text-text-primary";
-  const textSecondary = isDark
-    ? "text-text-secondary-dark"
-    : "text-text-secondary";
-  const borderColor = isDark ? "border-gray-700" : "border-gray-200";
+  const bgColor = isDark ? "bg-[#001529]" : "bg-white";
+  const cardBg = isDark
+    ? "bg-gray-800/50"
+    : "bg-linear-to-br from-blue-50 to-indigo-50";
+  const textPrimary = isDark ? "text-text-primary-dark" : "text-gray-900";
+  const textSecondary = isDark ? "text-text-secondary-dark" : "text-gray-600";
+  const borderColor = isDark ? "border-gray-700" : "border-gray-100";
+  const statBg = isDark ? "bg-gray-700/50" : "bg-white";
 
   return (
     <section
-      className={`${bgColor} max-w-7xl mx-auto border-b ${borderColor} py-12`}
+      className={`${bgColor} rounded-2xl shadow-lg overflow-hidden border ${borderColor}`}
     >
-      <div className="px-4 sm:px-6 lg:px-8">
-        <Row gutter={[24, 24]} align="middle">
-          {/* Avatar Section */}
-          <Col xs={24} sm={24} md={6} lg={5} xl={4}>
-            <div className="flex justify-center md:justify-start">
-              <Upload
-                showUploadList={false}
-                beforeUpload={(file) => {
-                  if (isEditing) {
-                    onAvatarChange(file);
-                  }
-                  return false;
+      {/* Header Background Pattern */}
+      <div className={`${cardBg} h-32 relative overflow-hidden`}>
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-40 h-40 bg-blue-500 rounded-full filter blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-40 h-40 bg-indigo-500 rounded-full filter blur-3xl"></div>
+        </div>
+      </div>
+
+      <div className="px-6 pb-6 -mt-16 relative">
+        {/* Avatar Section */}
+        <div className="flex flex-col items-center">
+          <Upload
+            showUploadList={false}
+            beforeUpload={(file) => {
+              if (isEditing) {
+                onAvatarChange(file);
+              }
+              return false;
+            }}
+            disabled={!isEditing}
+          >
+            <div className="relative group cursor-pointer">
+              <Badge
+                count={
+                  isEditing ? <CameraOutlined className="text-white" /> : 0
+                }
+                style={{
+                  backgroundColor: "#1890ff",
+                  boxShadow: "0 2px 8px rgba(24, 144, 255, 0.3)",
                 }}
-                disabled={!isEditing}
               >
-                <div className="relative group cursor-pointer">
-                  <div
-                    className={`p-1 rounded-full border-2 ${isEditing ? "border-primary" : borderColor} transition-all duration-300 group-hover:border-primary`}
-                  >
-                    <Avatar
-                      size={120}
-                      src={user?.avatar}
-                      icon={<UserOutlined className="text-4xl" />}
-                      className={`${isDark ? "bg-gray-700" : "bg-gray-100"}`}
+                <div
+                  className={`p-1.5 rounded-full ${bgColor} shadow-xl border-4 ${
+                    isEditing
+                      ? "border-blue-400"
+                      : "border-white dark:border-gray-700"
+                  } transition-all duration-300 group-hover:border-blue-400`}
+                >
+                  {user?.avatar && !imageError ? (
+                    <Image
+                      src={user.avatar}
+                      alt={user?.fullName || "User avatar"}
+                      width={140}
+                      height={140}
+                      className="w-[140px] h-[140px] rounded-full object-cover"
+                      priority
+                      unoptimized
+                      onError={() => setImageError(true)}
                     />
-                  </div>
-
-                  {/* Upload overlay */}
-                  {isEditing && (
-                    <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
-                      <CameraOutlined className="text-white text-2xl mb-1" />
-                      <span className="text-white text-xs font-medium">
-                        {t("changePhoto")}
-                      </span>
-                    </div>
+                  ) : (
+                    <Avatar
+                      size={140}
+                      icon={<UserOutlined className="text-5xl" />}
+                      className={`${isDark ? "bg-gray-700" : "bg-linear-to-br from-blue-100 to-indigo-100"}`}
+                    />
                   )}
-
-                  {/* Online badge */}
-                  <Badge
-                    status="success"
-                    className="absolute bottom-2 right-2"
-                    dot
-                    style={{ width: 14, height: 14 }}
-                  />
                 </div>
-              </Upload>
-            </div>
-          </Col>
+              </Badge>
 
-          {/* User Info Section */}
-          <Col xs={24} sm={24} md={12} lg={13} xl={14}>
-            <div className="text-center md:text-left">
-              {/* Name */}
-              <h1 className={`text-3xl font-semibold ${textPrimary} mb-2`}>
-                {user?.fullName || t("userNamePlaceholder")}
-              </h1>
-
-              {/* Role Badge */}
-              {user?.role === "patient" && (
-                <div className="mt-2">
-                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary">
-                    <UserOutlined />
-                    {t("patient")}
+              {/* Upload overlay */}
+              {isEditing && (
+                <div className="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center">
+                  <CameraOutlined className="text-white text-3xl mb-2" />
+                  <span className="text-white text-sm font-medium">
+                    {t("changePhoto")}
                   </span>
                 </div>
               )}
+            </div>
+          </Upload>
 
-              {/* Doctor Info */}
-              {user?.role === "doctor" && (
-                <>
-                  <p className={`text-sm mt-2 ${textSecondary} font-medium`}>
-                    {user.doctorInfo?.specialization ||
-                      t("specializationPlaceholder")}{" "}
-                    • {user.doctorInfo?.yearsOfExperience || 0} {t("yearsExp")}
-                  </p>
+          {/* User Info */}
+          <div className="text-center mt-4 space-y-2">
+            <h1 className={`text-2xl font-bold ${textPrimary}`}>
+              {user?.fullName || t("userNamePlaceholder")}
+            </h1>
 
-                  {/* Doctor Statistics - Compact */}
-                  <div className="flex flex-wrap gap-6 mt-4 justify-center md:justify-start">
-                    {/* Rating */}
-                    <div className="flex items-center gap-2">
-                      <StarFilled className="text-yellow-500 text-xl" />
-                      <div>
-                        <span className="text-2xl font-bold text-primary">
-                          {(user.doctorInfo?.rating || 0).toFixed(1)}
-                        </span>
-                        <span className={`text-xs ml-1 ${textSecondary}`}>
-                          {t("rating")}
-                        </span>
-                      </div>
+            <p
+              className={`text-sm ${textSecondary} flex items-center justify-center gap-1`}
+            >
+              <span className="opacity-60">
+                @{user?.email?.split("@")[0] || "user"}
+              </span>
+            </p>
+
+            {/* Doctor Specialization Badge */}
+            {user?.role === "doctor" && (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+                <MedicineBoxOutlined
+                  style={{ fontSize: "1rem", color: "#1890ff" }}
+                />
+                <span className="text-sm font-medium">
+                  {user.doctorInfo?.specialization ||
+                    t("specializationPlaceholder")}
+                </span>
+                <span className="text-xs opacity-75">
+                  • {user.doctorInfo?.yearsOfExperience || 0} {t("yearsExp")}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Doctor Statistics */}
+          {user?.role === "doctor" && (
+            <div className="w-full mt-6 space-y-3">
+              {/* Rating Star */}
+              <div
+                className={`${statBg} rounded-xl p-4 shadow-sm border ${borderColor}`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
+                      <StarFilled
+                        className="text-2xl"
+                        style={{ color: "orange" }}
+                      />
                     </div>
-
-                    {/* Reviews */}
-                    <div className="flex items-center gap-2">
-                      <div>
-                        <span className="text-2xl font-bold text-primary">
-                          {user.doctorInfo?.totalReviews || 0}+
-                        </span>
-                        <span className={`text-xs ml-1 ${textSecondary}`}>
-                          {t("reviews")}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Patients */}
-                    <div className="flex items-center gap-2">
-                      <div>
-                        <span className="text-2xl font-bold text-primary">
-                          {user.doctorInfo?.totalPatients || 0}+
-                        </span>
-                        <span className={`text-xs ml-1 ${textSecondary}`}>
-                          {t("patients")}
-                        </span>
-                      </div>
+                    <div>
+                      <p className={`text-xs ${textSecondary} mb-1`}>
+                        {t("rating")}
+                      </p>
+                      <p className="text-2xl font-bold text-orange-500">
+                        {(user.doctorInfo?.rating || 0).toFixed(1)}
+                      </p>
                     </div>
                   </div>
-                </>
-              )}
+                  <div className="flex gap-0.5">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <StarFilled
+                        key={star}
+                        style={{
+                          fontSize: "1rem",
+                          color:
+                            star <= Math.round(user.doctorInfo?.rating || 0)
+                              ? "#facc15"
+                              : isDark
+                                ? "#4b5563"
+                                : "#d1d5db",
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Reviews & Patients */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* Reviews */}
+                <div
+                  className={`${statBg} rounded-xl p-4 shadow-sm border ${borderColor}`}
+                >
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-2">
+                      <TrophyOutlined
+                        style={{ fontSize: "1.25rem", color: "#3b82f6" }}
+                      />
+                    </div>
+                    <p className="text-2xl font-bold text-blue-500">
+                      {user.doctorInfo?.totalReviews || 0}+
+                    </p>
+                    <p className={`text-xs ${textSecondary} mt-1`}>
+                      {t("reviews")}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Patients */}
+                <div
+                  className={`${statBg} rounded-xl p-4 shadow-sm border ${borderColor}`}
+                >
+                  <div className="flex flex-col items-center text-center">
+                    <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-2">
+                      <TeamOutlined
+                        style={{ fontSize: "1.25rem", color: "#22c55e" }}
+                      />
+                    </div>
+                    <p className="text-2xl font-bold text-green-500">
+                      {user.doctorInfo?.totalPatients || 0}+
+                    </p>
+                    <p className={`text-xs ${textSecondary} mt-1`}>
+                      {t("patients")}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </Col>
+          )}
 
           {/* Action Buttons */}
-          <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-            <div className="flex flex-col gap-3 items-center md:items-end">
-              {isEditing ? (
-                <>
-                  <Button
-                    type="primary"
-                    size="large"
-                    icon={<SaveOutlined />}
-                    onClick={onSave}
-                    className="w-full md:w-auto px-8"
-                  >
-                    {t("saveChanges")}
-                  </Button>
-                  <Button
-                    size="large"
-                    onClick={onCancel}
-                    className="w-full md:w-auto px-8"
-                  >
-                    {t("cancel")}
-                  </Button>
-                </>
-              ) : (
+          <div className="w-full mt-6 space-y-2">
+            {isEditing ? (
+              <>
                 <Button
                   type="primary"
+                  icon={<SaveOutlined />}
+                  onClick={onSave}
+                  loading={isLoading}
+                  disabled={isLoading}
                   size="large"
-                  icon={<EditOutlined />}
-                  onClick={onEdit}
-                  className="w-full md:w-auto px-8"
+                  className="w-full font-medium shadow-md hover:shadow-lg transition-shadow"
                 >
-                  {t("editProfile")}
+                  {t("saveChanges")}
                 </Button>
-              )}
-            </div>
-          </Col>
-        </Row>
+                <Button
+                  size="large"
+                  onClick={onCancel}
+                  disabled={isLoading}
+                  className="w-full font-medium"
+                >
+                  {t("cancel")}
+                </Button>
+              </>
+            ) : (
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
+                onClick={onEdit}
+                size="large"
+                className="w-full font-medium shadow-md hover:shadow-lg transition-shadow"
+              >
+                {t("editProfile")}
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );

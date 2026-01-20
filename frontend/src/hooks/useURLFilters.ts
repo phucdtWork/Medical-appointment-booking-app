@@ -56,7 +56,10 @@ export function useURLFilters() {
   }, [filters, searchTerm, viewMode, currentPage, pageSize, router]);
 
   // Handler functions
-  const updateFilter = (key: string, value: any) => {
+  const updateFilter = (
+    key: keyof Filters,
+    value: string | number | undefined
+  ) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     setCurrentPage(1);
   };

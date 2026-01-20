@@ -2,13 +2,12 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Form, Button, Card } from "antd";
-import { MailOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-import { useVerifyAndRegister, useResendOtp } from "@/hooks";
-import { useTheme } from "@/providers/ThemeProvider";
-import { log } from "console";
 import { Logo } from "@/components/ui";
 import { useTranslations } from "next-intl";
+import { useTheme } from "@/providers/ThemeProvider";
+import { useVerifyAndRegister, useResendOtp } from "@/hooks";
 
 export default function VerifyOtpPage() {
   const router = useRouter();
@@ -19,7 +18,12 @@ export default function VerifyOtpPage() {
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
-  const [registerData, setRegisterData] = useState<any>(null);
+  const [registerData, setRegisterData] = useState<{
+    fullName: string;
+    email: string;
+    phone: string;
+    password: string;
+  } | null>(null);
 
   const t = useTranslations("auth.verifyOtp");
 
@@ -30,20 +34,25 @@ export default function VerifyOtpPage() {
     const data = sessionStorage.getItem("registerData");
     if (!data) {
       router.push("/register");
-      return;
+    } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setRegisterData(JSON.parse(data));
     }
-    setRegisterData(JSON.parse(data));
   }, [router]);
 
   // Countdown timer
   useEffect(() => {
+    let timer: NodeJS.Timeout;
     if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-      return () => clearTimeout(timer);
-    } else {
+      timer = setTimeout(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (countdown === 0 && !canResend) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCanResend(true);
     }
-  }, [countdown]);
+    return () => clearTimeout(timer);
+  }, [countdown, canResend]);
 
   // Auto focus first input on mount
   useEffect(() => {
@@ -70,15 +79,36 @@ export default function VerifyOtpPage() {
     }
   };
 
-  const handlePaste = (e: React.ClipboardEvent) => {
+  // const handlePaste = (e: React.ClipboardEvent) => {
+  //   e.preventDefault();
+  //   const pastedData = e.clipboardData.getData("text").trim();
+
+  //   // Only process if pasted data is 6 digits
+  //   if (/^\d{6}$/.test(pastedData)) {
+  //     const newOtp = pastedData.split("");
+  //     setOtp(newOtp);
+  //     inputRefs.current[5]?.focus();
+  //   }
+  // };
+
+  const handleInputPaste = (index: number, e: React.ClipboardEvent) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text").trim();
 
-    // Only process if pasted data is 6 digits
-    if (/^\d{6}$/.test(pastedData)) {
-      const newOtp = pastedData.split("");
+    // Only process if pasted data is digits
+    if (/^\d+$/.test(pastedData)) {
+      const digits = pastedData.split("").slice(0, 6 - index);
+      const newOtp = [...otp];
+
+      digits.forEach((digit, i) => {
+        newOtp[index + i] = digit;
+      });
+
       setOtp(newOtp);
-      inputRefs.current[5]?.focus();
+
+      // Focus on the last filled input or the next empty one
+      const nextIndex = Math.min(index + digits.length, 5);
+      inputRefs.current[nextIndex]?.focus();
     }
   };
 
@@ -106,7 +136,7 @@ export default function VerifyOtpPage() {
         onSuccess: () => {
           sessionStorage.removeItem("registerData");
         },
-      }
+      },
     );
   };
 
@@ -165,7 +195,7 @@ export default function VerifyOtpPage() {
 
         <Form layout="vertical">
           <Form.Item label={t("labels.enterOtp")} className="mb-6">
-            <div className="flex justify-center gap-2" onPaste={handlePaste}>
+            <div className="flex justify-center gap-2">
               {otp.map((digit, index) => (
                 <input
                   key={index}
@@ -176,6 +206,7 @@ export default function VerifyOtpPage() {
                   value={digit}
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
+                  onPaste={(e) => handleInputPaste(index, e)}
                   className={inputClass}
                 />
               ))}

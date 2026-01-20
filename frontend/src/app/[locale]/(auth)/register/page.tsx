@@ -36,7 +36,12 @@ export default function RegisterPage() {
     ? "text-blue-300 font-medium hover:underline"
     : "text-blue-600 font-medium hover:underline";
 
-  const onFinish = (values: any) => {
+  const onFinish = (values: {
+    fullName: string;
+    email: string;
+    phone: string;
+    password: string;
+  }) => {
     const { fullName, email, phone, password } = values;
 
     sessionStorage.setItem(

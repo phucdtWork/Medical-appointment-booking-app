@@ -10,9 +10,10 @@ import {
 } from "@ant-design/icons";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
+import { FormInstance } from "antd";
 
 type Props = {
-  form: any;
+  form: FormInstance;
   isEditing: boolean;
 };
 
@@ -39,7 +40,6 @@ export default function PersonalInfoCard({ form, isEditing }: Props) {
       `}
     >
       {/* Card Header with Icon - MUCH MORE PROMINENT */}
-      {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
       <div className="flex items-center gap-4 mb-8 pb-6 border-b-2 border-gradient-to-r from-blue-500 to-purple-500">
         <div className="relative">
           <div className="absolute inset-0 bg-linear-to-br from-blue-500 to-purple-500 rounded-2xl blur opacity-50"></div>

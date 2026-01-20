@@ -27,7 +27,6 @@ dayjs.locale("vi");
 
 export default function DoctorAppointmentsPage() {
   const t = useTranslations("doctorAppointments");
-  const tStatus = useTranslations("patientDashboard.status");
   const tNotify = useTranslations("patientDashboard.notifications");
   const { data: apiData } = useDoctorAppointments();
 
@@ -88,7 +87,7 @@ export default function DoctorAppointmentsPage() {
       message.success(
         action === "confirm" ? tNotify("confirmed") : tNotify("rejected")
       );
-    } catch (err) {
+    } catch {
       message.error(tNotify("error"));
     }
   };
@@ -105,7 +104,7 @@ export default function DoctorAppointmentsPage() {
 
       message.success(messages[status] || tNotify("updated"));
       setDrawerOpen(false);
-    } catch (err) {
+    } catch {
       message.error(tNotify("error"));
     }
   };

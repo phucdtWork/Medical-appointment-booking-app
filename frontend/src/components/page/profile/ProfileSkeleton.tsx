@@ -3,7 +3,7 @@
  */
 
 import React from "react";
-import { Card, Skeleton, Row, Col } from "antd";
+import { Card, Skeleton } from "antd";
 import { useTheme } from "@/providers/ThemeProvider";
 
 /**
@@ -11,42 +11,74 @@ import { useTheme } from "@/providers/ThemeProvider";
  */
 export function ProfileHeaderSkeleton() {
   const { isDark } = useTheme();
-  const bgColor = isDark ? "bg-gray-800" : "bg-white";
-  const borderColor = isDark ? "border-gray-700" : "border-gray-200";
+  const bgColor = isDark ? "bg-[#001529]" : "bg-white";
+  const borderColor = isDark ? "border-gray-700" : "border-gray-100";
+  const cardBg = isDark
+    ? "bg-gray-800/50"
+    : "bg-gradient-to-br from-blue-50 to-indigo-50";
+  const statBg = isDark ? "bg-gray-700/50" : "bg-white";
 
   return (
     <section
-      className={`${bgColor} max-w-7xl mx-auto border-b ${borderColor} py-12`}
+      className={`${bgColor} rounded-2xl shadow-lg overflow-hidden border ${borderColor}`}
     >
-      <div className="px-4 sm:px-6 lg:px-8">
-        <Row gutter={[24, 24]} align="middle">
-          {/* Avatar Skeleton */}
-          <Col xs={24} sm={24} md={6} lg={5} xl={4}>
-            <div className="flex justify-center md:justify-start">
-              <Skeleton.Avatar
-                active
-                size={120}
-                shape="circle"
-                className="w-full"
-              />
-            </div>
-          </Col>
+      {/* Header Background Pattern */}
+      <div className={`${cardBg} h-32 relative overflow-hidden`}>
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-40 h-40 bg-blue-500 rounded-full filter blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-40 h-40 bg-indigo-500 rounded-full filter blur-3xl"></div>
+        </div>
+      </div>
 
-          {/* User Info Skeleton */}
-          <Col xs={24} sm={24} md={12} lg={13} xl={14}>
-            <div className="space-y-4">
-              <Skeleton active paragraph={{ rows: 1 }} title={false} />
+      <div className="px-6 pb-6 -mt-16 relative">
+        {/* Avatar & User Info */}
+        <div className="flex flex-col items-center">
+          {/* Avatar Skeleton */}
+          <div className="flex justify-center mb-4">
+            <Skeleton.Avatar active size={140} shape="circle" />
+          </div>
+
+          {/* User Name & Email */}
+          <div className="text-center space-y-2 w-full max-w-xs">
+            <Skeleton active paragraph={{ rows: 1 }} title={false} />
+            <Skeleton active paragraph={{ rows: 1 }} title={false} />
+          </div>
+
+          {/* Badge Skeleton */}
+          <div className="mt-4 w-full max-w-xs">
+            <Skeleton active paragraph={{ rows: 1 }} title={false} />
+          </div>
+
+          {/* Stats Skeleton */}
+          <div className="w-full mt-6 space-y-3">
+            {/* Rating Box */}
+            <div
+              className={`${statBg} rounded-xl p-4 shadow-sm border ${borderColor}`}
+            >
               <Skeleton active paragraph={{ rows: 2 }} title={false} />
             </div>
-          </Col>
 
-          {/* Action Buttons Skeleton */}
-          <Col xs={24} sm={24} md={6} lg={6} xl={6}>
-            <div className="flex flex-col gap-3">
-              <Skeleton.Button active block size="large" />
+            {/* Reviews & Patients Grid */}
+            <div className="grid grid-cols-2 gap-3">
+              <div
+                className={`${statBg} rounded-xl p-4 shadow-sm border ${borderColor}`}
+              >
+                <Skeleton active paragraph={{ rows: 2 }} title={false} />
+              </div>
+              <div
+                className={`${statBg} rounded-xl p-4 shadow-sm border ${borderColor}`}
+              >
+                <Skeleton active paragraph={{ rows: 2 }} title={false} />
+              </div>
             </div>
-          </Col>
-        </Row>
+          </div>
+
+          {/* Button Skeleton */}
+          <div className="w-full mt-6 space-y-2">
+            <Skeleton.Button active block size="large" />
+            <Skeleton.Button active block size="large" />
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -168,20 +200,28 @@ export function ProfilePageSkeleton() {
 
   return (
     <div className={`min-h-screen ${pageBg}`}>
-      {/* Profile Header Skeleton */}
-      <ProfileHeaderSkeleton />
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 px-4 py-8">
+          {/* Profile Header - Left Side */}
+          <div className="lg:col-span-2">
+            <div className="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)]">
+              <ProfileHeaderSkeleton />
+            </div>
+          </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="space-y-6">
-          {/* General Info Card Skeleton */}
-          <GeneralInfoCardSkeleton />
+          {/* Main Content - Right Side */}
+          <div className="lg:col-span-3">
+            <div className="space-y-6">
+              {/* General Info Card Skeleton */}
+              <GeneralInfoCardSkeleton />
 
-          {/* Medical Info Card Skeleton */}
-          <MedicalInfoCardSkeleton />
+              {/* Medical Info Card Skeleton */}
+              <MedicalInfoCardSkeleton />
 
-          {/* Professional Profile Card Skeleton */}
-          <ProfessionalProfileCardSkeleton />
+              {/* Professional Profile Card Skeleton */}
+              <ProfessionalProfileCardSkeleton />
+            </div>
+          </div>
         </div>
       </div>
     </div>

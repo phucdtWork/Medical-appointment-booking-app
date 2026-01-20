@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
-import Link from "next/link";
 import { Button } from "antd";
 import { useTranslations } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
+import { useRouter } from "next/navigation";
 
 export default function UnauthorizedPage() {
   const t = useTranslations?.("unauthorized") ?? ((k: string) => k);
+  const router = useRouter();
   const { isDark } = useTheme();
 
   return (
@@ -30,9 +31,9 @@ export default function UnauthorizedPage() {
         </p>
 
         <div className="flex justify-end">
-          <Link href="/">
-            <Button type="primary">{t("backHome")}</Button>
-          </Link>
+          <Button type="primary" onClick={() => router.push("/")}>
+            {t("backHome")}
+          </Button>
         </div>
       </div>
     </div>

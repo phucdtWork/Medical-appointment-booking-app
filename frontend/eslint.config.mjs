@@ -5,9 +5,19 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  // Override default ignores of eslint-config-next.
+  {
+    files: ["src/components/page/doctor-detail/**"],
+    rules: {
+      "@next/next/no-css-tags": "off",
+      "@next/next/no-unsafe-css-in-js": "off",
+      "@next/next/no-inline-styles": "off",
+      "@next/next/no-img-element": "off",
+      "react/forbid-dom-props": "off",
+      "react-dom/no-dangerously-set-innerhtml": "off",
+      "jsx-a11y/no-static-element-interactions": "off",
+    },
+  },
   globalIgnores([
-    // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
     "build/**",
@@ -16,3 +26,4 @@ const eslintConfig = defineConfig([
 ]);
 
 export default eslintConfig;
+

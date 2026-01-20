@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Form, message } from "antd";
+import { Form } from "antd";
 import dayjs from "dayjs";
-import type { User } from "@/types/appointment";
 import { useUpdateProfile } from "./mutations/useAuthMutation";
 import { useAuth } from "./queries/useAuthQuery";
 
-export const useProfileForm = (user?: any) => {
+export const useProfileForm = (user?: Record<string, unknown>) => {
   const [form] = Form.useForm();
   const [isEditing, setIsEditing] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -17,13 +16,20 @@ export const useProfileForm = (user?: any) => {
   useEffect(() => {
     if (user) {
       // convert date fields to Dayjs for DatePicker compatibility
-      const values: any = { ...user };
+      const values: Record<string, unknown> = { ...user };
       if (user.dateOfBirth) {
         try {
           values.dateOfBirth = dayjs(user.dateOfBirth);
-        } catch (e) {
+        } catch {
           values.dateOfBirth = user.dateOfBirth;
         }
+      }
+      // Ensure medicalHistory and allergies are arrays
+      if (values.medicalHistory && !Array.isArray(values.medicalHistory)) {
+        values.medicalHistory = [];
+      }
+      if (values.allergies && !Array.isArray(values.allergies)) {
+        values.allergies = [];
       }
       form.setFieldsValue(values);
     }
@@ -34,13 +40,20 @@ export const useProfileForm = (user?: any) => {
     form.resetFields();
     setAvatarFile(null);
     if (user) {
-      const values: any = { ...user };
+      const values: Record<string, unknown> = { ...user };
       if (user.dateOfBirth) {
         try {
           values.dateOfBirth = dayjs(user.dateOfBirth);
-        } catch (e) {
+        } catch {
           values.dateOfBirth = user.dateOfBirth;
         }
+      }
+      // Ensure medicalHistory and allergies are arrays
+      if (values.medicalHistory && !Array.isArray(values.medicalHistory)) {
+        values.medicalHistory = [];
+      }
+      if (values.allergies && !Array.isArray(values.allergies)) {
+        values.allergies = [];
       }
       form.setFieldsValue(values);
     }
@@ -91,7 +104,7 @@ export const useProfileForm = (user?: any) => {
           refetch();
         },
       });
-    } catch (err: any) {
+    } catch (err) {
       console.error("Validation error:", err);
     }
   };
