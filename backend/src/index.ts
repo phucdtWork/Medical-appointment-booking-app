@@ -5,25 +5,38 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import path from "path";
 import { createServer } from "http";
+import fs from "fs";
 
 import { initializeSocket } from "./socket/socketServer";
 import scheduleRoutes from "./routes/scheduleRoutes";
 import routes from "./routes";
 import { errorHandler } from "./middleware/errorHandler";
 
-dotenv.config({
-  path: path.resolve(__dirname, "../../.env"),
-});
+// Load .env file only if it exists (for local development)
+const envPath = path.resolve(__dirname, "../../.env");
+if (fs.existsSync(envPath)) {
+  dotenv.config({ path: envPath });
+} else if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 const app = express();
 const PORT = parseInt(process.env.PORT || "5000", 10);
 const HOST = "0.0.0.0";
 
+console.log(`[STARTUP] Starting backend on ${HOST}:${PORT}...`);
+console.log(`[STARTUP] NODE_ENV: ${process.env.NODE_ENV || "development"}`);
+
 // ✅ Tạo HTTP server cho Socket.IO
 const server = createServer(app);
 
-// Initialize Socket.IO
-initializeSocket(server);
+// Initialize Socket.IO with error handling
+try {
+  initializeSocket(server);
+  console.log("[STARTUP] Socket.IO initialized");
+} catch (error) {
+  console.error("[STARTUP] Socket.IO initialization warning:", error);
+}
 
 // Middleware
 app.use(helmet());
@@ -81,4 +94,23 @@ server.listen(PORT, HOST, () => {
   if (process.env.CORS_ORIGIN) {
     console.log(`✅ CORS enabled for: ${process.env.CORS_ORIGIN}`);
   }
+});
+
+// Handle server errors
+server.on("error", (error: NodeJS.ErrnoException) => {
+  if (error.code === "EADDRINUSE") {
+    console.error(`❌ Port ${PORT} is already in use`);
+  } else {
+    console.error("❌ Server error:", error);
+  }
+  process.exit(1);
+});
+
+// Graceful shutdown
+process.on("SIGTERM", () => {
+  console.log("SIGTERM received, shutting down gracefully...");
+  server.close(() => {
+    console.log("Server closed");
+    process.exit(0);
+  });
 });
