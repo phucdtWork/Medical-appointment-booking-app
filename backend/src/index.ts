@@ -65,7 +65,7 @@ app.use(errorHandler);
 
 app.use("/api/schedules", scheduleRoutes);
 
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
   if (process.env.CORS_ORIGIN) {
