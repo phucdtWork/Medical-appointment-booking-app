@@ -25,23 +25,28 @@ initializeSocket(server);
 // Middleware
 app.use(helmet());
 
-// CORS configuration - allow all origins in development
+// CORS configuration
 const corsOptions = {
   origin: (
     origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void
+    callback: (err: Error | null, allow?: boolean) => void,
   ) => {
+    // List of allowed origins
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "http://localhost:5000",
+      process.env.CORS_ORIGIN,
+      process.env.FRONTEND_URL,
+    ].filter(Boolean);
+
     if (process.env.NODE_ENV === "development") {
       // Allow all origins in development
       callback(null, true);
+    } else if (!origin || allowedOrigins.includes(origin)) {
+      // In production, check against allowed origins
+      callback(null, true);
     } else {
-      // In production, use CORS_ORIGIN from env
-      const allowedOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
-      if (!origin || origin === allowedOrigin) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
@@ -60,6 +65,10 @@ app.use(errorHandler);
 
 app.use("/api/schedules", scheduleRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+server.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
+  if (process.env.CORS_ORIGIN) {
+    console.log(`✅ CORS enabled for: ${process.env.CORS_ORIGIN}`);
+  }
 });
