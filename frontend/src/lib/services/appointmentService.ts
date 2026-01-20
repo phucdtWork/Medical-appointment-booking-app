@@ -31,7 +31,6 @@ const normalizeDateField = (
 };
 
 // Helper function to normalize appointment data
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const normalizeAppointment = (apt: Record<string, unknown>): Appointment => {
   return {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

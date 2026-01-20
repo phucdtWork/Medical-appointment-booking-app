@@ -141,7 +141,7 @@ export const useGoogleLogin = () => {
   const qc = useQueryClient();
   const router = useRouter();
   const notification = useNotification();
-  // @ts-ignore - useTranslations can only be used in client components
+  // @ts-expect-error - useTranslations can only be used in client components
   const t = useTranslations?.("auth") || null;
 
   return useMutation({
