@@ -78,7 +78,7 @@ export default function ChatFloatingButton() {
       {isOpen && (
         <div
           className={`
-            fixed bottom-32 right-6 z-40 
+            fixed bottom-14 right-6 z-40 
             w-96 rounded-lg shadow-2xl
             flex flex-col overflow-hidden
             ${isDark ? "bg-gray-900 text-white" : "bg-white text-black"}

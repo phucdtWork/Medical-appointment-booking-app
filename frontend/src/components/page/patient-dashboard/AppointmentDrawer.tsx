@@ -14,6 +14,7 @@ import {
   Modal,
   DatePicker,
   Select,
+  message,
 } from "antd";
 import {
   CloseOutlined,
@@ -78,7 +79,6 @@ export default function AppointmentDrawer({
   const t = useTranslations("patientDashboard.appointmentDrawer");
   const tStatus = useTranslations("patientDashboard.status");
   const tNotify = useTranslations("patientDashboard.notifications");
-  const { message } = App.useApp();
   const [showReview, setShowReview] = useState(false);
   const [rescheduleVisible, setRescheduleVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);

@@ -9,6 +9,7 @@ import {
   Button,
   Drawer,
   App,
+  message,
 } from "antd";
 import {
   CalendarOutlined,
@@ -46,7 +47,6 @@ export default function BookingForm({
   const { isDark } = useTheme();
   const router = useRouter();
   const locale = useLocale();
-  const { message } = App.useApp();
   const createAppointmentMutation = useCreateAppointment();
   const [form] = Form.useForm();
   const [drawerVisible, setDrawerVisible] = useState(false);

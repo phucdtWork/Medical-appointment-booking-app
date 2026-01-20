@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Button, Space, App } from "antd";
+import { Button, Space, App, message } from "antd";
 import {
   QuestionCircleOutlined,
   FireOutlined,
@@ -257,7 +257,6 @@ export default function ChatBoxDemo({ onClose }: ChatBoxProps) {
   const [formResetKey, setFormResetKey] = useState(0);
   const { isDark } = useTheme();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { message: messageApi } = App.useApp();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -314,7 +313,7 @@ export default function ChatBoxDemo({ onClose }: ChatBoxProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        messageApi?.error(data.error || "Failed to generate weight loss plan");
+        message.error(data.error || "Failed to generate weight loss plan");
         return;
       }
 
@@ -325,7 +324,7 @@ export default function ChatBoxDemo({ onClose }: ChatBoxProps) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to generate plan";
       console.error("Weight loss error:", errorMessage);
-      messageApi?.error(errorMessage);
+      message.error(errorMessage);
     } finally {
       setWeightLossLoading(false);
     }
