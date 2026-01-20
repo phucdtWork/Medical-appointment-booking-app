@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
 
   // Redirect to default locale
   const response = NextResponse.redirect(
-    new URL(`/${DEFAULT_LOCALE}${pathname}`, request.url)
+    new URL(`/${DEFAULT_LOCALE}${pathname}`, request.url),
   );
 
   // Set locale cookie for server-side detection
