@@ -37,21 +37,21 @@ export default function DoctorBreadcrumb({
   // Add specialization to breadcrumb if selected
   if (filters.specialization) {
     items.push({
-      title: filters.specialization,
+      title: filters.specialization as any,
     });
   }
 
   // Add search term to breadcrumb if exists
   if (searchTerm) {
     items.push({
-      title: `Tìm kiếm: "${searchTerm}"`,
+      title: `Tìm kiếm: "${searchTerm}"` as any,
     });
   }
 
   // Add rating filter to breadcrumb if selected
   if (filters.minRating) {
     items.push({
-      title: `⭐ ${filters.minRating}+ sao`,
+      title: `⭐ ${filters.minRating}+ sao` as any,
     });
   }
 

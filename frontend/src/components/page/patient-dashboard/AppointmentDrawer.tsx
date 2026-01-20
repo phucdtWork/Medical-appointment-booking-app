@@ -406,7 +406,7 @@ export default function AppointmentDrawer({
           open={rescheduleVisible}
           onCancel={() => setRescheduleVisible(false)}
           okText={t("reschedule")}
-          confirmLoading={rescheduleMutation.isLoading}
+          confirmLoading={rescheduleMutation.isPending}
           onOk={async () => {
             if (!selectedDate || !selectedSlot) return;
             try {

@@ -44,6 +44,12 @@ const STATUS_COLORS = {
     text: "#cf1322",
     color: "red",
   },
+  rejected: {
+    bg: "#fff1f0",
+    border: "#ff7875",
+    text: "#cf1322",
+    color: "red",
+  },
 };
 
 // Helper: Normalize date (Firestore timestamp or ISO string to ISO string)
