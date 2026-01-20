@@ -56,22 +56,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     updates();
   }, []);
 
-  // ✅ Effect 2: Sync với currentLocale chỉ khi có sự thay đổi đặc biệt
+  // ✅ Effect 2: Sync language state with URL locale on mount and when URL changes
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
+    // Always sync the language state with what's in the URL
+    if (currentLocale === "vi" || currentLocale === "en") {
+      setLanguage(currentLocale);
+      localStorage.setItem("language", currentLocale);
     }
-
-    // Chỉ cập nhật language nếu currentLocale thực sự khác và có giá trị
-    if (currentLocale && currentLocale !== language) {
-      // Kiểm tra xem currentLocale có phải là giá trị hợp lệ không
-      if (currentLocale === "vi" || currentLocale === "en") {
-        setLanguage(currentLocale as "vi" | "en");
-        localStorage.setItem("language", currentLocale);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLocale]);
 
   const toggleTheme = useCallback(() => {
