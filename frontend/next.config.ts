@@ -1,4 +1,5 @@
 import { NextConfig } from "next";
+import type { Header } from "next/dist/lib/load-custom-routes";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
@@ -15,7 +16,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["antd", "@ant-design/icons"],
   },
-  async headers(): Promise<any[]> {
+  async headers(): Promise<Header[]> {
     return [
       {
         source: "/(.*)",
