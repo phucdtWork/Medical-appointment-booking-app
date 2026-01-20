@@ -61,11 +61,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const changeLanguage = useCallback(
     (newLang: "vi" | "en") => {
+      // Get current path and remove locale prefix
       const pathWithoutLocale = pathname.replace(/^\/(vi|en)/, "") || "/";
       const newPath = `/${newLang}${pathWithoutLocale}`;
-      console.log("Changing to path:", newPath);
+      console.log("Changing language to:", newLang, "New path:", newPath);
 
-      // Use Next.js router to change URL, which will trigger locale update
+      // Push to new locale
       router.push(newPath);
     },
     [pathname, router],

@@ -124,9 +124,33 @@ Calculate realistic BMI, timeline, and exercise plan suitable for this person's 
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error("OpenAI API Error:", errorData);
-      throw new Error(`OpenAI API error: ${response.statusText}`);
+      let errorMessage = response.statusText;
+      try {
+        const errorData = await response.json();
+        console.error("OpenAI API Error:", errorData);
+        errorMessage = errorData.error?.message || response.statusText;
+      } catch (e) {
+        console.error("Failed to parse OpenAI error:", e);
+      }
+
+      // Handle specific errors
+      if (response.status === 401) {
+        throw new Error(
+          `OpenAI API authentication failed: Invalid or expired API key. Status: ${response.status}`,
+        );
+      } else if (response.status === 429) {
+        throw new Error(
+          `OpenAI API rate limit exceeded. Please try again later. Status: ${response.status}`,
+        );
+      } else if (response.status === 500) {
+        throw new Error(
+          `OpenAI API server error. Please try again later. Status: ${response.status}`,
+        );
+      }
+
+      throw new Error(
+        `OpenAI API error: ${errorMessage} (Status: ${response.status})`,
+      );
     }
 
     const data = await response.json();
