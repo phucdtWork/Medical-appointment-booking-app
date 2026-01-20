@@ -190,9 +190,6 @@ export default function PatientDashboard() {
           open={drawerOpen}
           appointment={selectedAppointment}
           onClose={() => setDrawerOpen(false)}
-          onReschedule={onReschedule}
-          onCancel={onCancel}
-          onViewDoctor={onViewDoctor}
           isDark={isDark}
         />
       </div>
