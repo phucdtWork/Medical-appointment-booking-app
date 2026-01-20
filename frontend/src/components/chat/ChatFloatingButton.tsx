@@ -57,7 +57,7 @@ export default function ChatFloatingButton() {
           onClick={() => setIsOpen(true)}
           type="primary"
           className="chat-float-button"
-          style={{ insetInlineEnd: 24, bottom: 24, width: 70, height: 70 }}
+          style={{ insetInlineEnd: 24, bottom: 100, width: 70, height: 70 }}
           tooltip={{
             title: t("titleTooltip"),
             color: isDark ? "#333333" : "#ffffff",
@@ -78,7 +78,7 @@ export default function ChatFloatingButton() {
       {isOpen && (
         <div
           className={`
-            fixed bottom-24 right-6 z-40 
+            fixed bottom-32 right-6 z-40 
             w-96 rounded-lg shadow-2xl
             flex flex-col overflow-hidden
             ${isDark ? "bg-gray-900 text-white" : "bg-white text-black"}
