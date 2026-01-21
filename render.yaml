@@ -7,6 +7,8 @@ services:
     buildCommand: npm ci --workspace=backend && npm run build --workspace=backend
     startCommand: npm start --workspace=backend
     port: 5000
+    healthCheckPath: /api/health
+    healthCheckInterval: 30
     envVars:
       - key: NODE_ENV
         value: production
