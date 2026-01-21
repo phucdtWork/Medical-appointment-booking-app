@@ -6,6 +6,9 @@ services:
     root: backend
     buildCommand: npm ci --workspace=backend && npm run build --workspace=backend
     startCommand: npm start --workspace=backend
+    port: 5000
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 5000
