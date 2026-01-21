@@ -101,6 +101,7 @@ const server_instance = server.listen(PORT, HOST, () => {
     console.log("[STARTUP] Routes initialized");
   } catch (error) {
     console.error("[STARTUP] Routes initialization error:", error);
+    process.exit(1);
   }
 });
 
