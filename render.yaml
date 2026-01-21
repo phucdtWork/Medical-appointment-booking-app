@@ -4,8 +4,8 @@ services:
     env: node
     plan: free
     root: backend
-    buildCommand: npm ci --workspace=backend && npm run build --workspace=backend
-    startCommand: npm start --workspace=backend
+    buildCommand: npm install && npm run build
+    startCommand: node dist/index.js
     port: 5000
     healthCheckPath: /api/health
     healthCheckInterval: 30
