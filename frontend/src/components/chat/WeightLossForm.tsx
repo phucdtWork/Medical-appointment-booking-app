@@ -54,7 +54,7 @@ export default function WeightLossForm({
     form.resetFields();
   };
 
-  const bgClass = isDark ? "bg-gray-900" : "bg-[#f9fafb]";
+  const bgClass = isDark ? "bg-gray-900" : "bg-white";
   const textColor = isDark ? "text-white" : "text-gray-900";
 
   return (

@@ -406,9 +406,7 @@ export default function WeightLossPlanDisplay({
             onClick={handleExportPDF}
             className="rounded-lg h-9"
           >
-            {locale === "en"
-              ? "📥 Download Your Plan"
-              : "📥 Tải Lộ Trình Của Bạn"}
+            {locale === "en" ? "Download Your Plan" : "Tải Lộ Trình Của Bạn"}
           </Button>
         </div>
       </Card>

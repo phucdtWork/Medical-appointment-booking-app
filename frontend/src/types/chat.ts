@@ -1,3 +1,10 @@
+export interface Feature {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+}
+
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
@@ -5,12 +12,42 @@ export interface ChatMessage {
   timestamp: number;
 }
 
+export interface FeaturesResult {
+  answer: string;
+  isRelevant: boolean;
+  features: Feature[];
+}
+
 export interface WeightLossData {
-  currentWeight: number;
-  targetWeight: number;
-  height: number;
+  name: string;
   age: number;
-  activityLevel: string;
+  weight: number;
+  height: number;
+  goalWeight: number;
+  exerciseTime: number;
+}
+
+export interface WeightLossPlan {
+  summary: string;
+  bmi: number;
+  bmiCategory: string;
+  exerciseCalendar: {
+    day: string;
+    activity: string;
+    duration: number;
+    calories: number;
+  }[];
+  nutrition: {
+    dailyCalories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
+  timeline: { weeksToGoal: number; weeklyWeightLoss: number };
+}
+
+export interface ChatBoxProps {
+  onClose?: () => void;
 }
 
 export interface ChatState {
