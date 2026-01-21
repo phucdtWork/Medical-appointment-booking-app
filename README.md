@@ -20,12 +20,9 @@
 
 ## 🌐 Live Demo
 
-| Component       | URL            |
-| --------------- | -------------- |
-| **Frontend**    | Coming soon... |
-| **Backend API** | Coming soon... |
+🔗 **[Medical Appointment Booking App](https://medical-appointment-booking-app-fro.vercel.app)**
 
-> Add your deployed links here after deployment
+> Live application is now deployed and ready to use!
 
 ---
 

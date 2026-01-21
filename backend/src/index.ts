@@ -63,6 +63,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 // Disable morgan in production to save memory
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
