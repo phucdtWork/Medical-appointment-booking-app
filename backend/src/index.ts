@@ -63,7 +63,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan("dev"));
+// Disable morgan in production to save memory
+if (process.env.NODE_ENV !== "production") {
+  app.use(morgan("dev"));
+}
 
 // Health check endpoint - Must work even if other services fail
 app.get("/api/health", (req, res) => {
@@ -79,13 +82,15 @@ app.get("/api/health", (req, res) => {
 const server_instance = server.listen(PORT, HOST, () => {
   console.log(`✅ Server BOUND to http://${HOST}:${PORT}`);
 
-  // Initialize Socket.IO AFTER server is bound
-  try {
-    const { initializeSocket } = require("./socket/socketServer");
-    initializeSocket(server);
-    console.log("[STARTUP] Socket.IO initialized");
-  } catch (error) {
-    console.error("[STARTUP] Socket.IO initialization warning:", error);
+  // Initialize Socket.IO AFTER server is bound (only in development, skip in production)
+  if (process.env.NODE_ENV !== "production") {
+    try {
+      const { initializeSocket } = require("./socket/socketServer");
+      initializeSocket(server);
+      console.log("[STARTUP] Socket.IO initialized");
+    } catch (error) {
+      console.error("[STARTUP] Socket.IO initialization warning:", error);
+    }
   }
 
   // Initialize routes AFTER server is bound

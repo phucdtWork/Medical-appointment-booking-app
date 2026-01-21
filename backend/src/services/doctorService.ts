@@ -1,14 +1,16 @@
 import { db } from "../config/firebase";
 import { User } from "../models/User";
-import Redis from "ioredis";
 import crypto from "crypto";
 
+let Redis: any = null;
+let redisClient: any = null;
+
 const REDIS_URL = process.env.REDIS_URL || process.env.REDIS_HOST;
-let redisClient: Redis | null = null;
 if (REDIS_URL) {
   try {
+    Redis = require("ioredis");
     redisClient = new Redis(REDIS_URL);
-    redisClient.on("error", (err) => console.warn("Redis error:", err));
+    redisClient.on("error", (err: any) => console.warn("Redis error:", err));
   } catch (e) {
     console.warn("Failed to initialize Redis client", e);
     redisClient = null;
