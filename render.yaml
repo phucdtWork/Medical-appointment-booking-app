@@ -9,8 +9,3 @@ services:
     port: 5000
     healthCheckPath: /api/health
     healthCheckInterval: 30
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: PORT
-        value: 5000
