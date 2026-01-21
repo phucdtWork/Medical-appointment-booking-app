@@ -88,7 +88,7 @@ export class DoctorService {
       query = query.where(
         "doctorInfo.specialization",
         "==",
-        filters.specialization.trim()
+        filters.specialization.trim(),
       );
     }
 
@@ -116,7 +116,7 @@ export class DoctorService {
 
       const duration = Date.now() - start;
       console.log(
-        `doctorService.getDoctors: fetched ${doctors.length} doctors in ${duration}ms`
+        `doctorService.getDoctors: fetched ${doctors.length} doctors in ${duration}ms`,
       );
 
       const etag = crypto
@@ -150,7 +150,7 @@ export class DoctorService {
       // and filter in-memory if complex filters fail
       try {
         console.log(
-          "Attempting fallback - fetching all doctors without filters"
+          "Attempting fallback - fetching all doctors without filters",
         );
         const simpleQuery = db
           .collection("users")
@@ -170,13 +170,13 @@ export class DoctorService {
         if (filters.specialization && filters.specialization.trim()) {
           doctors = doctors.filter(
             (d) =>
-              d.doctorInfo?.specialization === filters.specialization?.trim()
+              d.doctorInfo?.specialization === filters.specialization?.trim(),
           );
         }
 
         if (typeof filters.minRating === "number" && filters.minRating > 0) {
           doctors = doctors.filter(
-            (d) => (d.doctorInfo?.rating ?? 0) >= (filters.minRating ?? 0)
+            (d) => (d.doctorInfo?.rating ?? 0) >= (filters.minRating ?? 0),
           );
         }
 
@@ -185,7 +185,7 @@ export class DoctorService {
 
         const duration = Date.now() - start;
         console.log(
-          `doctorService.getDoctors (fallback): returned ${paginatedDoctors.length} doctors in ${duration}ms`
+          `doctorService.getDoctors (fallback): returned ${paginatedDoctors.length} doctors in ${duration}ms`,
         );
 
         const etag = crypto
@@ -198,7 +198,7 @@ export class DoctorService {
       } catch (fallbackError) {
         console.error("Fallback also failed:", fallbackError);
         throw new Error(
-          `Failed to fetch doctors: ${error.message || "Unknown error"}`
+          `Failed to fetch doctors: ${error.message || "Unknown error"}`,
         );
       }
     }
@@ -226,7 +226,7 @@ export class DoctorService {
   // Update doctor info
   async updateDoctor(
     doctorId: string,
-    updateData: Partial<User>
+    updateData: Partial<User>,
   ): Promise<User> {
     const docRef = db.collection("users").doc(doctorId);
 
@@ -274,7 +274,7 @@ export class DoctorService {
         ({
           id: ref.id,
           ...doctorsData[index],
-        }) as User
+        }) as User,
     );
   }
 }
