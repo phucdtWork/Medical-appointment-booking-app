@@ -15,7 +15,7 @@ export default function ResetPasswordPage({
   searchParams: { email: string; otp: string };
 }) {
   const t = useTranslations("auth");
-  const resetMutation = useForgotPasswordReset();
+  const { mutate, isPending } = useForgotPasswordReset();
   const { isDark } = useTheme();
   const router = useRouter();
   const [form] = Form.useForm();
@@ -28,7 +28,7 @@ export default function ResetPasswordPage({
   const cardClass = isDark ? "bg-gray-800 border-background-dark" : "";
 
   const onFinish = (values: { password: string; confirm: string }) => {
-    resetMutation.mutate(
+    mutate(
       {
         email: searchParams.email,
         otp: searchParams.otp,
@@ -100,12 +100,7 @@ export default function ResetPasswordPage({
             />
           </Form.Item>
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={resetMutation.isLoading}
-              block
-            >
+            <Button type="primary" htmlType="submit" loading={isPending} block>
               {t("resetPassword")}
             </Button>
           </Form.Item>
