@@ -1,6 +1,6 @@
 # 🏥 Medical Appointment Booking App
 
-> A modern full-stack medical appointment booking system connecting patients and doctors seamlessly.
+> A comprehensive full-stack medical appointment booking platform that bridges the gap between patients and healthcare providers. Features real-time scheduling, AI-powered health insights, multi-language support, and secure authentication with an intuitive user experience for seamless healthcare management.
 
 ![App Screenshot](./screenshort.png)
 
@@ -31,26 +31,24 @@
 ### Patient Features
 
 - 🔍 Search & filter doctors by specialization, rating, experience
-- 📅 Book appointments with real-time slot availability
-- ⭐ Write reviews and rate doctors
+- 📅 Book, reschedule & cancel appointments
 - 📱 View appointment history & manage bookings
-- 📋 Manage medical profile & health records
 
 ### Doctor Features
 
-- 📊 Manage schedule & time slots
-- 🗓️ View & confirm patient appointments
-- ✍️ Add notes on appointments
-- ⭐ View patient reviews & ratings
+- 🗓️ Manage work schedule & blocked dates
+- 📅 View & confirm patient appointments
 - 📈 Access appointment analytics
 
 ### General Features
 
 - 🌍 Multi-language support (Vietnamese & English)
+- 📋 Manage profile
 - 🔐 Secure authentication (Email/Password + Google OAuth)
 - 🎨 Dark/Light mode toggle
 - 📱 Fully responsive design
-- 🚀 Real-time updates with Socket.io
+- 💬 Chat to ask about app features
+- 🤖 AI-powered weight loss plan generator (input health data → receive personalized plan)
 
 ---
 
@@ -179,8 +177,6 @@ cd frontend && npm run dev
 - Email: dr.nguyen.lan@hospital.vn
 - Password: 123456
 
-**Or register a new patient account**
-
 ---
 
 ## 📁 Project Structure
@@ -253,28 +249,6 @@ POST   /api/reviews
 
 ---
 
-## 🐛 Troubleshooting
-
-**Port already in use:**
-
-```bash
-# Find process on port 3000 (Windows)
-netstat -ano | findstr :3000
-taskkill /PID <PID> /F
-```
-
-**Firebase connection error:**
-
-- Verify credentials in .env files
-- Check Firebase project is active
-
-**Image upload fails:**
-
-- Verify Cloudinary credentials
-- Check file size < 5MB
-
----
-
 ## 📚 Resources
 
 - [Firebase Docs](https://firebase.google.com/docs)
@@ -283,11 +257,3 @@ taskkill /PID <PID> /F
 - [Tailwind CSS](https://tailwindcss.com)
 
 ---
-
-## 📧 Support
-
-For issues or questions, create an issue in the repository.
-
----
-
-**Version**: 1.0.0 | **Last Updated**: January 2026 | **Status**: Active ✅
