@@ -3,9 +3,8 @@ services:
     name: medical-appointment-backend
     env: node
     plan: free
-    root: backend
-    buildCommand: cd .. && npm install && npm run build:backend
-    startCommand: node dist/index.js
+    buildCommand: npm install && npm run build:backend
+    startCommand: npm start --workspace=backend
     port: 5000
     healthCheckPath: /api/health
     healthCheckInterval: 30
