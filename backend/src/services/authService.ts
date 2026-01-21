@@ -9,7 +9,7 @@ import uploadService, { UploadService, UploadedFile } from "./uploadService";
 export class AuthService {
   // Register Patient
   async registerPatient(
-    userData: Partial<User>
+    userData: Partial<User>,
   ): Promise<{ token: string; user: User }> {
     const { email, password, fullName, phone } = userData;
 
@@ -50,7 +50,7 @@ export class AuthService {
   // Login
   async login(
     email: string,
-    password: string
+    password: string,
   ): Promise<{ token: string; user: User }> {
     const usersRef = db.collection("users");
     const snapshot = await usersRef.where("email", "==", email).get();
@@ -85,7 +85,7 @@ export class AuthService {
     const secret: Secret = secretEnv;
 
     const expiresInSeconds = this.parseExpiresToSeconds(
-      process.env.JWT_EXPIRE || "7d"
+      process.env.JWT_EXPIRE || "7d",
     );
     const options: SignOptions = {
       expiresIn: expiresInSeconds,
@@ -105,7 +105,7 @@ export class AuthService {
     const m = value.match(/^(\d+)\s*([smhdw])$/i);
     if (!m)
       throw new Error(
-        "Invalid JWT_EXPIRE format. Use e.g. 7d, 12h, 30m, 10s or seconds."
+        "Invalid JWT_EXPIRE format. Use e.g. 7d, 12h, 30m, 10s or seconds.",
       );
     const amount = parseInt(m[1], 10);
     const unit = m[2].toLowerCase();
@@ -180,7 +180,7 @@ export class AuthService {
   async editUserProfile(
     userId: string,
     updateData: Partial<User>,
-    avatarFile?: Express.Multer.File
+    avatarFile?: Express.Multer.File,
   ): Promise<User> {
     const docRef = db.collection("users").doc(userId);
 
@@ -253,7 +253,7 @@ export class AuthService {
           newDoctorInfo.yearsOfExperience !== undefined
         ) {
           throw new Error(
-            "Invalid doctor info: specialization, licenseNumber, and yearsOfExperience are required when updating"
+            "Invalid doctor info: specialization, licenseNumber, and yearsOfExperience are required when updating",
           );
         }
       }
@@ -271,7 +271,7 @@ export class AuthService {
   // Register as Doctor
   async registerDoctor(
     userData: Partial<User>,
-    doctorInfo: Partial<DoctorInfo>
+    doctorInfo: Partial<DoctorInfo>,
   ): Promise<{ token: string; user: User }> {
     const { email, password, fullName, phone } = userData;
 
@@ -323,5 +323,19 @@ export class AuthService {
     delete (userWithId as any).password;
 
     return { token, user: userWithId };
+  }
+  // Reset password for forgot password
+  async resetPassword(email: string, newPassword: string): Promise<void> {
+    const usersRef = db.collection("users");
+    const snapshot = await usersRef.where("email", "==", email).get();
+    if (snapshot.empty) {
+      throw new Error("User not found");
+    }
+    const userDoc = snapshot.docs[0];
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await userDoc.ref.update({
+      password: hashedPassword,
+      updatedAt: new Date(),
+    });
   }
 }
