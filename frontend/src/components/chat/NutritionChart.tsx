@@ -10,20 +10,20 @@ import {
   Tooltip,
 } from "recharts";
 import { Card } from "antd";
+import { useTranslations } from "next-intl";
 
 interface NutritionChartProps {
   protein: number;
   carbs: number;
   fat: number;
-  locale?: string;
 }
 
 export default function NutritionChart({
   protein,
   carbs,
   fat,
-  locale = "vi",
 }: NutritionChartProps) {
+  const t = useTranslations("chat");
   // Calculate calories from macros (protein 4cal/g, carbs 4cal/g, fat 9cal/g)
   const proteinCals = protein * 4;
   const carbsCals = carbs * 4;
@@ -32,17 +32,17 @@ export default function NutritionChart({
 
   const data = [
     {
-      name: locale === "en" ? "Protein" : "Protein",
+      name: t("protein"),
       value: Math.round((proteinCals / totalCals) * 100),
       grams: protein,
     },
     {
-      name: locale === "en" ? "Carbs" : "Carbs",
+      name: t("carbs"),
       value: Math.round((carbsCals / totalCals) * 100),
       grams: carbs,
     },
     {
-      name: locale === "en" ? "Fat" : "Mỡ",
+      name: t("fatLabel"),
       value: Math.round((fatCals / totalCals) * 100),
       grams: fat,
     },
@@ -51,10 +51,7 @@ export default function NutritionChart({
   const COLORS = ["#8b5cf6", "#f59e0b", "#ef4444"];
 
   return (
-    <Card
-      className="w-full h-96"
-      title={locale === "en" ? "Nutrition Breakdown" : "Phân Tích Dinh Dưỡng"}
-    >
+    <Card className="w-full h-96" title={t("nutritionAnalysis")}>
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie

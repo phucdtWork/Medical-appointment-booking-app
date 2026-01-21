@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Card } from "antd";
+import { useTranslations } from "next-intl";
 
 interface ExerciseCalendarItem {
   day: string;
@@ -22,26 +23,23 @@ interface ExerciseCalendarItem {
 
 interface ExerciseChartProps {
   exerciseCalendar: ExerciseCalendarItem[];
-  locale?: string;
 }
 
 export default function ExerciseChart({
   exerciseCalendar,
-  locale = "vi",
 }: ExerciseChartProps) {
+  const t = useTranslations("chat");
   const chartData = exerciseCalendar.map((item) => ({
     day:
-      locale === "en"
-        ? item.day
-        : {
-            Monday: "Thứ 2",
-            Tuesday: "Thứ 3",
-            Wednesday: "Thứ 4",
-            Thursday: "Thứ 5",
-            Friday: "Thứ 6",
-            Saturday: "Thứ 7",
-            Sunday: "Chủ nhật",
-          }[item.day] || item.day,
+      {
+        Monday: "Thứ 2",
+        Tuesday: "Thứ 3",
+        Wednesday: "Thứ 4",
+        Thursday: "Thứ 5",
+        Friday: "Thứ 6",
+        Saturday: "Thứ 7",
+        Sunday: "Chủ nhật",
+      }[item.day] || item.day,
     calories: item.calories,
     duration: item.duration,
   }));
@@ -56,23 +54,16 @@ export default function ExerciseChart({
   );
 
   return (
-    <Card
-      className="w-full"
-      title={locale === "en" ? "Exercise Schedule" : "Lộ Trình Tập Luyện"}
-    >
+    <Card className="w-full" title={t("exerciseSchedule")}>
       <div className="mb-4 grid grid-cols-2 gap-4">
         <div className="p-3 bg-orange-50 rounded-lg">
-          <div className="text-sm text-gray-600">
-            {locale === "en" ? "Total Duration" : "Tổng Thời Gian"}
-          </div>
+          <div className="text-sm text-gray-600">{t("totalDuration")}</div>
           <div className="text-2xl font-bold text-orange-600">
             {totalDuration} min
           </div>
         </div>
         <div className="p-3 bg-red-50 rounded-lg">
-          <div className="text-sm text-gray-600">
-            {locale === "en" ? "Total Calories" : "Tổng Calo"}
-          </div>
+          <div className="text-sm text-gray-600">{t("totalCalories")}</div>
           <div className="text-2xl font-bold text-red-600">
             {totalCalories} kcal
           </div>
@@ -114,13 +105,13 @@ export default function ExerciseChart({
             yAxisId="left"
             dataKey="calories"
             fill="#ef4444"
-            name={locale === "en" ? "Calories" : "Calo"}
+            name={t("calorieLabel")}
           />
           <Bar
             yAxisId="right"
             dataKey="duration"
             fill="#f59e0b"
-            name={locale === "en" ? "Duration (min)" : "Thời Lượng (phút)"}
+            name={t("durationLabel")}
           />
         </BarChart>
       </ResponsiveContainer>

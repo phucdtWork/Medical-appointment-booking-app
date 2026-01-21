@@ -212,37 +212,43 @@ export default function WeightLossForm({
 
         {/* Submit Button */}
         <Form.Item>
-          <div className="flex gap-2">
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={submitting || loading}
-              disabled={submitting || loading}
-              className="rounded-lg flex-1"
-            >
-              {submitting || loading ? t("creating") : t("createButton")}
-            </Button>
-            <Button
-              htmlType="reset"
-              onClick={handleReset}
-              disabled={submitting || loading}
-              className="rounded-lg"
-            >
-              {t("reset")}
-            </Button>
-          </div>
+          <Button
+            type="primary"
+            block
+            htmlType="submit"
+            loading={submitting || loading}
+            disabled={submitting || loading}
+            className="rounded-lg"
+          >
+            {submitting || loading ? t("creating") : t("createButton")}
+          </Button>
+        </Form.Item>
+
+        {/* Reset Button */}
+        <Form.Item>
+          <Button
+            block
+            htmlType="reset"
+            onClick={handleReset}
+            disabled={submitting || loading}
+            className="rounded-lg"
+          >
+            {t("reset")}
+          </Button>
         </Form.Item>
 
         {/* Cancel Button */}
         {onCancel && (
-          <Button
-            block
-            onClick={onCancel}
-            disabled={submitting || loading}
-            className="rounded-lg"
-          >
-            {t("cancel")}
-          </Button>
+          <Form.Item>
+            <Button
+              block
+              onClick={onCancel}
+              disabled={submitting || loading}
+              className="rounded-lg"
+            >
+              {t("cancel")}
+            </Button>
+          </Form.Item>
         )}
       </Form>
     </div>

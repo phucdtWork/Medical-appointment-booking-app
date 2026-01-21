@@ -19,7 +19,12 @@ import {
   CheckCircleOutlined,
   LineChartOutlined,
   DownloadOutlined,
+  CloudDownloadOutlined,
+  RestOutlined,
+  BarChartOutlined,
+  MedicineBoxOutlined,
 } from "@ant-design/icons";
+import { useTranslations, useLocale } from "next-intl";
 import { useTheme } from "@/providers/ThemeProvider";
 import { downloadPDFAsHTML } from "@/utils/pdfExport";
 import NutritionChart from "./NutritionChart";
@@ -64,15 +69,15 @@ interface WeightLossPlanDisplayProps {
     goalWeight: number;
     exerciseTime: number;
   };
-  locale?: string;
 }
 
 export default function WeightLossPlanDisplay({
   plan,
   userData,
-  locale = "vi",
 }: WeightLossPlanDisplayProps) {
   const { isDark } = useTheme();
+  const t = useTranslations("chat");
+  const locale = useLocale();
 
   const handleExportPDF = () => {
     const userName = userData?.name || "User";
@@ -84,18 +89,23 @@ export default function WeightLossPlanDisplay({
   const textPrimary = isDark ? "text-white" : "text-gray-900";
 
   const getBMIColor = (category: string) => {
-    switch (category) {
-      case "Thiếu cân":
-        return "blue";
-      case "Bình thường":
-        return "green";
-      case "Thừa cân":
-        return "orange";
-      case "Béo phì":
-        return "red";
-      default:
-        return "default";
-    }
+    const viCategoryMap: { [key: string]: string } = {
+      "Thiếu cân": "blue",
+      "Bình thường": "green",
+      "Thừa cân": "orange",
+      "Béo phì": "red",
+    };
+    const enCategoryMap: { [key: string]: string } = {
+      Underweight: "blue",
+      Normal: "green",
+      Overweight: "orange",
+      Obese: "red",
+    };
+
+    return (
+      (locale === "en" ? enCategoryMap[category] : viCategoryMap[category]) ||
+      "default"
+    );
   };
 
   return (
@@ -175,10 +185,7 @@ export default function WeightLossPlanDisplay({
       <Card
         className={`${cardBg} border ${borderColor} rounded-lg page-break-after`}
       >
-        <ExerciseChart
-          exerciseCalendar={plan.exerciseCalendar}
-          locale={locale}
-        />
+        <ExerciseChart exerciseCalendar={plan.exerciseCalendar} />
       </Card>
 
       {/* 3. Nutrition Insights with Charts */}
@@ -189,7 +196,6 @@ export default function WeightLossPlanDisplay({
           protein={plan.nutrition.protein}
           carbs={plan.nutrition.carbs}
           fat={plan.nutrition.fat}
-          locale={locale}
         />
       </Card>
 
@@ -236,7 +242,7 @@ export default function WeightLossPlanDisplay({
               <div
                 className={`text-xs ${isDark ? "text-purple-300" : "text-gray-600"} mb-1`}
               >
-                Protein
+                {locale === "en" ? "Protein" : "Protein"}
               </div>
               <div className="text-xl font-bold text-purple-600 dark:text-purple-400">
                 {plan.nutrition.protein}g
@@ -261,7 +267,7 @@ export default function WeightLossPlanDisplay({
               <div
                 className={`text-xs ${isDark ? "text-yellow-300" : "text-gray-600"} mb-1`}
               >
-                Carbs
+                {locale === "en" ? "Carbs" : "Carbs"}
               </div>
               <div className="text-xl font-bold text-yellow-600 dark:text-yellow-400">
                 {plan.nutrition.carbs}g
@@ -285,7 +291,7 @@ export default function WeightLossPlanDisplay({
               <div
                 className={`text-xs ${isDark ? "text-pink-300" : "text-gray-600"} mb-1`}
               >
-                Fat
+                {locale === "en" ? "Fat" : "Fat"}
               </div>
               <div className="text-xl font-bold text-pink-600 dark:text-pink-400">
                 {plan.nutrition.fat}g
@@ -312,7 +318,6 @@ export default function WeightLossPlanDisplay({
           currentWeight={userData?.weight || 70}
           goalWeight={userData?.goalWeight || 60}
           weeksToGoal={plan.timeline.weeksToGoal}
-          locale={locale}
         />
       </Card>
 
@@ -349,9 +354,10 @@ export default function WeightLossPlanDisplay({
             <div
               className={`text-sm ${isDark ? "text-blue-400" : "text-gray-600"} mt-1`}
             >
-              {locale === "en" ? "Weekly loss rate: " : "Mức giảm/tuần: "}
+              {locale === "en" ? "Weekly loss rate: " : "Mức giảm/tuần: "}{" "}
               <span className="font-semibold">
-                {plan.timeline.weeklyWeightLoss} kg/tuần
+                {plan.timeline.weeklyWeightLoss} kg/
+                {locale === "en" ? "week" : "tuần"}
               </span>
             </div>
           </div>
@@ -369,26 +375,48 @@ export default function WeightLossPlanDisplay({
               </span>
             </div>
             <Space direction="vertical" className="w-full">
-              <Tag icon={<FireOutlined />} color="blue">
-                💧{" "}
+              <Tag
+                icon={
+                  <CloudDownloadOutlined
+                    style={{ fontSize: 16, color: "#1890ff" }}
+                  />
+                }
+                color="blue"
+              >
                 {locale === "en"
                   ? "Drink enough water (2-3L/day)"
                   : "Uống đủ nước (2-3 lít/ngày)"}
               </Tag>
-              <Tag icon={<FireOutlined />} color="cyan">
-                😴{" "}
+              <Tag
+                icon={
+                  <RestOutlined style={{ fontSize: 16, color: "#13c2c2" }} />
+                }
+                color="cyan"
+              >
                 {locale === "en"
                   ? "Get 7-8 hours of sleep daily"
                   : "Ngủ đủ 7-8 tiếng/ngày"}
               </Tag>
-              <Tag icon={<FireOutlined />} color="green">
-                📊{" "}
+              <Tag
+                icon={
+                  <BarChartOutlined
+                    style={{ fontSize: 16, color: "#52c41a" }}
+                  />
+                }
+                color="green"
+              >
                 {locale === "en"
                   ? "Stay consistent & track weight"
                   : "Kiên trì & check weight thường xuyên"}
               </Tag>
-              <Tag icon={<FireOutlined />} color="orange">
-                🏥{" "}
+              <Tag
+                icon={
+                  <MedicineBoxOutlined
+                    style={{ fontSize: 16, color: "#faad14" }}
+                  />
+                }
+                color="orange"
+              >
                 {locale === "en"
                   ? "Consult doctor if needed"
                   : "Tư vấn bác sĩ nếu cần"}

@@ -13,20 +13,20 @@ import {
   ReferenceLine,
 } from "recharts";
 import { Card } from "antd";
+import { useTranslations } from "next-intl";
 
 interface ProgressChartProps {
   currentWeight: number;
   goalWeight: number;
   weeksToGoal: number;
-  locale?: string;
 }
 
 export default function ProgressChart({
   currentWeight,
   goalWeight,
   weeksToGoal,
-  locale = "vi",
 }: ProgressChartProps) {
+  const t = useTranslations("chat");
   // Generate weight loss progression data
   const weeklyLossRate = (currentWeight - goalWeight) / weeksToGoal;
   const chartData = Array.from({ length: weeksToGoal + 1 }, (_, i) => ({
@@ -35,31 +35,22 @@ export default function ProgressChart({
   }));
 
   return (
-    <Card
-      className="w-full"
-      title={locale === "en" ? "Weight Progress" : "Tiến Trình Giảm Cân"}
-    >
+    <Card className="w-full" title={t("weightProgress")}>
       <div className="mb-4 grid grid-cols-3 gap-4 text-center">
         <div className="p-3 bg-blue-50 rounded-lg">
-          <div className="text-sm text-gray-600">
-            {locale === "en" ? "Current" : "Hiện Tại"}
-          </div>
+          <div className="text-sm text-gray-600">{t("currentWeight")}</div>
           <div className="text-2xl font-bold text-blue-600">
             {currentWeight} kg
           </div>
         </div>
         <div className="p-3 bg-green-50 rounded-lg">
-          <div className="text-sm text-gray-600">
-            {locale === "en" ? "Target" : "Mục Tiêu"}
-          </div>
+          <div className="text-sm text-gray-600">{t("goalWeight")}</div>
           <div className="text-2xl font-bold text-green-600">
             {goalWeight} kg
           </div>
         </div>
         <div className="p-3 bg-orange-50 rounded-lg">
-          <div className="text-sm text-gray-600">
-            {locale === "en" ? "To Lose" : "Cần Giảm"}
-          </div>
+          <div className="text-sm text-gray-600">{t("weightToLose")}</div>
           <div className="text-2xl font-bold text-orange-600">
             {(currentWeight - goalWeight).toFixed(1)} kg
           </div>
@@ -75,7 +66,7 @@ export default function ProgressChart({
           <XAxis
             dataKey="week"
             label={{
-              value: locale === "en" ? "Week" : "Tuần",
+              value: t("weekLabel"),
               position: "insideBottomRight",
               offset: -10,
             }}
@@ -92,7 +83,7 @@ export default function ProgressChart({
             y={goalWeight}
             stroke="#10b981"
             strokeDasharray="5 5"
-            label={locale === "en" ? "Goal" : "Mục Tiêu"}
+            label={t("targetLabel")}
           />
           <Line
             type="monotone"
@@ -100,7 +91,7 @@ export default function ProgressChart({
             stroke="#3b82f6"
             dot={false}
             strokeWidth={2}
-            name={locale === "en" ? "Weight" : "Cân Nặng"}
+            name={t("currentWeight")}
             isAnimationActive={true}
           />
         </LineChart>

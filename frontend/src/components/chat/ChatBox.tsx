@@ -181,9 +181,8 @@ export default function ChatBoxDemo({ onClose }: ChatBoxProps) {
             <WeightLossPlanDisplay
               plan={weightLossPlan}
               userData={weightLossData || undefined}
-              locale={locale}
             />
-            <Space className="w-full px-2">
+            <Space className="flex justify-between w-full px-2">
               <Button
                 onClick={() => {
                   setWeightLossPlan(null);
