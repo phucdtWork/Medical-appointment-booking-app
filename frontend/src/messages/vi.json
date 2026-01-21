@@ -244,10 +244,32 @@
         "resendAfter": "Gửi lại sau {countdown}s"
       }
     },
+    "resetPasswordTitle": "Đặt lại mật khẩu",
+    "resetPasswordDesc": "Nhập mật khẩu mới bên dưới.",
+    "newPassword": "Mật khẩu mới",
+    "newPasswordPlaceholder": "Nhập mật khẩu mới",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
+    "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
+    "passwordsDoNotMatch": "Mật khẩu không khớp",
+    "resetPassword": "Đặt lại mật khẩu",
     "notifications": {
       "resetPasswordSuccess": "Đặt lại mật khẩu thành công!",
       "resetPasswordFailure": "Đặt lại mật khẩu thất bại",
       "newPassword": "Mật khẩu mới",
+      "resetPasswordPage": {
+        "title": "Đặt lại mật khẩu",
+        "desc": "Nhập mật khẩu mới bên dưới.",
+        "newPassword": "Mật khẩu mới",
+        "newPasswordPlaceholder": "Nhập mật khẩu mới",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
+        "confirmPasswordRequired": "Vui lòng xác nhận mật khẩu",
+        "passwordsDoNotMatch": "Mật khẩu không khớp",
+        "passwordRequired": "Vui lòng nhập mật khẩu",
+        "passwordMin": "Mật khẩu tối thiểu 6 ký tự",
+        "submit": "Đặt lại mật khẩu"
+      },
       "newPasswordPlaceholder": "Nhập mật khẩu mới",
       "confirmPassword": "Xác nhận mật khẩu",
       "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",

@@ -141,25 +141,6 @@ export default function LoginPage() {
             />
           </Form.Item>
 
-          <div className="flex items-center justify-between mb-6">
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2" />
-                <span className={`text-sm ${textSecondary}`}>
-                  {t("rememberMe")}
-                </span>
-              </label>
-            </Form.Item>
-            <Link
-              href="/forgot-password"
-              className={`text-sm text-blue-600 hover:underline ${
-                isDark ? "text-blue-400" : ""
-              }`}
-            >
-              {t("forgotPassword")}
-            </Link>
-          </div>
-
           <Form.Item>
             <Button
               type="primary"

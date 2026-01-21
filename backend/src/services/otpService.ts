@@ -47,15 +47,15 @@ export class OTPService {
 
       // Check resend countdown
       const countDownEnd = new Date(
-        lastResendDate.getTime() + this.RESEND_COUNTDOWN_SECONDS * 1000
+        lastResendDate.getTime() + this.RESEND_COUNTDOWN_SECONDS * 1000,
       );
 
       if (new Date() < countDownEnd) {
         const remainingSeconds = Math.ceil(
-          (countDownEnd.getTime() - new Date().getTime()) / 1000
+          (countDownEnd.getTime() - new Date().getTime()) / 1000,
         );
         throw new Error(
-          `Please wait ${remainingSeconds} seconds before requesting a new OTP`
+          `Please wait ${remainingSeconds} seconds before requesting a new OTP`,
         );
       }
 
@@ -64,19 +64,6 @@ export class OTPService {
         existingData.createdAt instanceof Date
           ? existingData.createdAt
           : (existingData.createdAt as any).toDate();
-
-      // Check daily resend limit
-      const todayStart = new Date();
-      todayStart.setHours(0, 0, 0, 0);
-
-      if (
-        createdAtDate > todayStart &&
-        existingData.resendCount >= this.MAX_RESEND_PER_DAY
-      ) {
-        throw new Error(
-          `Maximum OTP requests (${this.MAX_RESEND_PER_DAY}) reached for today. Please try again tomorrow.`
-        );
-      }
 
       // Delete old OTP
       await existingDoc.ref.delete();
@@ -137,7 +124,7 @@ export class OTPService {
     if (otpData.attempts >= this.MAX_ATTEMPTS) {
       await otpDoc.ref.delete();
       throw new Error(
-        `Maximum verification attempts (${this.MAX_ATTEMPTS}) exceeded. Please request a new OTP.`
+        `Maximum verification attempts (${this.MAX_ATTEMPTS}) exceeded. Please request a new OTP.`,
       );
     }
 
@@ -150,12 +137,56 @@ export class OTPService {
 
       const remainingAttempts = this.MAX_ATTEMPTS - (otpData.attempts + 1);
       throw new Error(
-        `Invalid OTP. ${remainingAttempts} attempt(s) remaining.`
+        `Invalid OTP. ${remainingAttempts} attempt(s) remaining.`,
       );
     }
 
     // OTP is valid - delete it
     await otpDoc.ref.delete();
+    return true;
+  }
+
+  // Validate OTP without deleting it (for password reset)
+  async validateOTP(email: string, otp: string): Promise<boolean> {
+    const otpRef = db.collection("email_verifications");
+
+    const snapshot = await otpRef
+      .where("email", "==", email)
+      .orderBy("createdAt", "desc")
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      throw new Error("OTP not found. Please request a new one.");
+    }
+
+    const otpData = snapshot.docs[0].data() as OTPRecord;
+
+    // Convert Firestore Timestamp to Date
+    const expiresAtDate =
+      otpData.expiresAt instanceof Date
+        ? otpData.expiresAt
+        : (otpData.expiresAt as any).toDate();
+
+    // Check if OTP expired
+    if (new Date() > expiresAtDate) {
+      await snapshot.docs[0].ref.delete();
+      throw new Error("OTP has expired. Please request a new one.");
+    }
+
+    // Check max attempts
+    if (otpData.attempts >= this.MAX_ATTEMPTS) {
+      await snapshot.docs[0].ref.delete();
+      throw new Error(
+        `Maximum verification attempts (${this.MAX_ATTEMPTS}) exceeded. Please request a new OTP.`,
+      );
+    }
+
+    // Validate OTP
+    if (otpData.otp !== otp) {
+      throw new Error("Invalid OTP.");
+    }
+
     return true;
   }
 
@@ -190,11 +221,11 @@ export class OTPService {
         : (otpData.lastResendAt as any).toDate();
 
     const countdownEnd = new Date(
-      lastResendDate.getTime() + this.RESEND_COUNTDOWN_SECONDS * 1000
+      lastResendDate.getTime() + this.RESEND_COUNTDOWN_SECONDS * 1000,
     );
 
     const remaining = Math.ceil(
-      (countdownEnd.getTime() - new Date().getTime()) / 1000
+      (countdownEnd.getTime() - new Date().getTime()) / 1000,
     );
 
     return remaining > 0 ? remaining : 0;

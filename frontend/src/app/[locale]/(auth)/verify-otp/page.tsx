@@ -35,7 +35,6 @@ export default function VerifyOtpPage() {
     if (!data) {
       router.push("/register");
     } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRegisterData(JSON.parse(data));
     }
   }, [router]);
@@ -78,18 +77,6 @@ export default function VerifyOtpPage() {
       inputRefs.current[index - 1]?.focus();
     }
   };
-
-  // const handlePaste = (e: React.ClipboardEvent) => {
-  //   e.preventDefault();
-  //   const pastedData = e.clipboardData.getData("text").trim();
-
-  //   // Only process if pasted data is 6 digits
-  //   if (/^\d{6}$/.test(pastedData)) {
-  //     const newOtp = pastedData.split("");
-  //     setOtp(newOtp);
-  //     inputRefs.current[5]?.focus();
-  //   }
-  // };
 
   const handleInputPaste = (index: number, e: React.ClipboardEvent) => {
     e.preventDefault();

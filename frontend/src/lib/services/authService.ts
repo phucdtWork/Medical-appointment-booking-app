@@ -1,34 +1,3 @@
-// Forgot password APIs
-export const forgotPasswordRequestOtp = async (
-  email: string,
-): Promise<{ message: string }> => {
-  const response = await api.post("/forgot-password/request-otp", { email });
-  return response.data;
-};
-
-export const forgotPasswordVerifyOtp = async (
-  email: string,
-  otp: string,
-): Promise<{ message: string }> => {
-  const response = await api.post("/forgot-password/verify-otp", {
-    email,
-    otp,
-  });
-  return response.data;
-};
-
-export const forgotPasswordReset = async (
-  email: string,
-  otp: string,
-  newPassword: string,
-): Promise<{ message: string }> => {
-  const response = await api.post("/forgot-password/reset", {
-    email,
-    otp,
-    newPassword,
-  });
-  return response.data;
-};
 import api from "../api/axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
