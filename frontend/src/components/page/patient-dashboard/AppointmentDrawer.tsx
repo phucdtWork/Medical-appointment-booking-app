@@ -191,7 +191,6 @@ export default function AppointmentDrawer({
                       })();
                       setRescheduleVisible(true);
                     }}
-                    disabled={!canReschedule}
                   >
                     {t("reschedule")}
                   </Button>
