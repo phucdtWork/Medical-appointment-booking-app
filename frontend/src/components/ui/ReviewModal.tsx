@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Modal, Rate, Input, Button, message } from "antd";
+import { Modal, Rate, Input, Button } from "antd";
 import api from "@/lib/api/axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { doctorKeys } from "@/hooks/queries/useDoctorsQuery";
 import { useTranslations } from "next-intl";
+import { useNotification } from "@/providers/NotificationProvider";
 
 const { TextArea } = Input;
 
@@ -23,6 +24,7 @@ export default function ReviewModal({
   onClose,
 }: ReviewModalProps) {
   const t = useTranslations("patientDashboard");
+  const notification = useNotification();
   const [rating, setRating] = useState<number>(5);
   const [comment, setComment] = useState<string>("");
 
@@ -41,7 +43,9 @@ export default function ReviewModal({
       });
       if (doctorId)
         qc.invalidateQueries({ queryKey: doctorKeys.detail(doctorId) });
-      message.success(t("notifications.reviewSubmitted"));
+      notification.success({
+        message: t("notifications.reviewSubmitted"),
+      });
       onClose();
       setComment("");
       setRating(5);
@@ -49,7 +53,9 @@ export default function ReviewModal({
       console.error(err);
       const errorMessage =
         err instanceof Error ? err.message : t("notifications.error");
-      message.error(errorMessage || t("notifications.error"));
+      notification.error({
+        message: errorMessage || t("notifications.error"),
+      });
     } finally {
       setSubmitting(false);
     }

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Card, Button, Space, message } from "antd";
+import { Card, Button, Space } from "antd";
 import {
   LeftOutlined,
   RightOutlined,
@@ -19,6 +19,7 @@ import StatsCards from "@/components/page/doctor/appointments/StatsCards";
 import DoctorAppointmentDrawer from "@/components/page/doctor/appointments/DoctorAppointmentDrawer";
 import { Appointment } from "@/types/appointment";
 import { useTranslations } from "next-intl";
+import { useNotification } from "@/providers/NotificationProvider";
 
 dayjs.extend(weekOfYear);
 dayjs.extend(isSameOrBefore);
@@ -28,6 +29,7 @@ dayjs.locale("vi");
 export default function DoctorAppointmentsPage() {
   const t = useTranslations("doctorAppointments");
   const tNotify = useTranslations("patientDashboard.notifications");
+  const notification = useNotification();
   const { data: apiData } = useDoctorAppointments();
 
   const appointments = useMemo(
@@ -84,11 +86,14 @@ export default function DoctorAppointmentsPage() {
     try {
       const status = action === "confirm" ? "confirmed" : "rejected";
       await updateStatus({ id, data: { status } });
-      message.success(
-        action === "confirm" ? tNotify("confirmed") : tNotify("rejected"),
-      );
+      notification.success({
+        message:
+          action === "confirm" ? tNotify("confirmed") : tNotify("rejected"),
+      });
     } catch {
-      message.error(tNotify("error"));
+      notification.error({
+        message: tNotify("error"),
+      });
     }
   };
 
@@ -102,10 +107,14 @@ export default function DoctorAppointmentsPage() {
         cancelled: tNotify("cancelled"),
       };
 
-      message.success(messages[status] || tNotify("updated"));
+      notification.success({
+        message: messages[status] || tNotify("updated"),
+      });
       setDrawerOpen(false);
     } catch {
-      message.error(tNotify("error"));
+      notification.error({
+        message: tNotify("error"),
+      });
     }
   };
 

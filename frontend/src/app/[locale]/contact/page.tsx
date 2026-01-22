@@ -1,14 +1,16 @@
 "use client";
 
-import { Form, Input, Button, Card, Radio, message } from "antd";
+import { Form, Input, Button, Card, Radio } from "antd";
 import { useTheme } from "@/providers/ThemeProvider";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { useNotification } from "@/providers/NotificationProvider";
 import { Logo } from "@/components/ui";
 
 export default function ContactPage() {
   const t = useTranslations("contact");
   const { isDark } = useTheme();
+  const notification = useNotification();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
@@ -35,10 +37,14 @@ export default function ContactPage() {
       setLoading(true);
       // TODO: Replace with your actual API endpoint
       console.log("Form values:", values);
-      message.success(t("form.submitSuccess"));
+      notification.success({
+        message: t("form.submitSuccess"),
+      });
       form.resetFields();
     } catch (error) {
-      message.error(t("form.submitError"));
+      notification.error({
+        message: t("form.submitError"),
+      });
     } finally {
       setLoading(false);
     }

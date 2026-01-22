@@ -9,7 +9,6 @@ import {
   Button,
   Drawer,
   App,
-  message,
 } from "antd";
 import {
   CalendarOutlined,
@@ -20,6 +19,7 @@ import {
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useCreateAppointment } from "@/hooks";
+import { useNotification } from "@/providers/NotificationProvider";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useTheme } from "@/providers/ThemeProvider";
@@ -47,6 +47,7 @@ export default function BookingForm({
   const { isDark } = useTheme();
   const router = useRouter();
   const locale = useLocale();
+  const notification = useNotification();
   const createAppointmentMutation = useCreateAppointment();
   const [form] = Form.useForm();
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -126,7 +127,9 @@ export default function BookingForm({
         };
       });
       setAvailableSlots(defaultSlots);
-      message.warning(tNotify("defaultSlots"));
+      notification.warning({
+        message: tNotify("defaultSlots"),
+      });
     } finally {
       setSlotsLoading(false);
     }
