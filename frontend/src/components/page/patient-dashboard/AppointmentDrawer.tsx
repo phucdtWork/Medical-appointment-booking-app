@@ -105,9 +105,11 @@ export default function AppointmentDrawer({
   return (
     <Drawer
       title={
-        <Space>
-          <CalendarOutlined style={{ color: "#1890ff" }} />
-          <span>{t("title")}</span>
+        <Space direction="vertical" style={{ width: "100%" }}>
+          <Space>
+            <CalendarOutlined style={{ color: "#1890ff" }} />
+            <span>{t("title")}</span>
+          </Space>
         </Space>
       }
       placement="bottom"
@@ -117,7 +119,7 @@ export default function AppointmentDrawer({
       closeIcon={<CloseOutlined />}
       extra={
         canModify && (
-          <Space>
+          <Space size="small" wrap style={{ marginTop: "8px" }}>
             {appointment.status !== "cancelled" && (
               <>
                 <Tooltip
@@ -127,6 +129,8 @@ export default function AppointmentDrawer({
                 >
                   <Button
                     icon={<EditOutlined />}
+                    size="small"
+                    disabled={!canReschedule}
                     onClick={() => {
                       // open internal reschedule modal
                       const d = dayjs(appointment.date);
@@ -195,6 +199,7 @@ export default function AppointmentDrawer({
                 <Button
                   danger
                   icon={<DeleteOutlined />}
+                  size="small"
                   onClick={() => {
                     modal.confirm({
                       title: t("cancelConfirmTitle") || "Xác nhận hủy",
@@ -267,11 +272,11 @@ export default function AppointmentDrawer({
         <Descriptions
           column={1}
           bordered
-          size="middle"
+          size="small"
+          layout="vertical"
           styles={{
             label: {
               fontWeight: 600,
-              width: "140px",
               backgroundColor: isDark ? "#1e293b" : "#fafafa",
             },
             content: {

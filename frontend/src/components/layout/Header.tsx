@@ -104,12 +104,11 @@ function HeaderComponent() {
     ];
   }, [user?.role, t, logout]);
 
-  // ✅ Memoize public navigation
   const publicNav = useMemo(
     () => [
-      { key: "features", label: t("nav.features"), href: "#features" },
       { key: "doctors", label: t("nav.doctors"), href: "/doctors" },
-      { key: "howItWorks", label: t("nav.howItWorks"), href: "#how-it-works" },
+      { key: "about", label: t("nav.about"), href: "/about" },
+      { key: "contact", label: t("nav.contact"), href: "/contact" },
     ],
     [t],
   );

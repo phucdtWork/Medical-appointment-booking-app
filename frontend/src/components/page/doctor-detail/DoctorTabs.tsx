@@ -178,7 +178,6 @@ export default function DoctorTabs({
           ))}
         </ul>
       ),
-      className: "mb-3 rounded-lg border-2 overflow-hidden",
       style: collapseItemStyle,
     },
     {
@@ -207,7 +206,6 @@ export default function DoctorTabs({
           {doctor?.doctorInfo.bio}
         </p>
       ),
-      className: "mb-3 rounded-lg border-2 overflow-hidden",
       style: collapseItemStyle,
     },
     {
@@ -245,7 +243,6 @@ export default function DoctorTabs({
           </p>
         </div>
       ),
-      className: "mb-3 rounded-lg border-2 overflow-hidden",
       style: collapseItemStyle,
     },
     {
@@ -275,7 +272,6 @@ export default function DoctorTabs({
           {doctor?.doctorInfo.licenseNumber}
         </p>
       ),
-      className: "mb-3 rounded-lg border-2 overflow-hidden",
       style: collapseItemStyle,
     },
   ];
@@ -309,6 +305,7 @@ export default function DoctorTabs({
             bordered={false}
             style={{
               background: "transparent",
+              border: "none",
             }}
             className="overflow-visible"
           />

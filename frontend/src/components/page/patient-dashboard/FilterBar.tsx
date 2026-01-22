@@ -63,30 +63,33 @@ export default function FilterBar({
       }`}
     >
       {/* Week Navigation */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
-        <Space size="middle">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 md:gap-4 mb-4">
+        <Space size="small" className="w-full md:w-auto" wrap>
           <Button
             icon={<LeftOutlined />}
             onClick={() => onWeekChange(selectedWeek.subtract(1, "week"))}
             className={isDark ? "border-slate-600" : ""}
+            size="small"
           />
           <Text
             strong
-            className={`text-base ${
+            className={`text-sm md:text-base whitespace-nowrap ${
               isDark ? "text-slate-200" : "text-gray-800"
             }`}
           >
             {t("week")} {selectedWeek.week()}: {startOfWeek.format("D")} -{" "}
-            {endOfWeek.format("D MMMM, YYYY")}
+            {endOfWeek.format("D MMM, YYYY")}
           </Text>
           <Button
             icon={<RightOutlined />}
             onClick={() => onWeekChange(selectedWeek.add(1, "week"))}
             className={isDark ? "border-slate-600" : ""}
+            size="small"
           />
           <Button
             onClick={() => onWeekChange(dayjs())}
             className={isDark ? "border-slate-600" : ""}
+            size="small"
           >
             {t("today")}
           </Button>
@@ -101,6 +104,7 @@ export default function FilterBar({
               : router.push(`/${locale}/doctors`)
           }
           style={{ backgroundColor: "#1890ff" }}
+          className="w-full md:w-auto"
         >
           {t("newAppointment")}
         </Button>
@@ -108,7 +112,9 @@ export default function FilterBar({
 
       {/* Status Filters */}
       <div className="flex flex-wrap items-center gap-2">
-        <Text className={`${isDark ? "text-slate-400" : "text-gray-600"}`}>
+        <Text
+          className={`text-xs md:text-sm ${isDark ? "text-slate-400" : "text-gray-600"}`}
+        >
           {tStatus("label")}:
         </Text>
 
@@ -117,12 +123,12 @@ export default function FilterBar({
             isActive("pending") ? "orange" : isDark ? "default" : "default"
           }
           onClick={() => onStatusFilterChange("pending")}
-          className={`cursor-pointer select-none ${
+          className={`cursor-pointer select-none text-xs md:text-sm ${
             isActive("pending") ? "font-semibold" : ""
           }`}
           style={{
             borderWidth: isActive("pending") ? 2 : 1,
-            padding: "4px 12px",
+            padding: "2px 8px",
             color: isActive("pending")
               ? undefined
               : isDark
@@ -138,12 +144,12 @@ export default function FilterBar({
             isActive("confirmed") ? "green" : isDark ? "default" : "default"
           }
           onClick={() => onStatusFilterChange("confirmed")}
-          className={`cursor-pointer select-none ${
+          className={`cursor-pointer select-none text-xs md:text-sm ${
             isActive("confirmed") ? "font-semibold" : ""
           }`}
           style={{
             borderWidth: isActive("confirmed") ? 2 : 1,
-            padding: "4px 12px",
+            padding: "2px 8px",
             color: isActive("confirmed")
               ? undefined
               : isDark
@@ -159,12 +165,12 @@ export default function FilterBar({
             isActive("completed") ? "gold" : isDark ? "default" : "default"
           }
           onClick={() => onStatusFilterChange("completed")}
-          className={`cursor-pointer select-none ${
+          className={`cursor-pointer select-none text-xs md:text-sm ${
             isActive("completed") ? "font-semibold" : ""
           }`}
           style={{
             borderWidth: isActive("completed") ? 2 : 1,
-            padding: "4px 12px",
+            padding: "2px 8px",
             color: isActive("completed")
               ? undefined
               : isDark
@@ -178,12 +184,12 @@ export default function FilterBar({
         <Tag
           color={isActive("cancelled") ? "red" : isDark ? "default" : "default"}
           onClick={() => onStatusFilterChange("cancelled")}
-          className={`cursor-pointer select-none ${
+          className={`cursor-pointer select-none text-xs md:text-sm ${
             isActive("cancelled") ? "font-semibold" : ""
           }`}
           style={{
             borderWidth: isActive("cancelled") ? 2 : 1,
-            padding: "4px 12px",
+            padding: "2px 8px",
             color: isActive("cancelled")
               ? undefined
               : isDark
@@ -199,7 +205,7 @@ export default function FilterBar({
             type="link"
             size="small"
             onClick={() => onStatusFilterChange("")}
-            className={isDark ? "text-blue-400" : ""}
+            className={`text-xs md:text-sm ${isDark ? "text-blue-400" : ""}`}
           >
             {t("clearFilters")}
           </Button>

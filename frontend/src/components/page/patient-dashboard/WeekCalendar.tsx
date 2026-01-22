@@ -134,7 +134,7 @@ export default function WeekCalendar({
       }
       styles={{ body: { padding: "16px" } }}
     >
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1 md:gap-2">
         {weekDays.map((day) => {
           const dayAppointments = getAppointmentsForDate(day);
           const isCurrentDay = isToday(day);
@@ -145,7 +145,7 @@ export default function WeekCalendar({
               key={day.format("YYYY-MM-DD")}
               onClick={() => onDateSelect?.(day)}
               className={`
-                p-3 rounded-lg border-2 cursor-pointer transition-all
+                p-2 md:p-3 rounded-lg border-2 cursor-pointer transition-all
                 hover:shadow-md hover:scale-105
                 ${
                   isCurrentDay
@@ -170,7 +170,7 @@ export default function WeekCalendar({
 
               {/* Date number */}
               <div
-                className={`text-2xl font-bold text-center mb-2 ${
+                className={`text-lg md:text-2xl font-bold text-center mb-2 ${
                   isCurrentDay
                     ? "text-blue-600"
                     : isDark
@@ -231,7 +231,7 @@ export default function WeekCalendar({
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap items-center justify-center gap-4 mt-4 pt-4 border-t">
+      <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4 mt-4 pt-4 border-t text-xs md:text-sm">
         <div className="flex items-center gap-2">
           <div
             style={{

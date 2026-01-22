@@ -9,6 +9,7 @@ import {
   HeroSection,
   HowItWorksSection,
   StatsSection,
+  FAQSection,
 } from "@/components/page/home";
 
 export default function HomePage() {
@@ -19,6 +20,7 @@ export default function HomePage() {
       <FeaturesSection />
       <FeaturedDoctorsSection />
       <HowItWorksSection />
+      <FAQSection />
       <StatsSection />
       <CTASection />
       <Footer />

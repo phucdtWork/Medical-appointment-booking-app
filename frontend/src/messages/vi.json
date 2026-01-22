@@ -141,6 +141,38 @@
       "registerFree": "Đăng ký miễn phí",
       "findDoctorNow": "Tìm bác sĩ ngay"
     },
+    "faq": {
+      "title": "Các Câu Hỏi Thường Gặp",
+      "subtitle": "Tìm câu trả lời cho các câu hỏi phổ biến về dịch vụ đặt lịch khám của chúng tôi",
+      "items": {
+        "0": {
+          "question": "Làm cách nào để đặt lịch khám bác sĩ?",
+          "answer": "Chỉ cần truy cập nền tảng của chúng tôi, tìm kiếm bác sĩ theo chuyên khoa hoặc địa điểm, chọn khung giờ phù hợp, cung cấp thông tin sức khỏe của bạn và xác nhận đặt lịch. Bạn sẽ nhận được email xác nhận với chi tiết cuộc hẹn."
+        },
+        "1": {
+          "question": "Chi phí khám bệnh là bao nhiêu?",
+          "answer": "Chi phí khám bệnh thay đổi tùy theo bác sĩ và loại khám. Bạn có thể xem chi phí cho từng bác sĩ trên hồ sơ của họ trước khi đặt lịch. Chúng tôi chấp nhận nhiều hình thức thanh toán khác nhau."
+        },
+        "2": {
+          "question": "Tôi có thể dời lịch hoặc hủy cuộc hẹn không?",
+          "answer": "Có, bạn có thể dời lịch hoặc hủy cuộc hẹn của mình trong vòng 24 giờ trước thời gian hẹn qua bảng điều khiển của bạn. Việc hủy bỏ trong vòng 24 giờ có thể phát sinh phí."
+        },
+        "3": {
+          "question": "Tôi sẽ nhận được nhắc nhở cuộc hẹn như thế nào?",
+          "answer": "Bạn sẽ nhận được nhắc nhở tự động qua email và SMS 24 giờ và 1 giờ trước cuộc hẹn của mình. Hãy chắc chắn rằng thông tin liên hệ của bạn được cập nhật trong cài đặt hồ sơ."
+        },
+        "4": {
+          "question": "Thông tin y tế của tôi có an toàn không?",
+          "answer": "Có, chúng tôi sử dụng công nghệ mã hóa nâng cao và tuân thủ các quy định về bảo vệ dữ liệu y tế để đảm bảo thông tin y tế của bạn hoàn toàn an toàn và riêng tư."
+        },
+        "5": {
+          "question": "Nếu tôi cần liên hệ với bác sĩ sau cuộc khám của mình?",
+          "answer": "Sau khi khám xong, bạn có thể nhắn tin cho bác sĩ thông qua nền tảng của chúng tôi hoặc liên hệ với đội hỗ trợ của chúng tôi tại support@medibook.com hoặc gọi +84 (0) 123-456-789."
+        }
+      },
+      "ctaText": "Không tìm thấy câu trả lời của bạn?",
+      "ctaButton": "Liên Hệ Với Chúng Tôi"
+    },
     "footer": {
       "description": "Nền tảng đặt lịch khám bệnh trực tuyến hàng đầu Việt Nam",
       "products": "Sản phẩm",
@@ -388,6 +420,7 @@
           "features": "Tính năng",
           "doctors": "Bác sĩ",
           "howItWorks": "Cách hoạt động",
+          "about": "Về tôi",
           "contact": "Liên hệ",
           "patientAppointment": "Lịch hẹn",
           "doctorDashboard": "Bảng điều khiển bác sĩ",
@@ -833,5 +866,157 @@
     "totalExerciseCalories": "Tổng Calo",
     "totalDuration": "Tổng Thời Lượng",
     "generatedBy": "Được tạo bởi Health AI Assistant"
+  },
+  "contact": {
+    "title": "Liên Hệ Với Chúng Tôi",
+    "subtitle": "Có ý tưởng lớn hoặc thương hiệu cần phát triển và cần trợ giúp?",
+    "contactInfo": {
+      "title": "Thông Tin Liên Hệ",
+      "description": "Có ý tưởng lớn hoặc thương hiệu cần phát triển và cần trợ giúp? Chúng tôi rất muốn nghe từ bạn. Hãy cho chúng tôi biết cách chúng tôi có thể giúp bạn.",
+      "email": "Email",
+      "emailAddress": "info@example.com",
+      "phone": "Điện Thoại",
+      "phoneNumber": "+84 589 996 8880",
+      "address": "Địa Chỉ",
+      "addressDetail": "123 Đường Y Tế, Thành Phố Y Tế, HC 12345",
+      "followUs": "Theo Dõi Chúng Tôi"
+    },
+    "form": {
+      "firstName": "Tên",
+      "firstNamePlaceholder": "Nguyễn",
+      "firstNameRequired": "Vui lòng nhập tên của bạn",
+      "lastName": "Họ",
+      "lastNamePlaceholder": "Văn A",
+      "lastNameRequired": "Vui lòng nhập họ của bạn",
+      "phone": "Số Điện Thoại",
+      "phonePlaceholder": "0912-345-678",
+      "phoneRequired": "Vui lòng nhập số điện thoại của bạn",
+      "email": "Địa Chỉ Email",
+      "emailPlaceholder": "ban@example.com",
+      "emailRequired": "Vui lòng nhập địa chỉ email của bạn",
+      "emailInvalid": "Vui lòng nhập một địa chỉ email hợp lệ",
+      "selectSubject": "Chọn Chủ Đề",
+      "subjectRequired": "Vui lòng chọn một chủ đề",
+      "subjects": {
+        "general": "Truy Vấn Chung",
+        "support": "Hỗ Trợ Kỹ Thuật",
+        "feedback": "Phản Hồi Trang Web"
+      },
+      "message": "Tin Nhắn",
+      "messagePlaceholder": "Viết tin nhắn của bạn ở đây...",
+      "messageRequired": "Vui lòng nhập tin nhắn của bạn",
+      "sendMessage": "Gửi Tin Nhắn",
+      "submitSuccess": "Tin nhắn đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm.",
+      "submitError": "Không thể gửi tin nhắn. Vui lòng thử lại."
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "Về MediBook",
+      "description": "MediBook là nền tảng đặt lịch khám bệnh trực tuyến hàng đầu Việt Nam, cam kết làm cho dịch vụ chăm sóc sức khỏe trở nên dễ tiếp cận, thuận tiện và giá cả phải chăng cho mọi người. Chúng tôi kết nối bệnh nhân với các chuyên gia y tế có trình độ và cung cấp trải nghiệm đặt lịch liền mạch."
+    },
+    "mission": {
+      "title": "Sứ Mệnh Của Chúng Tôi",
+      "description": "Cách mạng hóa khả năng tiếp cận dịch vụ chăm sóc sức khỏe bằng cách cung cấp một nền tảng kỹ thuật số kết nối bệnh nhân với bác sĩ có trình độ, giúp đặt lịch khám bệnh dễ dàng, giá cả phải chăng và có thể tiếp cận được cho mọi người, bất kỳ lúc nào, ở bất kỳ đâu."
+    },
+    "vision": {
+      "title": "Tầm Nhìn Của Chúng Tôi",
+      "description": "Trở thành nền tảng đặt lịch khám bệnh trực tuyến đáng tin cậy nhất và được sử dụng rộng rãi nhất ở Đông Nam Á, cải thiện kết quả chăm sóc sức khỏe và mức độ hài lòng của bệnh nhân thông qua công nghệ và đổi mới."
+    },
+    "values": {
+      "title": "Các Giá Trị Cốt Lõi Của Chúng Tôi",
+      "subtitle": "Những nguyên tắc này hướng dẫn mọi quyết định chúng tôi đưa ra",
+      "items": {
+        "trust": {
+          "title": "Tin Tưởng & Bảo Mật",
+          "description": "Chúng tôi ưu tiên bảo vệ quyền riêng tư của bệnh nhân và bảo mật dữ liệu trên hết, sử dụng mã hóa nâng cao và tuân thủ các tiêu chuẩn tuân thủ chăm sóc sức khỏe."
+        },
+        "excellence": {
+          "title": "Xuất Sắc",
+          "description": "Chúng tôi nỗ lực đạt sự xuất sắc trong mọi khía cạnh của dịch vụ của mình, từ xác minh bác sĩ đến trải nghiệm người dùng đến hỗ trợ khách hàng."
+        },
+        "accessibility": {
+          "title": "Khả Năng Tiếp Cận",
+          "description": "Chúng tôi tin rằng dịch vụ chăm sóc sức khỏe nên có thể tiếp cận được cho mọi người. Chúng tôi làm cho nền tảng của mình thân thiện với người dùng và giá cả phải chăng cho mọi tầng lớp kinh tế."
+        }
+      }
+    },
+    "stats": {
+      "title": "Theo Các Con Số",
+      "items": {
+        "doctors": "Bác Sĩ Chuyên Nghiệp",
+        "patients": "Bệnh Nhân Hoạt Động",
+        "appointments": "Lịch Hẹn Thành Công"
+      }
+    },
+    "team": {
+      "title": "Gặp Gỡ Đội Của Chúng Tôi",
+      "subtitle": "Các chuyên gia tận tâm làm việc để cải thiện dịch vụ chăm sóc sức khỏe",
+      "members": {
+        "0": {
+          "name": "Tiến Sĩ Nguyễn Anh",
+          "role": "Người Sáng Lập & CEO",
+          "bio": "Bác sĩ y học với hơn 15 năm kinh nghiệm trong lĩnh vực đổi mới công nghệ chăm sóc sức khỏe."
+        },
+        "1": {
+          "name": "Trần Minh",
+          "role": "Giám Đốc Công Nghệ",
+          "bio": "Người khởi nghiệp công nghệ với chuyên môn trong xây dựng các nền tảng chăm sóc sức khỏe có khả năng mở rộng."
+        },
+        "2": {
+          "name": "Lê Thảo",
+          "role": "Trưởng Phòng Vận Hành Y Tế",
+          "bio": "Quản lý chăm sóc sức khỏe với hơn 10 năm kinh nghiệm trong quản lý bệnh viện và chăm sóc bệnh nhân."
+        }
+      }
+    },
+    "whyChooseUs": {
+      "title": "Tại Sao Chọn MediBook?",
+      "reasons": {
+        "0": {
+          "title": "Bác Sĩ Được Xác Minh",
+          "description": "Tất cả bác sĩ trên nền tảng của chúng tôi là các chuyên gia được xác minh với thông tin xác thực và kinh nghiệm thích hợp."
+        },
+        "1": {
+          "title": "Đặt Lịch 24/7",
+          "description": "Đặt lịch hẹn bất kỳ lúc nào, ở bất kỳ đâu. Nền tảng của chúng tôi có sẵn quanh đêm cho sự tiện lợi của bạn."
+        },
+        "2": {
+          "title": "An Toàn & Riêng Tư",
+          "description": "Thông tin y tế của bạn được bảo vệ bằng mã hóa cấp doanh nghiệp và các biện pháp bảo vệ quyền riêng tư."
+        },
+        "3": {
+          "title": "Giá Cả Phải Chăng",
+          "description": "Giá minh bạch không có phí ẩn. Chọn bác sĩ dựa trên ngân sách và nhu cầu của bạn."
+        },
+        "4": {
+          "title": "Xác Nhận Tức Thì",
+          "description": "Nhận xác nhận tức thì cho các lịch hẹn của bạn và nhận nhắc nhở qua email và SMS."
+        },
+        "5": {
+          "title": "Hỗ Trợ Chuyên Gia",
+          "description": "Đội hỗ trợ tận tâm của chúng tôi luôn sẵn sàng giúp bạn với bất kỳ câu hỏi hoặc mối quan tâm nào."
+        }
+      }
+    },
+    "cta": {
+      "title": "Sẵn Sàng Trải Nghiệm Dịch Vụ Chăm Sóc Sức Khỏe Tốt Hơn?",
+      "description": "Tham gia hàng ngàn bệnh nhân đã khám phá sự thuận tiện của việc đặt lịch khám bệnh trực tuyến.",
+      "button": "Bắt Đầu Hôm Nay"
+    },
+    "creator": {
+      "greeting": "Xin chào 👋 Tôi là",
+      "name": "Đoàn Thanh Phúc",
+      "introduction": "Một web developer đam mê xây dựng các giải pháp chăm sóc sức khỏe có ý nghĩa. MediBook là dự án cá nhân mà tôi tạo ra để học hỏi và rèn luyện kỹ năng với React.js, Next.js, và Ant Design cùng với học thêm Express.js và Firebase.",
+      "about_project": {
+        "title": "Về Dự Án Này",
+        "description": "MediBook là một dự án cá nhân mà tôi phát triển trong hơn một tháng để thể hiện chuyên môn của mình trong React.js và Next.js. Dự án này cũng là cơ hội để tôi học tập và triển khai Express.js và Firebase cho các dịch vụ backend. Tôi cam kết mang lại mã chất lượng cao và chào đón mọi phản hồi để cải thiện.",
+        "note": "Dự án này phản ánh sự tâm huyết của tôi trong việc tạo ra các giải pháp công nghệ chăm sóc sức khỏe hiệu quả và thân thiện với người dùng."
+      },
+      "contact_text": "Có phản hồi hoặc câu hỏi?",
+      "contact_prefix": "Hãy liên hệ với tôi qua",
+      "email_label": "Email",
+      "or": "hoặc"
+    }
   }
 }
