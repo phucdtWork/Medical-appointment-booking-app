@@ -1,6 +1,7 @@
 // hooks/useURLFilters.ts
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, useParams } from "next/navigation";
+import { useLocale } from "next-intl";
 
 interface Filters {
   specialization?: string;
@@ -10,6 +11,7 @@ interface Filters {
 export function useURLFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const locale = useLocale();
 
   // Initialize state from URL params
   const [filters, setFilters] = useState<Filters>({
@@ -20,19 +22,19 @@ export function useURLFilters() {
   });
 
   const [searchTerm, setSearchTerm] = useState(
-    searchParams.get("search") || ""
+    searchParams.get("search") || "",
   );
 
   const [viewMode, setViewMode] = useState<"grid" | "list">(
-    (searchParams.get("view") as "grid" | "list") || "grid"
+    (searchParams.get("view") as "grid" | "list") || "grid",
   );
 
   const [currentPage, setCurrentPage] = useState(
-    parseInt(searchParams.get("page") || "1")
+    parseInt(searchParams.get("page") || "1"),
   );
 
   const [pageSize, setPageSize] = useState(
-    parseInt(searchParams.get("pageSize") || "12")
+    parseInt(searchParams.get("pageSize") || "12"),
   );
 
   // Sync state to URL whenever any state changes
@@ -49,16 +51,18 @@ export function useURLFilters() {
     if (pageSize !== 12) params.set("pageSize", pageSize.toString());
 
     const queryString = params.toString();
-    const newURL = queryString ? `/doctors?${queryString}` : "/doctors";
+    const newURL = queryString
+      ? `/${locale}/doctors?${queryString}`
+      : `/${locale}/doctors`;
 
     // Update URL without page refresh and without scrolling
     router.replace(newURL, { scroll: false });
-  }, [filters, searchTerm, viewMode, currentPage, pageSize, router]);
+  }, [filters, searchTerm, viewMode, currentPage, pageSize, router, locale]);
 
   // Handler functions
   const updateFilter = (
     key: keyof Filters,
-    value: string | number | undefined
+    value: string | number | undefined,
   ) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
     setCurrentPage(1);

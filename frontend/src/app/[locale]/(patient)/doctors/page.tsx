@@ -36,7 +36,6 @@ export default function DoctorsPage() {
     if (debouncedSearch !== (searchTerm || "")) {
       updateSearch(debouncedSearch);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch]);
 
   // Keep local input in sync when external searchTerm changes (e.g., via URL)
