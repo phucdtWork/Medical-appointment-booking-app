@@ -8,21 +8,12 @@
 
 ## 📋 Quick Links
 
-- [Live Demo](#-live-demo)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
 - [Installation](#-installation)
 - [Environment Setup](#-environment-setup)
 - [Running the App](#-running-the-app)
 - [Project Structure](#-project-structure)
-
----
-
-## 🌐 Live Demo
-
-🔗 **[Medical Appointment Booking App](https://medical-appointment-booking-app-fro.vercel.app)**
-
-> Live application is now deployed and ready to use!
 
 ---
 
