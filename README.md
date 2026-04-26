@@ -2,7 +2,7 @@
 
 > A modern full-stack medical appointment booking system connecting patients and doctors seamlessly.
 
-![App Screenshot](./screenshort.png)
+![App Screenshot](./screenshot.png)
 
 ---
 
