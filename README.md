@@ -161,19 +161,6 @@ cd frontend && npm run dev
 # Backend API: http://localhost:5000/api
 ```
 
----
-
-## 🔑 Test Account
-
-**Doctor Account:**
-
-- Email: dr.nguyen.lan@hospital.vn
-- Password: 123456
-
-**Or register a new patient account**
-
----
-
 ## 📁 Project Structure
 
 ```
