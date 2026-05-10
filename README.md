@@ -41,7 +41,6 @@
 - 🔐 Secure authentication (Email/Password + Google OAuth)
 - 🎨 Dark/Light mode toggle
 - 📱 Fully responsive design
-- 🚀 Real-time updates with Socket.io
 
 ---
 
